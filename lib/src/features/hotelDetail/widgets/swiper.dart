@@ -38,7 +38,8 @@ class _SwiperWidgetState extends State<SwiperWidget> {
                     Image.asset(
                       e,
                       fit: BoxFit.cover,
-                      height: 300.h,
+                      height: widget.height.h,
+                      width: double.infinity,
                     ),
                     Container(
                       color: Color(0xff000000).withOpacity(.20),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:orb/src/core/constants/colors.dart';
+import 'package:orb/src/features/home/controller/search_controller.dart';
+import 'package:orb/src/features/home/views/search_filter.dart';
 import 'package:orb/src/features/home/widgets/hotel_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final SearchController searchController = Get.put(SearchController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,38 +82,52 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 16.sp, fontWeight: FontWeight.w600, height: 1.25),
             ),
           ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+          GestureDetector(
+            onTap: () {
+              Get.bottomSheet(
+                SearchFilter(),
+                barrierColor: primaryColor.withOpacity(.2),
+                isDismissible: false,
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.w),
+                ),
+                enableDrag: true,
+              );
+            },
             child: Container(
-              height: 50.w,
-              padding: EdgeInsets.symmetric(horizontal: 24.w),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color(0xff00A5F4).withOpacity(.25),
-                        blurRadius: 10)
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+              child: Container(
+                height: 50.w,
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color(0xff00A5F4).withOpacity(.25),
+                          blurRadius: 10)
+                    ],
+                    borderRadius: BorderRadius.circular(10.w)),
+                child: Row(
+                  children: [
+                    Icon(
+                      FlutterRemix.search_line,
+                      color: primaryColor,
+                      size: 14.w,
+                    ),
+                    SizedBox(
+                      width: 4.w,
+                    ),
+                    Text(
+                      "Where you going ?",
+                      style: GoogleFonts.mulish(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: primaryColor.withOpacity(.4),
+                          height: 1.25),
+                    ),
                   ],
-                  borderRadius: BorderRadius.circular(10.w)),
-              child: Row(
-                children: [
-                  Icon(
-                    FlutterRemix.search_line,
-                    color: primaryColor,
-                    size: 14.w,
-                  ),
-                  SizedBox(
-                    width: 4.w,
-                  ),
-                  Text(
-                    "Where you going ?",
-                    style: GoogleFonts.mulish(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: primaryColor.withOpacity(.4),
-                        height: 1.25),
-                  ),
-                ],
+                ),
               ),
             ),
           ),

@@ -147,7 +147,7 @@ class _SignupPageState extends State<SignupPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Don’t have an account?",
+                              "Already have an account?",
                               style: GoogleFonts.mulish(
                                   fontWeight: FontWeight.w400,
                                   color: textPrimary,

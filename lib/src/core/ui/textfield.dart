@@ -27,6 +27,7 @@ class KTextFormField extends StatefulWidget {
   final VoidCallback? onTap;
   final bool showError;
   final bool? autofocus;
+  final bool isFilled;
   const KTextFormField(
       {Key? key,
       this.validator,
@@ -49,7 +50,8 @@ class KTextFormField extends StatefulWidget {
       this.onTap,
       this.sufixIcon,
       this.autofocus,
-      this.showError = true})
+      this.showError = true,
+      this.isFilled = false})
       : super(key: key);
 
   @override
@@ -140,10 +142,23 @@ class _KTextFormFieldState extends State<KTextFormField> {
             cursorColor: textPrimary,
             decoration: InputDecoration(
               counterText: "",
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.h),
-                  borderSide: BorderSide(color: textPrimary)),
+
+              border: widget.isFilled
+                  ? OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: Colors.transparent))
+                  : OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: textPrimary)),
               hintText: widget.hint,
+              focusedBorder: widget.isFilled
+                  ? OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: Colors.transparent))
+                  : OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: textPrimary)),
+
               hintStyle: GoogleFonts.mulish(
                   color: Color(0xff828282), fontSize: 12.sp, height: 1.2),
 
@@ -154,6 +169,8 @@ class _KTextFormFieldState extends State<KTextFormField> {
                       size: 18.w,
                     )
                   : null,
+              filled: widget.isFilled,
+              fillColor: Color(0xff0A85B4).withOpacity(.1),
               isDense: true, // Added this
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
@@ -188,9 +205,13 @@ class _KTextFormFieldState extends State<KTextFormField> {
                               : null
                       : null),
 
-              enabledBorder: (interacted && errorText == null)
-                  ? Theme.of(context).inputDecorationTheme.focusedBorder
-                  : null,
+              enabledBorder: widget.isFilled
+                  ? OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: Colors.transparent))
+                  : OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: textPrimary)),
             ),
             validator: (value) {
               if (widget.validator != null) {

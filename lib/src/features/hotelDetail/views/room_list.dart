@@ -20,14 +20,29 @@ class RoomList extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: ListView.separated(
-            itemBuilder: (context, index) => RoomCard(),
-            separatorBuilder: (context, index) => SizedBox(
-                  height: 10.h,
-                ),
-            itemCount: 6),
+      body: Column(
+        children: [
+          Divider(
+            height: 2,
+            color: Color(0xfff2f2f2),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(20.w),
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) => RoomCard(),
+                    separatorBuilder: (context, index) => SizedBox(
+                          height: 10.h,
+                        ),
+                    itemCount: 6),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

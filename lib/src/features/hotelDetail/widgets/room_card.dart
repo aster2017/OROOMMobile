@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/constants/colors.dart';
+import 'package:orb/src/features/booking/views/booking.dart';
 import 'package:orb/src/features/hotelDetail/views/hotel_detail.dart';
 import 'package:orb/src/features/hotelDetail/widgets/swiper.dart';
 
@@ -177,7 +178,9 @@ class _RoomCardState extends State<RoomCard> {
                       ]),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(BookPage());
+                      },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 6.w),
                         height: 24.h,

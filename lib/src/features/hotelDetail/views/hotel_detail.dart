@@ -67,7 +67,7 @@ class _HotelDetailState extends State<HotelDetail> {
               top: 245.h,
               child: Container(
                 width: 428.w,
-                height: 680.h,
+                height: 600.h,
                 padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
                 decoration: BoxDecoration(
                     color: Colors.white,
