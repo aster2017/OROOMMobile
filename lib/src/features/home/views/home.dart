@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:orb/src/core/constants/colors.dart';
+import 'package:orb/src/features/app/controller/bottom_nav.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 import 'package:orb/src/features/home/views/search_filter.dart';
 import 'package:orb/src/features/home/widgets/hotel_card.dart';
@@ -18,6 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final SearchController searchController = Get.put(SearchController());
+  final BottomNavController bottomNavController =
+      Get.find<BottomNavController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,25 +49,31 @@ class _HomePageState extends State<HomePage> {
             style: GoogleFonts.mulish(
                 color: Color(0xff4f4f4f),
                 fontWeight: FontWeight.w500,
-                fontSize: 10.sp,
+                fontSize: 12.sp,
                 height: 1.25)),
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20.w),
-            child: Row(children: [
-              Icon(
-                FlutterRemix.account_circle_fill,
-                color: primaryColor,
-                size: 16.w,
-              ),
-              SizedBox(
-                width: 5.w,
-              ),
-              Text(
-                "Amrit",
-                style: GoogleFonts.mulish(color: textPrimary),
-              ),
-            ]),
+          GestureDetector(
+            onTap: () {
+              bottomNavController.currentIndex.value = 3;
+            },
+            child: Padding(
+              padding: EdgeInsets.only(right: 20.w),
+              child: Row(children: [
+                Icon(
+                  FlutterRemix.account_circle_fill,
+                  color: primaryColor,
+                  size: 20.sp,
+                ),
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  "Amrit",
+                  style:
+                      GoogleFonts.mulish(color: textPrimary, fontSize: 16.sp),
+                ),
+              ]),
+            ),
           )
         ],
       ),
@@ -86,7 +95,7 @@ class _HomePageState extends State<HomePage> {
             onTap: () {
               Get.bottomSheet(
                 SearchFilter(),
-                barrierColor: primaryColor.withOpacity(.2),
+                barrierColor: primaryColor.withOpacity(.1),
                 isDismissible: false,
                 isScrollControlled: true,
                 shape: RoundedRectangleBorder(
@@ -239,29 +248,29 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.w600,
                                 height: 1.25),
                           ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              padding: EdgeInsets.only(right: 20.w),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "View All",
-                                    style: GoogleFonts.mulish(
-                                      color: Color(0xff828282),
-                                      fontSize: 14.sp,
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                  Icon(
-                                    FlutterRemix.arrow_right_line,
-                                    color: Color(0xff828282),
-                                    size: 12.w,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
+                          // GestureDetector(
+                          //   onTap: () {},
+                          //   child: Container(
+                          //     padding: EdgeInsets.only(right: 20.w),
+                          //     child: Row(
+                          //       children: [
+                          //         Text(
+                          //           "View All",
+                          //           style: GoogleFonts.mulish(
+                          //             color: Color(0xff828282),
+                          //             fontSize: 14.sp,
+                          //             height: 1.2,
+                          //           ),
+                          //         ),
+                          //         Icon(
+                          //           FlutterRemix.arrow_right_line,
+                          //           color: Color(0xff828282),
+                          //           size: 12.w,
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // )
                         ],
                       ),
                     ],

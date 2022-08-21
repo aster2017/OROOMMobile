@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/ui/footer.dart';
+import 'package:orb/src/features/app/views/app.dart';
 import 'package:orb/src/features/login/views/login.dart';
 import 'package:orb/src/features/signup/views/singup_form.dart';
 
@@ -149,7 +150,7 @@ class _OtpPageState extends State<OtpPage> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(HomePage());
+                                  Get.to(AppPage());
                                 },
                                 child: Container(
                                   width: 150.w,

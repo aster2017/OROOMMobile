@@ -4,25 +4,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orb/src/core/constants/colors.dart';
 
 FlutterSliderTrackBar sliderTrackbar = FlutterSliderTrackBar(
-  inactiveDisabledTrackBarColor: Colors.transparent,
+  // inactiveDisabledTrackBarColor: Colors.transparent,
   activeTrackBarHeight: 10.h,
-  inactiveTrackBarHeight: 10.h,
+  inactiveTrackBarHeight: 12.h,
   inactiveTrackBar: BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
-    boxShadow: [
-      BoxShadow(
-        color: Color(0xff1A6992).withOpacity(0.1),
-      ),
-      BoxShadow(
-        color: Color(0xff1A6992).withOpacity(0.25),
-      ),
-      BoxShadow(
-        color: Colors.white,
-        spreadRadius: -10.0,
-        blurRadius: 10.0,
-      ),
-    ],
-  ),
+      borderRadius: BorderRadius.circular(10),
+      boxShadow: [
+        BoxShadow(
+            color: Color(0xff1A6992).withOpacity(0.1),
+            offset: Offset(0, 2),
+            blurRadius: 4),
+        BoxShadow(color: Color(0xff1A6992).withOpacity(0.01)),
+        BoxShadow(
+          color: Colors.white,
+          spreadRadius: -4.0,
+          blurRadius: 2.0,
+        ),
+      ],
+      color: Colors.transparent,
+      border: Border.all(width: 2, color: Color(0xffF9F9F9))),
+
   activeTrackBar: BoxDecoration(
     color: secondaryColor,
     borderRadius: BorderRadius.circular(10),

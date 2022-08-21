@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/constants/colors.dart';
 import 'package:orb/src/core/ui/footer.dart';
+import 'package:orb/src/features/app/views/app.dart';
 import 'package:orb/src/features/home/views/home.dart';
 import 'package:orb/src/features/login/views/login.dart';
 import 'package:orb/src/features/signup/views/signup.dart';
@@ -60,7 +61,7 @@ class _OnBoardingPageState extends State<OnBoardingPage>
             (currentIndex == onBoardingScreens.length - 1)
                 ? GestureDetector(
                     onTap: () {
-                      Get.offAll(HomePage());
+                      Get.offAll(AppPage());
                     },
                     child: Container(
                       padding: EdgeInsets.only(right: 20.w),
@@ -90,7 +91,7 @@ class _OnBoardingPageState extends State<OnBoardingPage>
               height: 580.h,
               child: PageView(
                 controller: pageController,
-                physics: NeverScrollableScrollPhysics(),
+                physics: BouncingScrollPhysics(),
                 onPageChanged: (value) => setState(() {
                   currentIndex = value;
                 }),

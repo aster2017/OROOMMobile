@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/ui/footer.dart';
+import 'package:orb/src/features/app/views/app.dart';
 import 'package:orb/src/features/login/views/login.dart';
 import 'package:orb/src/features/signup/views/otp.dart';
 import 'package:orb/src/features/signup/views/singup_form.dart';
@@ -35,7 +36,7 @@ class _SignupPageState extends State<SignupPage> {
         actions: [
           GestureDetector(
             onTap: () {
-              Get.offAll(HomePage());
+              Get.offAll(AppPage());
             },
             child: Container(
               padding: EdgeInsets.only(right: 20.w),

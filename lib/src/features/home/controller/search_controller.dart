@@ -7,9 +7,10 @@ class SearchController extends GetxController {
 
   final childrens = 0.obs;
   final rooms = 1.obs;
-  final childrensAge = [].obs;
-  final roomLowerVal = (0.0).obs;
-  final roomUpperVal = (500.0).obs;
+  final Rx<List<Map<String, dynamic>>> childrensAge =
+      Rx<List<Map<String, dynamic>>>([]);
+  final Rx<double> roomLowerVal = Rx<double>(0.0);
+  final Rx<double> roomUpperVal = Rx<double>(1000.0);
   final ratings = [].obs;
   final offer = false.obs;
 }

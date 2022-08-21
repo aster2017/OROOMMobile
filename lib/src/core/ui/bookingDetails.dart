@@ -3,6 +3,7 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:orb/src/core/ui/ageDropdown.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 
 import '../constants/colors.dart';
@@ -89,84 +90,107 @@ class _BookingDetailsRowState extends State<BookingDetailsRow> {
   }
 
   Widget guestsDetails() {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          showGuests = !showGuests;
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
-        decoration: BoxDecoration(
-            color: primaryColor.withOpacity(.1),
-            borderRadius: BorderRadius.circular(5.h)),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${searchController.adults.value} Adults ${searchController.childrens.value} Children",
-                    style: GoogleFonts.mulish(
-                        fontSize: 14.sp, height: 1.2, color: Color(0xff828282)),
-                  ),
-                  Icon(
-                    FlutterRemix.arrow_down_s_fill,
-                    color: Color(0xff828282),
-                    size: 16.w,
-                  ),
-                ],
-              ),
-            ),
-            showGuests
-                ? Column(
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
+          decoration: BoxDecoration(
+              color: primaryColor.withOpacity(.1),
+              borderRadius: BorderRadius.circular(5.h)),
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showGuests = !showGuests;
+                  });
+                },
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        height: 8.h,
+                      Text(
+                        "${searchController.adults.value} Adults ${searchController.childrens.value} Children",
+                        style: GoogleFonts.mulish(
+                            fontSize: 14.sp,
+                            height: 1.2,
+                            color: Color(0xff828282)),
                       ),
-                      Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 12.h, horizontal: 12.w),
-                          decoration: BoxDecoration(
-                              color: Color(0xff0A85B4).withOpacity(.1),
-                              borderRadius: BorderRadius.circular(5.h)),
-                          child: counterWidget(
-                              increament: () {
-                                searchController.adults.value++;
-                              },
-                              decreament: () {
-                                if (searchController.adults.value > 1) {
-                                  searchController.adults.value--;
-                                }
-                              },
-                              value: "Adults")),
-                      SizedBox(
-                        height: 2.h,
+                      Icon(
+                        FlutterRemix.arrow_down_s_fill,
+                        color: Color(0xff828282),
+                        size: 16.w,
                       ),
-                      Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 12.h, horizontal: 12.w),
-                          decoration: BoxDecoration(
-                              color: Color(0xff0A85B4).withOpacity(.1),
-                              borderRadius: BorderRadius.circular(5.h)),
-                          child: counterWidget(
-                              increament: () {
-                                searchController.childrens.value++;
-                              },
-                              decreament: () {
-                                if (searchController.childrens.value > 0) {
-                                  searchController.childrens.value--;
-                                }
-                              },
-                              value: "Children\nAges 0 to 17"))
                     ],
-                  )
-                : Container()
-          ],
+                  ),
+                ),
+              ),
+              showGuests
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12.h, horizontal: 12.w),
+                            decoration: BoxDecoration(
+                                color: Color(0xff0A85B4).withOpacity(.1),
+                                borderRadius: BorderRadius.circular(5.h)),
+                            child: counterWidget(
+                                increament: () {
+                                  searchController.adults.value++;
+                                },
+                                decreament: () {
+                                  if (searchController.adults.value > 1) {
+                                    searchController.adults.value--;
+                                  }
+                                },
+                                value: "Adults")),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12.h, horizontal: 12.w),
+                            decoration: BoxDecoration(
+                                color: Color(0xff0A85B4).withOpacity(.1),
+                                borderRadius: BorderRadius.circular(5.h)),
+                            child: counterWidget(
+                                increament: () {
+                                  searchController.childrens.value++;
+                                  searchController.childrensAge.value.add({
+                                    "value": null,
+                                    "index": searchController
+                                        .childrensAge.value.length
+                                  });
+                                },
+                                decreament: () {
+                                  if (searchController.childrens.value > 0) {
+                                    searchController.childrens.value--;
+                                    searchController.childrensAge.value
+                                        .removeLast();
+                                  }
+                                },
+                                value: "Children\nAges 0 to 17"))
+                      ],
+                    )
+                  : Container()
+            ],
+          ),
         ),
-      ),
+        ...searchController.childrensAge.value.map((e) => AgePopup(
+            index: e['index'],
+            onChange: (value) {
+              searchController.childrensAge.value[e['index']] = {
+                "value": value,
+                "index": e['index']
+              };
+              searchController.childrensAge.refresh();
+            }))
+      ],
     );
   }
 

@@ -1,16 +1,13 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/features/app/controller/bottom_nav.dart';
-import 'package:orb/src/features/app/views/app.dart';
 
 import '../../../core/constants/colors.dart';
 
-class SuccessfulPage extends StatelessWidget {
-  SuccessfulPage({Key? key}) : super(key: key);
+class WishlistPage extends StatelessWidget {
+  WishlistPage({Key? key}) : super(key: key);
   final BottomNavController bottomNavController =
       Get.find<BottomNavController>();
 
@@ -18,15 +15,12 @@ class SuccessfulPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Get.offAll(AppPage());
-            },
-            icon: Icon(Platform.isAndroid
-                ? Icons.arrow_back_rounded
-                : Icons.arrow_back_ios_new_rounded),
-          ),
           iconTheme: IconThemeData(color: textPrimary),
+          title: Text(
+            "My Wishlist",
+            style: GoogleFonts.mulish(
+                color: textPrimary, fontWeight: FontWeight.w600),
+          ),
           centerTitle: true,
         ),
         body: Column(children: [
@@ -47,15 +41,27 @@ class SuccessfulPage extends StatelessWidget {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset("assets/gifs/success.gif"),
+                            Image.asset("assets/gifs/favourite.gif"),
                             Text(
-                              "Successfully Booking!!",
+                              "Keep what you like at hand",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.mulish(
                                   color: textPrimary,
                                   fontSize: 20.sp,
                                   height: 1.25,
                                   fontWeight: FontWeight.w600),
+                            ),
+                            SizedBox(
+                              height: 6.h,
+                            ),
+                            Text(
+                              "Save all the hotels that you like from your search right here",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.mulish(
+                                  color: Color(0xff333333),
+                                  fontSize: 14.sp,
+                                  height: 1.25,
+                                  fontWeight: FontWeight.w500),
                             ),
                           ]),
                     ),
@@ -66,7 +72,8 @@ class SuccessfulPage extends StatelessWidget {
                   alignment: Alignment.center,
                   child: GestureDetector(
                     onTap: () {
-                      Get.offAll(AppPage());
+                      // Get.offAll(SignupPage());
+                      bottomNavController.currentIndex.value = 1;
                     },
                     child: Container(
                       width: 170.w,
@@ -76,7 +83,7 @@ class SuccessfulPage extends StatelessWidget {
                           color: primaryColor),
                       child: Center(
                         child: Text(
-                          "Continue Searching",
+                          "Start Searching",
                           style: GoogleFonts.mulish(
                               color: whiteColor, height: 1.4, fontSize: 16.sp),
                         ),

@@ -35,17 +35,49 @@ class _HotelCardState extends State<HotelCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(5.w),
-              child: Image.asset(
-                "assets/images/hotel.jpg",
-                fit: BoxFit.cover,
-                width: 165.w,
-                height: 100.h,
+            SizedBox(
+              height: 100.h,
+              width: 165.w,
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5.w),
+                    child: Image.asset(
+                      "assets/images/hotel.jpg",
+                      fit: BoxFit.cover,
+                      width: 165.w,
+                      height: 100.h,
+                      color: Colors.black12,
+                      colorBlendMode: BlendMode.darken,
+                    ),
+                  ),
+                  Positioned(
+                    top: 5.h,
+                    right: 5.h,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          favourite = !favourite;
+                        });
+                      },
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xffF7F8FA).withOpacity(.5),
+                            borderRadius: BorderRadius.circular(4.w),
+                          ),
+                          padding: EdgeInsets.all(4.w),
+                          child: Icon(
+                            FlutterRemix.heart_fill,
+                            size: 18.sp,
+                            color: favourite ? redColor : Colors.white,
+                          )),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(
-              height: 2.h,
+              height: 4.h,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,31 +102,28 @@ class _HotelCardState extends State<HotelCard> {
                     ),
                   ],
                 ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      favourite = !favourite;
-                    });
-                  },
-                  child: Container(
-                      width: 24.w,
-                      height: 24.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color(0xff000000).withOpacity(.05),
-                              blurRadius: 4,
-                              offset: Offset(4, 4))
-                        ],
-                        borderRadius: BorderRadius.circular(4.w),
-                      ),
-                      padding: EdgeInsets.all(4.w),
-                      child: Icon(
-                        FlutterRemix.heart_fill,
-                        size: 12.w,
-                        color: favourite ? redColor : Color(0xffbdbdbd),
-                      )),
+                Container(
+                  decoration: BoxDecoration(
+                    color: secondaryColor,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color(0xff000000).withOpacity(.05),
+                          blurRadius: 4,
+                          offset: Offset(4, 4))
+                    ],
+                    borderRadius: BorderRadius.circular(4.w),
+                  ),
+                  padding: EdgeInsets.all(4.w),
+                  child: Text(
+                    "7.5",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.mulish(
+                      fontSize: 12.sp,
+                      color: whiteColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ],
             ),
