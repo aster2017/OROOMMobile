@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MoodPopup extends StatefulWidget {
-  MoodPopup({Key? key, this.onMoodChange, this.selectedMood}) : super(key: key);
+class RatingPopup extends StatefulWidget {
+  RatingPopup({Key? key, this.onMoodChange, this.selectedMood}) : super(key: key);
   final void Function(int)? onMoodChange;
   final int? selectedMood;
 
   @override
-  State<MoodPopup> createState() => _MoodPopupState();
+  State<RatingPopup> createState() => _RatingPopupState();
 }
 
-class _MoodPopupState extends State<MoodPopup> {
+class _RatingPopupState extends State<RatingPopup> {
   List<String> menuItems = [
     "Younger than 1",
     "2",

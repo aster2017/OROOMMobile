@@ -4,11 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:orb/src/core/authentication_manager.dart';
 import 'package:orb/src/core/constants/colors.dart';
+import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/features/app/controller/bottom_nav.dart';
+import 'package:orb/src/features/home/controller/hotel_controller.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 import 'package:orb/src/features/home/views/search_filter.dart';
 import 'package:orb/src/features/home/widgets/hotel_card.dart';
+import 'package:orb/src/features/login/views/login.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,6 +25,9 @@ class _HomePageState extends State<HomePage> {
   final SearchController searchController = Get.put(SearchController());
   final BottomNavController bottomNavController =
       Get.find<BottomNavController>();
+  final AuthenticationManager authenticationManager =
+      Get.find<AuthenticationManager>();
+  final HotelController hotelController = Get.find<HotelController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,27 +59,33 @@ class _HomePageState extends State<HomePage> {
                 fontSize: 12.sp,
                 height: 1.25)),
         actions: [
-          GestureDetector(
-            onTap: () {
-              bottomNavController.currentIndex.value = 3;
-            },
-            child: Padding(
-              padding: EdgeInsets.only(right: 20.w),
-              child: Row(children: [
-                Icon(
-                  FlutterRemix.account_circle_fill,
-                  color: primaryColor,
-                  size: 20.sp,
-                ),
-                SizedBox(
-                  width: 5.w,
-                ),
-                Text(
-                  "Amrit",
-                  style:
-                      GoogleFonts.mulish(color: textPrimary, fontSize: 16.sp),
-                ),
-              ]),
+          Obx(
+            () => GestureDetector(
+              onTap: () {
+                if (authenticationManager.isLogged.value) {
+                  bottomNavController.currentIndex.value = 3;
+                } else {
+                  Get.to(LoginPage());
+                }
+              },
+              child: Padding(
+                padding: EdgeInsets.only(right: 20.w),
+                child: Row(children: [
+                  Icon(
+                    FlutterRemix.account_circle_fill,
+                    color: primaryColor,
+                    size: 20.sp,
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Text(
+                    authenticationManager.isLogged.value ? "Amrit" : "Login",
+                    style:
+                        GoogleFonts.mulish(color: textPrimary, fontSize: 16.sp),
+                  ),
+                ]),
+              ),
             ),
           )
         ],
@@ -157,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Hotels Around",
+                            "Featured Hotels",
                             style: GoogleFonts.mulish(
                                 fontSize: 16.sp,
                                 color: textPrimary,
@@ -196,13 +209,16 @@ class _HomePageState extends State<HomePage> {
                     height: 230.h,
                     margin: EdgeInsets.only(top: 10.h),
                     padding: EdgeInsets.only(left: 10.w),
-                    child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => HotelCard(),
-                        separatorBuilder: (context, index) => SizedBox(
-                              width: 14.w,
-                            ),
-                        itemCount: 5)),
+                    child: Obx(
+                      () => ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => HotelCard(
+                              hotel: hotelController.featured.value[index]),
+                          separatorBuilder: (context, index) => SizedBox(
+                                width: 14.w,
+                              ),
+                          itemCount: hotelController.featured.value.length),
+                    )),
                 Container(
                   padding:
                       EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -277,16 +293,21 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Container(
-                    height: 230.h,
-                    margin: EdgeInsets.only(top: 10.h),
-                    padding: EdgeInsets.only(left: 10.w),
-                    child: ListView.separated(
+                  height: 230.h,
+                  margin: EdgeInsets.only(top: 10.h),
+                  padding: EdgeInsets.only(left: 10.w),
+                  child: Obx(
+                    () => ListView.separated(
                         scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => HotelCard(),
+                        itemBuilder: (context, index) => HotelCard(
+                              hotel: hotelController.popular.value[index],
+                            ),
                         separatorBuilder: (context, index) => SizedBox(
                               width: 14.w,
                             ),
-                        itemCount: 5)),
+                        itemCount: hotelController.popular.value.length),
+                  ),
+                ),
               ],
             ),
           ))

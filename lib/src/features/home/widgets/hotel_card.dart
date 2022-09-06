@@ -6,9 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/constants/colors.dart';
 import 'package:orb/src/features/hotelDetail/views/hotel_detail.dart';
 
-class HotelCard extends StatefulWidget {
-  const HotelCard({Key? key}) : super(key: key);
+import '../models/hotel.dart';
 
+class HotelCard extends StatefulWidget {
+  HotelCard({Key? key, required this.hotel}) : super(key: key);
+  final Hotel hotel;
   @override
   State<HotelCard> createState() => _HotelCardState();
 }
@@ -19,7 +21,7 @@ class _HotelCardState extends State<HotelCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(HotelDetail());
+        Get.to(HotelDetail(hotelUri: widget.hotel.uri!));
       },
       child: Container(
         width: 175.w,
@@ -93,7 +95,7 @@ class _HotelCardState extends State<HotelCard> {
                       width: 6.w,
                     ),
                     Text(
-                      "Kathmandu",
+                      "${widget.hotel.location}",
                       style: GoogleFonts.mulish(
                         color: Color(0xff828282),
                         fontSize: 12.sp,
@@ -131,7 +133,7 @@ class _HotelCardState extends State<HotelCard> {
               height: 2.h,
             ),
             Text(
-              "Hotel Mystic Mountain",
+              widget.hotel.hotelName ?? "",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.mulish(
@@ -171,7 +173,7 @@ class _HotelCardState extends State<HotelCard> {
                             height: 1.25),
                       ),
                       TextSpan(
-                        text: "1,500",
+                        text: "${widget.hotel.startPrice}",
                         style: GoogleFonts.mulish(
                             fontSize: 12.sp,
                             color: redColor,

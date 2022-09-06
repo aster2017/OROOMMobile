@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/constants/colors.dart';
 import 'package:orb/src/core/ui/footer.dart';
@@ -22,6 +23,17 @@ class _OnBoardingPageState extends State<OnBoardingPage>
   PageController pageController = PageController(initialPage: 0);
   int currentIndex = 0;
   double height = 0;
+  @override
+  void initState() {
+    changeStatus();
+    super.initState();
+  }
+
+  Future<void> changeStatus() async {
+    GetStorage box = GetStorage();
+    box.write('seen', true);
+  }
+
   List<Widget> onBoardingScreens = [
     OnBoardPage(
         image: "onBoard1",
@@ -39,16 +51,6 @@ class _OnBoardingPageState extends State<OnBoardingPage>
         description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Turpis id commodo, neque libero gravida ornare ac eget volutpat."),
   ];
-  @override
-  void initState() {
-    // changeStatus();
-    super.initState();
-  }
-
-  // Future<void> changeStatus() async {
-  //   GetStorage box = GetStorage();
-  //   box.write('seen', true);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +61,10 @@ class _OnBoardingPageState extends State<OnBoardingPage>
           automaticallyImplyLeading: false,
           actions: [
             (currentIndex == onBoardingScreens.length - 1)
-                ? GestureDetector(
-                    onTap: () {
+                ? TextButton(
+                    style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 0)),
+                    onPressed: () {
                       Get.offAll(AppPage());
                     },
                     child: Container(

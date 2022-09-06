@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/features/app/controller/bottom_nav.dart';
 import 'package:orb/src/features/login/views/login.dart';
 
@@ -9,6 +10,7 @@ import '../../../core/constants/colors.dart';
 
 class LogOutSheet extends StatelessWidget {
   BottomNavController bottomNavController = Get.find<BottomNavController>();
+  AuthController authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -87,7 +89,7 @@ class LogOutSheet extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     bottomNavController.currentIndex.value = 0;
-                    Get.offAll(LoginPage());
+                    authController.logoutUser();
                   },
                   child: Container(
                     width: 150.w,

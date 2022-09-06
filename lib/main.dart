@@ -2,18 +2,29 @@ import 'package:country_code_picker/country_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:orb/src/core/constants/colors.dart';
+import 'package:orb/src/core/controller/auth_controller.dart';
+import 'package:orb/src/features/home/controller/hotel_controller.dart';
 
+import 'src/core/authentication_manager.dart';
+import 'src/core/services/dio_service.dart';
 import 'src/features/splash/splash.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  Get.put(AuthenticationManager());
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
+  await DioService().initialize();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
+  final AuthController authController = Get.put(AuthController());
+  final HotelController hotelController = Get.put(HotelController());
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -53,5 +64,11 @@ class MyApp extends StatelessWidget {
         home: SplashPage(),
       ),
     );
+  }
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }
