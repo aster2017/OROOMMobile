@@ -141,7 +141,15 @@ class _BookingDetailsRowState extends State<BookingDetailsRow> {
                                 borderRadius: BorderRadius.circular(5.h)),
                             child: counterWidget(
                                 increament: () {
-                                  searchController.adults.value++;
+                                  if (searchController.adults.value >=
+                                      searchController.rooms.value * 3) {
+                                    Get.snackbar("Oops",
+                                        "No of adults exceeded. Please increase your rooms.",
+                                        colorText: whiteColor,
+                                        backgroundColor: redColor);
+                                  } else {
+                                    searchController.adults.value++;
+                                  }
                                 },
                                 decreament: () {
                                   if (searchController.adults.value > 1) {

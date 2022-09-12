@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +7,10 @@ import 'package:orb/src/core/ui/bookingDates.dart';
 import 'package:orb/src/core/ui/bookingDetails.dart';
 import 'package:orb/src/core/ui/textfield.dart';
 import 'package:orb/src/features/booking/views/payment_methods.dart';
+import 'package:orb/src/features/home/controller/search_controller.dart';
 import 'package:orb/src/features/signup/views/signup.dart';
+
+import '../controller/bookingController.dart';
 
 class BookPage extends StatefulWidget {
   const BookPage({Key? key}) : super(key: key);
@@ -18,14 +20,21 @@ class BookPage extends StatefulWidget {
 }
 
 class _BookPageState extends State<BookPage> {
+  final BookingController bookingController = Get.find<BookingController>();
+  final SearchController searchController = Get.find<SearchController>();
+
   TextEditingController fullNameCtrl = TextEditingController();
   TextEditingController emailCtrl = TextEditingController();
   TextEditingController phoneCtrl = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   int adults = 0;
   int childrens = 0;
-  int rooms = 1;
   bool showGuests = false;
+  int get subTotal =>
+      bookingController.nights *
+      bookingController.selectedRoom.value!.minPrice!;
+  double get extraChrg => subTotal * .1;
+  double get orderTax => (extraChrg + subTotal) * .13;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,18 +68,27 @@ class _BookPageState extends State<BookPage> {
                             hint: "Full Name",
                             controller: fullNameCtrl,
                             isFilled: true,
+                            validator: ((p0) => p0 == null || p0.isEmpty
+                                ? "Enter Valid value"
+                                : null),
                           ),
                           KTextFormField(
                             label: "",
                             hint: "Email",
                             controller: emailCtrl,
                             isFilled: true,
+                            validator: ((p0) => p0 == null || p0.isEmpty
+                                ? "Enter Valid value"
+                                : null),
                           ),
                           KTextFormField(
                             label: "",
                             hint: "Phone number",
                             controller: phoneCtrl,
                             isFilled: true,
+                            validator: ((p0) => p0 == null || p0.isEmpty
+                                ? "Enter Valid value"
+                                : null),
                           ),
                         ],
                       ),
@@ -99,11 +117,13 @@ class _BookPageState extends State<BookPage> {
                       height: 2,
                       color: Color(0xff4f4f4f),
                     ),
-                    detailsRow("Heritage Deluxe Room",
-                        "$rooms Room  x 3 nights", "1,500.00"),
-                    detailsRow("Security Deposit", null, "100.00"),
-                    detailsRow("13% VAT", null, "500.00"),
-                    detailsRow("10% Service Charge", null, "150.00"),
+                    detailsRow(
+                        bookingController.selectedRoom.value!.roomCategory!,
+                        "${searchController.rooms.value} Room  x ${bookingController.nights} nights",
+                        "$subTotal"),
+                    // detailsRow("Security Deposit", null, "100.00"),
+                    detailsRow("10% Service Charge", null, "$extraChrg"),
+                    detailsRow("13% VAT", null, "$orderTax"),
                     Divider(
                       height: 2,
                       color: Color(0xff4f4f4f),
@@ -135,7 +155,7 @@ class _BookPageState extends State<BookPage> {
                                     color: textPrimary),
                               ),
                               Text(
-                                "2,100.00",
+                                "${subTotal + orderTax + extraChrg}",
                                 style: GoogleFonts.mulish(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 16.sp,
@@ -205,6 +225,18 @@ class _BookPageState extends State<BookPage> {
                       child: Center(
                         child: GestureDetector(
                           onTap: () {
+                            if (!formKey.currentState!.validate()) {
+                              return;
+                            }
+                            bookingController.bookRoom(
+                                subTotalVal: subTotal.toDouble(),
+                                extraChargVal: extraChrg,
+                                orderTaxVal: orderTax,
+                                orderTotalVal: subTotal + orderTax + extraChrg,
+                                priceVal: 0,
+                                emailVal: emailCtrl.text,
+                                name: fullNameCtrl.text,
+                                phoneVal: phoneCtrl.text);
                             Get.to(PaymentMethods());
                           },
                           child: Container(

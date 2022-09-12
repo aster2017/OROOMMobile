@@ -3,11 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/constants/colors.dart';
+import 'package:orb/src/features/home/models/hotel_detail.dart';
 import 'package:orb/src/features/hotelDetail/widgets/room_card.dart';
 
 class RoomList extends StatelessWidget {
-  const RoomList({Key? key}) : super(key: key);
-
+  const RoomList({Key? key, this.rooms = const [], required this.hotelUri})
+      : super(key: key);
+  final List<ChooseYourRoom> rooms;
+  final String hotelUri;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,11 +37,12 @@ class RoomList extends StatelessWidget {
                 removeTop: true,
                 child: ListView.separated(
                     shrinkWrap: true,
-                    itemBuilder: (context, index) => RoomCard(),
+                    itemBuilder: (context, index) =>
+                        RoomCard(hotelUri: hotelUri, room: rooms[index]),
                     separatorBuilder: (context, index) => SizedBox(
                           height: 10.h,
                         ),
-                    itemCount: 6),
+                    itemCount: rooms.length),
               ),
             ),
           ),

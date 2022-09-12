@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:orb/src/features/booking/controller/bookingController.dart';
 import 'package:orb/src/features/booking/views/checkout.dart';
+
+import 'package:khalti_flutter/khalti_flutter.dart';
 
 import '../../../core/constants/colors.dart';
 
@@ -14,6 +17,7 @@ class PaymentMethods extends StatefulWidget {
 }
 
 class _PaymentMethodsState extends State<PaymentMethods> {
+  final BookingController bookingController = Get.find<BookingController>();
   List<Map<String, dynamic>> currencies = [
     {"title": "NPR", "flag": "flags/np.png"},
     {"title": "USD", "flag": "flags/us.png"},
@@ -228,6 +232,37 @@ class _PaymentMethodsState extends State<PaymentMethods> {
               ],
             )),
       ),
+    );
+  }
+
+  void khaltiPayment() async {
+    final config = PaymentConfig(
+      amount: (bookingController.orderTotal * 100)
+          .toInt(), // Amount should be in paisa
+      productIdentity: bookingController.selectedRoom.value!.roomCategoryUri!,
+      productName:
+          'Room Booking ${bookingController.selectedRoom.value!.roomCategory!}',
+      productUrl: 'https://www.khalti.com/#/bazaar',
+    );
+
+    KhaltiScope.of(context).pay(
+      config: config,
+      preferences: [
+        PaymentPreference.khalti,
+        PaymentPreference.eBanking,
+        PaymentPreference.mobileBanking,
+        PaymentPreference.connectIPS,
+        PaymentPreference.sct
+      ],
+      onSuccess: (value) {
+        bookingController.bookRoomPost(value);
+      },
+      onFailure: (value) {
+        print(value.data);
+      },
+      onCancel: () {
+        print("value.data");
+      },
     );
   }
 }

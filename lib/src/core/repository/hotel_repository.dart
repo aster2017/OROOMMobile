@@ -64,4 +64,66 @@ class HotelRepository {
       throw "Something went wrong!";
     }
   }
+
+  Future<HotelDetailModel?> bookHotel({
+    required String name,
+    required String email,
+    required String phone,
+    required String checkIn,
+    required String checkOut,
+    required String hotelUri,
+    required String childsAge,
+    required ChooseYourRoom room,
+    required int noOfRooms,
+    required int noOfNights,
+    required double subTotal,
+    required int noOfAdults,
+    required double extraCharg,
+    required double orderTotal,
+    required double price,
+    required double orderTax,
+    required Map<String, dynamic> paymentProvider,
+  }) async {
+    try {
+      final tokenResponse =
+          await DioService().client.post(APIEndpoints.booking, data: {
+        "branchUri": hotelUri,
+        "categoryID": room.roomCategoryId,
+        "itemID": room.roomCategoryId,
+        "firstName": name.split(' ').first,
+        "lastName": name.split(' ').length >= 2 ? name.split(' ').last : name,
+        "phone": phone,
+        "email": "user@example.com",
+        "password": "string",
+        "price": price,
+        "noOfRooms": noOfRooms,
+        "noOfNights": noOfNights,
+        "subTotal": subTotal,
+        "noOfAdults": noOfAdults,
+        "childAges": childsAge,
+        "orderTax": orderTax,
+        "extraCharge": extraCharg,
+        "orderTotal": orderTotal,
+        "checkInDate": checkIn,
+        "checkOutDate": checkOut,
+        "paymentTypeID": 0,
+        "ipAddress": "string",
+        "customerID": 0,
+        "customerGuid": "",
+        "userId": "",
+        "paymentProvider": paymentProvider
+      });
+
+      return hotelDetailModelFromJson(tokenResponse.data);
+    } on DioError catch (e) {
+      if (e.response!.statusCode! >= 500) {
+        throw "Internal Server Error!";
+      } else {
+        throw e.response!.statusMessage!;
+      }
+    } catch (e) {
+      print(e.toString());
+      throw "Something went wrong!";
+    }
+  }
 }

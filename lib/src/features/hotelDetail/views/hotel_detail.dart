@@ -126,7 +126,7 @@ class _HotelDetailState extends State<HotelDetail> {
                         width: 6.w,
                       ),
                       Text(
-                        hotel!.location ?? "",
+                        hotel?.location ?? "",
                         style: GoogleFonts.mulish(
                           color: Color(0xff828282),
                           fontSize: 12.sp,
@@ -139,7 +139,7 @@ class _HotelDetailState extends State<HotelDetail> {
                     height: 2.h,
                   ),
                   Text(
-                    hotel!.hotelName ?? "",
+                    hotel?.hotelName ?? "",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.mulish(
@@ -292,7 +292,9 @@ class _HotelDetailState extends State<HotelDetail> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(RoomList());
+                      Get.to(RoomList(
+                          hotelUri: hotel!.hotelUri!,
+                          rooms: hotel!.chooseYourRoom!));
                     },
                     child: Container(
                       width: 150.w,

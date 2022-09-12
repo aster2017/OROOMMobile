@@ -45,6 +45,7 @@ dependencies:
   dio: ^4.0.6
   get_storage: ^2.0.3
   shimmer: ^2.0.0
+  khalti_flutter: ^2.1.0
 
 dev_dependencies:
   flutter_test:

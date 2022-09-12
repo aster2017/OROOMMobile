@@ -8,6 +8,7 @@ import 'package:orb/src/core/authentication_manager.dart';
 import 'package:orb/src/core/constants/colors.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/features/app/controller/bottom_nav.dart';
+import 'package:orb/src/features/booking/controller/bookingController.dart';
 import 'package:orb/src/features/home/controller/hotel_controller.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 import 'package:orb/src/features/home/views/search_filter.dart';
@@ -23,6 +24,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final SearchController searchController = Get.put(SearchController());
+  final BookingController bookingController = Get.put(BookingController());
   final BottomNavController bottomNavController =
       Get.find<BottomNavController>();
   final AuthenticationManager authenticationManager =
