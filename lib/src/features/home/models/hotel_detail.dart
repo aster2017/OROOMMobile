@@ -36,7 +36,7 @@ class HotelDetailModel {
   final double? latitude;
   final String? hotelReview;
   final List<Review>? latestReview;
-  final List<dynamic>? hotelImage;
+  final List<String>? hotelImage;
 
   factory HotelDetailModel.fromJson(Map<String, dynamic> json) =>
       HotelDetailModel(

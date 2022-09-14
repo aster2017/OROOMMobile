@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:orb/src/features/booking/controller/bookingController.dart';
 import 'package:orb/src/features/booking/views/successful.dart';
+import 'package:orb/src/features/home/controller/search_controller.dart';
 
 import '../../../core/constants/colors.dart';
 
@@ -14,6 +17,8 @@ class CheckOutPage extends StatefulWidget {
 }
 
 class _CheckOutPageState extends State<CheckOutPage> {
+  final BookingController bookingController = Get.find<BookingController>();
+  final SearchController searchController = Get.find<SearchController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +67,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               bookingDetailItem("Booking ID", "##########"),
-                              bookingDetailItem("Name", "Amrit Acharya"),
+                              bookingDetailItem(
+                                  "Name", bookingController.fullName.value),
                             ],
                           ),
                           SizedBox(
@@ -72,7 +78,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               bookingDetailItem("Email", "abc@gmail.com"),
-                              bookingDetailItem("Phone", "(+977) 98 #### ####"),
+                              bookingDetailItem(
+                                  "Phone", bookingController.phone.value),
                             ],
                           ),
                           SizedBox(
@@ -81,8 +88,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              bookingDetailItem("Check In", "Aug 01, 2022"),
-                              bookingDetailItem("Check Out", "Aug 03, 2022"),
+                              bookingDetailItem(
+                                  "Check In",
+                                  DateFormat.yMMMd().format(
+                                      searchController.checkinDate.value)),
+                              bookingDetailItem(
+                                  "Check Out",
+                                  DateFormat.yMMMd().format(
+                                      searchController.checkOutDate.value)),
                             ],
                           ),
                           SizedBox(
@@ -91,8 +104,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              bookingDetailItem("Nights", "3 Nights"),
-                              bookingDetailItem("Room", "2 Rooms"),
+                              bookingDetailItem("Nights",
+                                  "${bookingController.nights} Nights"),
+                              bookingDetailItem("Room",
+                                  "${searchController.rooms.value} Rooms"),
                             ],
                           ),
                           SizedBox(
@@ -101,7 +116,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              bookingDetailItem("Guest", "4 Adults 1 Children"),
+                              bookingDetailItem("Guest",
+                                  "${searchController.adults.value} Adults ${searchController.childrens.value} Children"),
                             ],
                           ),
                         ],
@@ -130,13 +146,19 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           color: Color(0xffF2F2F2).withOpacity(.5)),
                       child: Column(
                         children: [
-                          detailsRow("Heritage Deluxe Room",
-                              "2 Room  x 3 nights", "1,500.00"),
-                          detailsRow("Security Deposit", null, "100.00"),
-                          detailsRow("13% VAT", null, "500.00"),
-                          detailsRow("10% Service Charge", null, "150.00"),
-                          detailsRow("Grand Total", null, "2,250.00"),
-                          detailsRow("Advance Paid", null, "250.00"),
+                          detailsRow(
+                              "Heritage Deluxe Room",
+                              "${searchController.rooms.value} Room  x ${bookingController.nights} nights",
+                              bookingController.subTotalValue.toString()),
+                          // detailsRow("Security Deposit", null, "100.00"),
+                          detailsRow("10% Service Charge", null,
+                              "${bookingController.extraChrg}"),
+                          detailsRow("13% VAT", null,
+                              "${bookingController.orderTaxValue}"),
+                          detailsRow("Grand Total", null,
+                              "${bookingController.orderTaxValue + bookingController.extraChrg + bookingController.subTotalValue}"),
+                          detailsRow("Amount Paid", null,
+                              "${bookingController.orderTaxValue + bookingController.extraChrg + bookingController.subTotalValue}"),
                           Divider(
                             height: 2,
                             color: Color(0xff4f4f4f),
@@ -168,7 +190,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                           color: textPrimary),
                                     ),
                                     Text(
-                                      "2,000.00",
+                                      "0",
                                       style: GoogleFonts.mulish(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 16.sp,

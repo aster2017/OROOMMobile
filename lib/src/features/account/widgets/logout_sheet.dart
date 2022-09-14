@@ -90,6 +90,7 @@ class LogOutSheet extends StatelessWidget {
                   onTap: () {
                     bottomNavController.currentIndex.value = 0;
                     authController.logoutUser();
+                    Get.back();
                   },
                   child: Container(
                     width: 150.w,

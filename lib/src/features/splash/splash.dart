@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:orb/src/core/authentication_manager.dart';
 import 'package:orb/src/core/constants/colors.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/features/app/controller/bottom_nav.dart';
@@ -20,6 +21,8 @@ class _SplashPageState extends State<SplashPage> {
   final BottomNavController bottomNavController =
       Get.put(BottomNavController());
   final AuthController authController = Get.find<AuthController>();
+  final AuthenticationManager authenticationManager =
+      Get.find<AuthenticationManager>();
   final HotelController hotelController = Get.find<HotelController>();
   @override
   void initState() {
@@ -41,6 +44,7 @@ class _SplashPageState extends State<SplashPage> {
       });
     } else {
       Future.delayed(Duration(seconds: 1), () {
+        authenticationManager.checkLoginStatus();
         Get.offAll(AppPage());
       });
     }

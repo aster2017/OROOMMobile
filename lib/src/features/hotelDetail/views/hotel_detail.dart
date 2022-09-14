@@ -27,10 +27,7 @@ final SearchController searchController = Get.put(SearchController());
 final HotelController hotelController = Get.find<HotelController>();
 
 class _HotelDetailState extends State<HotelDetail> {
-  List<Map<String, dynamic>> facilities = [
-    {"icon": FlutterRemix.restaurant_line, "title": "Restaurant"},
-    {"icon": FlutterRemix.parking_line, "title": "Parking"},
-  ];
+  DateTime currentDate = DateTime.now();
   late HotelDetailModel? hotel;
   @override
   void initState() {
@@ -38,15 +35,17 @@ class _HotelDetailState extends State<HotelDetail> {
     fetchHotelData();
   }
 
-  fetchHotelData() {
+  fetchHotelData({bool loading = true}) {
     hotelController
         .getHotelDetail(
             uri: widget.hotelUri,
             checkIn: DateFormat("yyyy-MM-dd")
                 .format(searchController.checkinDate.value),
             checkOut: DateFormat("yyyy-MM-dd")
-                .format(searchController.checkOutDate.value))
+                .format(searchController.checkOutDate.value),
+            loading: loading)
         .then((value) => setState(() {
+              print(value);
               hotel = value;
             }));
   }
@@ -183,7 +182,7 @@ class _HotelDetailState extends State<HotelDetail> {
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) => Column(
                                 children: [
-                                  hotel!.hotelFacilities![index].facilityIcon ==
+                                  hotel?.hotelFacilities![index].facilityIcon ==
                                           null
                                       ? Icon(
                                           FlutterRemix.restaurant_line,
@@ -209,12 +208,12 @@ class _HotelDetailState extends State<HotelDetail> {
                           separatorBuilder: (context, index) => SizedBox(
                                 width: 12.w,
                               ),
-                          itemCount: facilities.length)),
+                          itemCount: hotel?.hotelFacilities?.length ?? 0)),
                   SizedBox(
                     height: 14.h,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         "Booking Dates And Details",
@@ -224,38 +223,57 @@ class _HotelDetailState extends State<HotelDetail> {
                             fontWeight: FontWeight.w500,
                             height: 1.25),
                       ),
-                      Text(
-                        "Change",
-                        style: GoogleFonts.mulish(
-                            fontSize: 12.sp,
-                            color: redColor,
-                            fontWeight: FontWeight.w600,
-                            height: 1.25),
-                      ),
+                      // Text(
+                      //   "Change",
+                      //   style: GoogleFonts.mulish(
+                      //       fontSize: 12.sp,
+                      //       color: redColor,
+                      //       fontWeight: FontWeight.w600,
+                      //       height: 1.25),
+                      // ),
                     ],
                   ),
                   SizedBox(
                     height: 12.h,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      bookingDetails("Check In - After 12 PM", "July 31, 2022"),
-                      bookingDetails(
-                          "Check Out - Before 11 AM", "August 02, 2022"),
-                    ],
+                  Obx(
+                    () => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            await _selectDate(context);
+                            fetchHotelData(loading: false);
+                          },
+                          child: bookingDetails(
+                              "Check In - After 12 PM",
+                              DateFormat.yMMMd()
+                                  .format(searchController.checkinDate.value)),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            await _selectDate(context, isFrom: false);
+                            fetchHotelData(loading: false);
+                          },
+                          child: bookingDetails(
+                              "Check Out - Before 11 AM",
+                              DateFormat.yMMMd()
+                                  .format(searchController.checkOutDate.value)),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 6.h,
                   ),
                   DisplayCard(
                     title: "Description",
-                    description: hotel!.description ??
+                    description: hotel?.description ??
                         '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed venenatis odio arcu. Vestibulum non est, at ultricies nulla lectus nunc, turpis. Pretium nisi etiam pulvinar at fusce pellentesque viverra id. Fermentum ornare id dolor sodales varius etiam sed. ''',
                   ),
                   DisplayCard(
                     title: "Policy",
-                    description: hotel!.privacy ??
+                    description: hotel?.privacy ??
                         '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed venenatis odio arcu. Vestibulum non est, at ultricies nulla lectus nunc, turpis. Pretium nisi etiam pulvinar at fusce pellentesque viverra id. Fermentum ornare id dolor sodales varius etiam sed. ''',
                   ),
                   ReviewList(),
@@ -350,5 +368,29 @@ class _HotelDetailState extends State<HotelDetail> {
         ],
       ),
     );
+  }
+
+  Future<void> _selectDate(BuildContext context, {bool isFrom = true}) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: (isFrom
+            ? searchController.checkinDate.value
+            : searchController.checkOutDate.value),
+        fieldHintText: isFrom ? "Check In Date" : "Check Out Date",
+        initialDatePickerMode: DatePickerMode.day,
+        firstDate: isFrom ? currentDate : searchController.checkinDate.value,
+        lastDate: currentDate.add(Duration(days: 365)));
+
+    if (picked != null &&
+        picked !=
+            (isFrom
+                ? searchController.checkinDate.value
+                : searchController.checkOutDate.value)) {
+      if (isFrom) {
+        searchController.checkinDate.value = picked;
+      } else {
+        searchController.checkOutDate.value = picked;
+      }
+    }
   }
 }

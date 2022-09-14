@@ -18,37 +18,39 @@ class DioService with CacheManager {
     client
       ..options.baseUrl = APIEndpoints.baseUrl
       ..interceptors.add(
-        don.InterceptorsWrapper(onRequest:
-            (requestOptions, requestInterceptorHandler) {
-          final _token = getToken();
-          if (_token == null || _token.isEmpty) {
-            requestOptions.headers.addAll(
-              <String, String>{
-                'Content-Type': 'application/json',
-                'Accept': 'text/plain'
-              },
-            );
-          } else {
-            requestOptions.headers.addAll(
-              <String, String>{
-                'Authorization': 'Bearer $_token',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-            );
-          }
-          return requestInterceptorHandler.next(requestOptions);
-        }, onError:
-            (don.DioError error, don.ErrorInterceptorHandler handler) async {
-          final _token = getToken();
-          if ((error.response?.statusCode == 401 && (_token != null))) {
-            AuthenticationManager authController =
-                Get.find<AuthenticationManager>();
-            authController.logOut();
-            Get.offAll(SplashPage());
-          }
-          handler.next(error);
-        }),
+        don.InterceptorsWrapper(
+          onRequest: (requestOptions, requestInterceptorHandler) {
+            final _token = getToken();
+            if (_token == null || _token.isEmpty) {
+              requestOptions.headers.addAll(
+                <String, String>{
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                },
+              );
+            } else {
+              requestOptions.headers.addAll(
+                <String, String>{
+                  'Authorization': 'Bearer $_token',
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                },
+              );
+            }
+            return requestInterceptorHandler.next(requestOptions);
+          },
+          onError:
+              (don.DioError error, don.ErrorInterceptorHandler handler) async {
+            final _token = getToken();
+            if ((error.response?.statusCode == 401 && (_token != null))) {
+              AuthenticationManager authController =
+                  Get.find<AuthenticationManager>();
+              authController.logOut();
+              Get.offAll(SplashPage());
+            }
+            handler.next(error);
+          },
+        ),
       );
   }
 }

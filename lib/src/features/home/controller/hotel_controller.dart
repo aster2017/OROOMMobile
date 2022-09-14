@@ -73,20 +73,21 @@ class HotelController extends GetxController {
   Future<HotelDetailModel?> getHotelDetail(
       {required String uri,
       required String checkIn,
-      required String checkOut}) async {
+      required String checkOut,
+      required bool loading}) async {
     try {
-      fetchHotel.value = true;
+      fetchHotel.value = loading;
       final response = await hotelRepository.getHotelDetail(
           checkIn: checkIn, checkOut: checkOut, uri: uri);
       if (response != null) {
-        fetchHotel.value = false;
+        fetchHotel.value = loading ? false : fetchHotel.value;
         return response;
       } else {
-        fetchHotel.value = false;
+        fetchHotel.value = loading ? false : fetchHotel.value;
         throw "Couldn't Fetch Data.";
       }
     } catch (e) {
-      fetchHotel.value = false;
+      fetchHotel.value = loading ? false : fetchHotel.value;
       Get.showSnackbar(GetSnackBar(
         title: "Error!",
         message: e.toString(),

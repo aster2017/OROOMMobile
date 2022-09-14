@@ -18,6 +18,7 @@ class AccountPage extends StatelessWidget {
   AccountPage({Key? key}) : super(key: key);
   AuthenticationManager authenticationManager =
       Get.find<AuthenticationManager>();
+  AuthController authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +73,7 @@ class AccountPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Amrit Acharya",
+                          "${authController.user.value?.firstName ?? "Amrit"} ${authController.user.value?.lastName ?? "Acharya"}",
                           style: GoogleFonts.mulish(
                               fontSize: 18.sp,
                               color: textPrimary,
@@ -81,7 +82,7 @@ class AccountPage extends StatelessWidget {
                         ),
                         SizedBox(height: 6.h),
                         Text(
-                          "abc@gmail.com",
+                          authController.user.value?.email ?? "abc@example.com",
                           style: GoogleFonts.mulish(
                               fontSize: 16.sp,
                               color: Color(0xff4f4f4f),

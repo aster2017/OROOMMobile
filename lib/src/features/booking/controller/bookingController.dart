@@ -6,6 +6,8 @@ import 'package:orb/src/features/home/controller/search_controller.dart';
 import 'package:orb/src/features/home/models/hotel_detail.dart';
 import 'package:orb/src/features/hotelDetail/views/hotel_detail.dart';
 
+import '../views/checkout.dart';
+
 class BookingController extends GetxController {
   final Rx<ChooseYourRoom?> selectedRoom = Rx<ChooseYourRoom?>(null);
   final fullName = "".obs;
@@ -22,7 +24,13 @@ class BookingController extends GetxController {
   int get nights => searchController.checkOutDate.value
       .difference(searchController.checkinDate.value)
       .inDays;
-
+  double get subTotalValue => double.parse(
+      (nights * selectedRoom.value!.minPrice! * searchController.rooms.value)
+          .toStringAsFixed(2));
+  double get extraChrg => double.parse((subTotalValue * .1).toStringAsFixed(2));
+  double get orderTaxValue =>
+      double.parse(((extraChrg + subTotalValue) * .13).toStringAsFixed(2));
+  final isLoading = false.obs;
   bookRoom({
     required String name,
     required String emailVal,
@@ -45,6 +53,7 @@ class BookingController extends GetxController {
 
   bookRoomPost(PaymentSuccessModel payment) async {
     try {
+      isLoading.value = true;
       final res = await HotelRepository().bookHotel(
           name: fullName.value,
           email: email.value,
@@ -67,8 +76,8 @@ class BookingController extends GetxController {
           paymentProvider: {
             "paymentProviderCode": "KHALTI",
             "currencyCode": "NPR",
-            "amount": payment.amount,
-            "amountInPaisa": payment.amount / 100,
+            "amount": payment.amount / 100,
+            "amountInPaisa": payment.amount,
             "providerTransactionId": payment.idx,
             "mobile": payment.mobile,
             "productIdentity": payment.productIdentity,
@@ -77,6 +86,13 @@ class BookingController extends GetxController {
             "token": payment.token,
             "widgetId": "string"
           });
-    } catch (e) {}
+      if (res == true) {
+        isLoading.value = false;
+        Get.to(CheckOutPage());
+      }
+    } catch (e) {
+      isLoading.value = false;
+      print(e.toString());
+    }
   }
 }

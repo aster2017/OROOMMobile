@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
+import 'package:khalti_flutter/localization/khalti_localizations.dart';
 import 'package:orb/src/core/constants/colors.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/features/home/controller/hotel_controller.dart';
@@ -38,19 +39,21 @@ class MyApp extends StatelessWidget {
         publicKey: "test_public_key_546973b730cf43cf9f12946359b6b5fa",
         navigatorKey: navigatorKey,
         builder: (context, navigator) {
-          return mainBody();
+          return mainBody(navigator);
         },
       ),
     );
   }
 
-  GetMaterialApp mainBody() {
+  GetMaterialApp mainBody(GlobalKey<NavigatorState> navigator) {
     return GetMaterialApp(
+      navigatorKey: navigator,
       title: 'ORB',
       debugShowCheckedModeBanner: false,
       supportedLocales: const [Locale('en')],
       localizationsDelegates: const [
         CountryLocalizations.delegate,
+        KhaltiLocalizations.delegate,
         DefaultMaterialLocalizations.delegate,
         DefaultWidgetsLocalizations.delegate,
       ],

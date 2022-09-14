@@ -2,19 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orb/src/core/model/user.dart';
 import 'package:orb/src/features/app/views/app.dart';
 import '../authentication_manager.dart';
 import '../repository/api_repository.dart';
 
 class AuthController extends GetxController {
-  late final AuthenticationRepository _authenticationRepository;
+  late final ApiRepository _apiRepository;
   late final AuthenticationManager _authManager;
   final isLoading = false.obs;
   final refreshLoading = false.obs;
+  final userId = ''.obs;
+  final Rx<UserDetail?> user = Rx<UserDetail?>(null);
   @override
   void onInit() {
     super.onInit();
-    _authenticationRepository = AuthenticationRepository();
+    _apiRepository = ApiRepository();
     _authManager = Get.find();
   }
 
@@ -33,11 +36,13 @@ class AuthController extends GetxController {
   Future<void> loginUser(String username, String password) async {
     try {
       isLoading.value = true;
-      final response = await _authenticationRepository.obtainToken(
+      final response = await _apiRepository.obtainToken(
           username: username, password: password);
-      print(response);
       if (response != null && response['token'] != null) {
         _authManager.login(response);
+        userId.value = response['id'];
+        getUser();
+
         isLoading.value = false;
         Get.offAll(AppPage());
       } else {
@@ -59,10 +64,16 @@ class AuthController extends GetxController {
     }
   }
 
+  void getUser() async {
+    try {
+      final res = _apiRepository.getUser(userId: userId.value);
+    } catch (e) {}
+  }
+
   Future<void> registerUser(String username, String password) async {
     try {
       isLoading.value = true;
-      final response = await _authenticationRepository.registerUser(
+      final response = await _apiRepository.registerUser(
           username: username, password: password);
       if (response != null) {
         loginUser(username, password);

@@ -78,6 +78,11 @@ class _BookingDetailsRowState extends State<BookingDetailsRow> {
                     decreament: () {
                       if (searchController.rooms.value > 1) {
                         searchController.rooms.value--;
+                        if (searchController.adults.value >
+                            searchController.rooms.value * 3) {
+                          searchController.adults.value =
+                              searchController.rooms.value * 3;
+                        }
                       }
                     },
                     value: searchController.rooms.value

@@ -9,7 +9,8 @@ import 'package:orb/src/features/home/controller/search_controller.dart';
 import '../constants/colors.dart';
 
 class BookingDatesRow extends StatelessWidget {
-  BookingDatesRow({Key? key}) : super(key: key);
+  BookingDatesRow({Key? key, this.changeDate = true}) : super(key: key);
+  final bool changeDate;
   SearchController searchController = Get.find<SearchController>();
   DateTime currentDate = DateTime.now();
 
@@ -95,7 +96,9 @@ class BookingDatesRow extends StatelessWidget {
     return Obx(
       () => GestureDetector(
         onTap: () {
-          _selectDate(context, isFrom: isFrom);
+          if (changeDate) {
+            _selectDate(context, isFrom: isFrom);
+          }
         },
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 20.w),

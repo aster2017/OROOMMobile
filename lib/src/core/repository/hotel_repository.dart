@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:orb/src/features/home/models/hotel_detail.dart';
 
 import '../../features/home/models/hotel.dart';
@@ -51,7 +53,7 @@ class HotelRepository {
             "checkIn": checkIn,
             "checkOut": checkOut
           });
-
+      print(tokenResponse.data);
       return hotelDetailModelFromJson(tokenResponse.data);
     } on DioError catch (e) {
       if (e.response!.statusCode! >= 500) {
@@ -65,7 +67,7 @@ class HotelRepository {
     }
   }
 
-  Future<HotelDetailModel?> bookHotel({
+  Future<bool?> bookHotel({
     required String name,
     required String email,
     required String phone,
@@ -85,8 +87,7 @@ class HotelRepository {
     required Map<String, dynamic> paymentProvider,
   }) async {
     try {
-      final tokenResponse =
-          await DioService().client.post(APIEndpoints.booking, data: {
+      final data = {
         "branchUri": hotelUri,
         "categoryID": room.roomCategoryId,
         "itemID": room.roomCategoryId,
@@ -94,7 +95,7 @@ class HotelRepository {
         "lastName": name.split(' ').length >= 2 ? name.split(' ').last : name,
         "phone": phone,
         "email": "user@example.com",
-        "password": "string",
+        "password": null,
         "price": price,
         "noOfRooms": noOfRooms,
         "noOfNights": noOfNights,
@@ -106,16 +107,19 @@ class HotelRepository {
         "orderTotal": orderTotal,
         "checkInDate": checkIn,
         "checkOutDate": checkOut,
-        "paymentTypeID": 0,
+        "paymentTypeID": 1,
         "ipAddress": "string",
         "customerID": 0,
-        "customerGuid": "",
         "userId": "",
         "paymentProvider": paymentProvider
-      });
+      };
+      final tokenResponse =
+          await DioService().client.post(APIEndpoints.booking, data: data);
 
-      return hotelDetailModelFromJson(tokenResponse.data);
+      return true;
     } on DioError catch (e) {
+      print(e.toString());
+      print(e.response!.data);
       if (e.response!.statusCode! >= 500) {
         throw "Internal Server Error!";
       } else {

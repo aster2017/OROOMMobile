@@ -14,17 +14,17 @@ class ProfileMenu extends StatelessWidget {
   final IconData? icon;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.symmetric(
-              horizontal: BorderSide(color: Color(0xffF2F2F2)))),
-      margin: EdgeInsets.symmetric(vertical: 6.h),
-      child: Column(children: [
-        GestureDetector(
-          onTap: () {
-            onTap.call();
-          },
-          child: Container(
+    return GestureDetector(
+      onTap: () {
+        onTap.call();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.symmetric(
+                horizontal: BorderSide(color: Color(0xffF2F2F2)))),
+        margin: EdgeInsets.symmetric(vertical: 6.h),
+        child: Column(children: [
+          Container(
             padding: EdgeInsets.symmetric(vertical: 16.h),
             child: Row(
               mainAxisSize: MainAxisSize.max,
@@ -57,8 +57,8 @@ class ProfileMenu extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }
