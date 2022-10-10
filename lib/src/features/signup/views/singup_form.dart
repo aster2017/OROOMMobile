@@ -34,13 +34,13 @@ class SignUpForm extends StatelessWidget {
         child: Column(
           children: [
             KTextFormField(
-              controller: confirmPassCtrl,
+              controller: nameCtrl,
               label: "Full name",
               hint: "Full name",
               prefix: FlutterRemix.user_3_fill,
             ),
             KTextFormField(
-                controller: confirmPassCtrl,
+                controller: emailCtrl,
                 label: "Email",
                 hint: "Email",
                 prefix: FlutterRemix.mail_fill),

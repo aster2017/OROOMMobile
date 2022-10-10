@@ -32,6 +32,7 @@ class ApiRepository {
           await DioService().client.post("${APIEndpoints.myProfile}/$userId");
       return (tokenResponse.data);
     } on DioError catch (e) {
+      print(e.toString());
       if (e.response!.statusCode! >= 500) {
         throw "Internal Server Error!";
       } else {

@@ -26,6 +26,7 @@ class _DisplayCardState extends State<DisplayCard> {
           border: Border.symmetric(
               horizontal: BorderSide(color: Color(0xffF2F2F2)))),
       margin: EdgeInsets.symmetric(vertical: 6.h),
+      padding: EdgeInsets.symmetric(vertical: 16.h),
       child: Column(
         children: [
           GestureDetector(
@@ -35,7 +36,6 @@ class _DisplayCardState extends State<DisplayCard> {
               });
             },
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 16.h),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [

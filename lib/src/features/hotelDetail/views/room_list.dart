@@ -7,9 +7,14 @@ import 'package:orb/src/features/home/models/hotel_detail.dart';
 import 'package:orb/src/features/hotelDetail/widgets/room_card.dart';
 
 class RoomList extends StatelessWidget {
-  const RoomList({Key? key, this.rooms = const [], required this.hotelUri})
+  const RoomList(
+      {Key? key,
+      this.rooms = const [],
+      required this.hotelUri,
+      required this.hotel})
       : super(key: key);
   final List<ChooseYourRoom> rooms;
+  final HotelDetailModel hotel;
   final String hotelUri;
   @override
   Widget build(BuildContext context) {
@@ -37,8 +42,8 @@ class RoomList extends StatelessWidget {
                 removeTop: true,
                 child: ListView.separated(
                     shrinkWrap: true,
-                    itemBuilder: (context, index) =>
-                        RoomCard(hotelUri: hotelUri, room: rooms[index]),
+                    itemBuilder: (context, index) => RoomCard(
+                        hotelUri: hotelUri, room: rooms[index], hotel: hotel),
                     separatorBuilder: (context, index) => SizedBox(
                           height: 10.h,
                         ),

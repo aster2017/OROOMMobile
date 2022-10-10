@@ -312,7 +312,8 @@ class _HotelDetailState extends State<HotelDetail> {
                     onTap: () {
                       Get.to(RoomList(
                           hotelUri: hotel!.hotelUri!,
-                          rooms: hotel!.chooseYourRoom!));
+                          rooms: hotel!.chooseYourRoom!,
+                          hotel: hotel!));
                     },
                     child: Container(
                       width: 150.w,

@@ -7,7 +7,7 @@ class APIEndpoints {
 
   static const String registerUrl = "Authenticate/register";
 
-  static const String myProfile = "Authenticate/MyProfile";
+  static const String myProfile = "MyProfile";
 
   static const String booking = "Booking";
 

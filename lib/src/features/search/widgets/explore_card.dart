@@ -4,11 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/constants/colors.dart';
+import 'package:orb/src/features/home/models/hotel_search.dart';
 import 'package:orb/src/features/hotelDetail/views/hotel_detail.dart';
 
 class ExploreCard extends StatefulWidget {
-  const ExploreCard({Key? key}) : super(key: key);
-
+  const ExploreCard({Key? key, this.hotelSearch}) : super(key: key);
+  final HotelSearch? hotelSearch;
   @override
   State<ExploreCard> createState() => _ExploreCardState();
 }
@@ -19,7 +20,11 @@ class _ExploreCardState extends State<ExploreCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(HotelDetail());
+        if (widget.hotelSearch != null) {
+          Get.to(HotelDetail(
+            hotelUri: widget.hotelSearch!.hotelUri ?? "",
+          ));
+        }
       },
       child: Container(
         // width: 175.w,
@@ -89,31 +94,32 @@ class _ExploreCardState extends State<ExploreCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Icon(
-                                FlutterRemix.map_pin_2_fill,
-                                color: secondaryColor,
-                                size: 12.w,
-                              ),
-                              SizedBox(
-                                width: 6.w,
-                              ),
-                              Text(
-                                "Kathmandu",
-                                style: GoogleFonts.mulish(
-                                  color: Color(0xff828282),
-                                  fontSize: 12.sp,
-                                  height: 1.2,
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   children: [
+                          //     Icon(
+                          //       FlutterRemix.map_pin_2_fill,
+                          //       color: secondaryColor,
+                          //       size: 12.w,
+                          //     ),
+                          //     SizedBox(
+                          //       width: 6.w,
+                          //     ),
+                          //     Text(
+                          //      widget.hotelSearch.l "Kathmandu",
+                          //       style: GoogleFonts.mulish(
+                          //         color: Color(0xff828282),
+                          //         fontSize: 12.sp,
+                          //         height: 1.2,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           SizedBox(
                             height: 2.h,
                           ),
                           Text(
-                            "Hotel Mystic Mountain",
+                            widget.hotelSearch?.hotelName ??
+                                "Hotel Mystic Mountain",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.mulish(
@@ -156,7 +162,9 @@ class _ExploreCardState extends State<ExploreCard> {
                                           height: 1.25),
                                     ),
                                     TextSpan(
-                                      text: "1,500",
+                                      text: widget.hotelSearch?.minPrice
+                                              .toString() ??
+                                          "1,500",
                                       style: GoogleFonts.mulish(
                                           fontSize: 12.sp,
                                           color: redColor,

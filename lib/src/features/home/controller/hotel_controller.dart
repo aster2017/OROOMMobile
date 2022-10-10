@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orb/src/core/repository/hotel_repository.dart';
 import 'package:orb/src/features/home/models/hotel_detail.dart';
+import 'package:orb/src/features/home/models/hotel_search.dart';
 
+import '../../search/views/search_result.dart';
 import '../models/hotel.dart';
 
 class HotelController extends GetxController {
@@ -12,6 +14,7 @@ class HotelController extends GetxController {
 
   final Rx<List<Hotel>> featured = Rx<List<Hotel>>([]);
   final Rx<List<Hotel>> popular = Rx<List<Hotel>>([]);
+  final Rx<List<HotelSearch>> search = Rx<List<HotelSearch>>([]);
 
   final HotelRepository hotelRepository = HotelRepository();
   Future<void> getFeatured() async {
@@ -26,6 +29,47 @@ class HotelController extends GetxController {
         featured.refresh();
       } else {
         isFeaturedLoading.value = false;
+        throw "Couldn't Fetch Data.";
+      }
+    } catch (e) {
+      isFeaturedLoading.value = false;
+      Get.showSnackbar(GetSnackBar(
+        title: "Error!",
+        message: e.toString(),
+        duration: Duration(seconds: 2),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        margin: EdgeInsets.all(10),
+        borderRadius: 20,
+      ));
+    }
+  }
+
+  Future<void> getSearch(
+      {required String string,
+      required String location,
+      required double minPrice,
+      required double maxPrice,
+      required String checkIn,
+      required String checkOut}) async {
+    try {
+      final response = await hotelRepository.getSearchHotel(
+        string: string,
+        location: location,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        checkIn: checkIn,
+        checkOut: checkOut,
+      );
+      if (response != null) {
+        search.value.clear();
+        final hotels = hotelSearchFromJson(response.data);
+        for (var element in hotels) {
+          search.value.add(element);
+        }
+        search.refresh();
+        Get.to(SearchResultPage());
+      } else {
         throw "Couldn't Fetch Data.";
       }
     } catch (e) {

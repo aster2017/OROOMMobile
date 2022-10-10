@@ -73,7 +73,7 @@ class AccountPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${authController.user.value?.firstName ?? "Amrit"} ${authController.user.value?.lastName ?? "Acharya"}",
+                          "${authController.user.value?.firstName ?? ""} ${authController.user.value?.lastName ?? ""}",
                           style: GoogleFonts.mulish(
                               fontSize: 18.sp,
                               color: textPrimary,

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:orb/src/core/model/response_model.dart';
 import 'package:orb/src/features/home/models/hotel_detail.dart';
 
 import '../../features/home/models/hotel.dart';
@@ -53,9 +54,40 @@ class HotelRepository {
             "checkIn": checkIn,
             "checkOut": checkOut
           });
-      print(tokenResponse.data);
       return hotelDetailModelFromJson(tokenResponse.data);
     } on DioError catch (e) {
+      if (e.response!.statusCode! >= 500) {
+        throw "Internal Server Error!";
+      } else {
+        throw e.response!.statusMessage!;
+      }
+    } catch (e) {
+      print(e.toString());
+      throw "Something went wrong!";
+    }
+  }
+
+  Future<ResponseModel?> getSearchHotel(
+      {required String string,
+      required String location,
+      required double minPrice,
+      required double maxPrice,
+      required String checkIn,
+      required String checkOut}) async {
+    try {
+      final tokenResponse = await DioService()
+          .client
+          .get(APIEndpoints.searchHotel, queryParameters: {
+        "QuerySearch": string,
+        "location": location,
+        "minPrice": minPrice,
+        "maxPrice": maxPrice,
+        "checkIn": checkIn,
+        "checkOut": checkOut
+      });
+      return responseModelFromJson(tokenResponse.data);
+    } on DioError catch (e) {
+      print(e.response!.data);
       if (e.response!.statusCode! >= 500) {
         throw "Internal Server Error!";
       } else {

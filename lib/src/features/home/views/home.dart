@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final SearchController searchController = Get.put(SearchController());
+  final AuthController authController = Get.put(AuthController());
   final BookingController bookingController = Get.put(BookingController());
   final BottomNavController bottomNavController =
       Get.find<BottomNavController>();
@@ -53,42 +54,52 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        title: Text(
-            "${DateFormat.yMMMMd().format(DateTime.now())} | ${DateFormat.jm().format(DateTime.now())} | Kathmandu",
-            style: GoogleFonts.mulish(
-                color: Color(0xff4f4f4f),
-                fontWeight: FontWeight.w500,
-                fontSize: 12.sp,
-                height: 1.25)),
+        title: StreamBuilder(
+            stream: Stream.periodic(const Duration(seconds: 1)),
+            builder: (context, snapshot) {
+              return Text(
+                  "${DateFormat.yMMMMd().format(DateTime.now())} | ${DateFormat.jm().format(DateTime.now())} | Kathmandu",
+                  style: GoogleFonts.mulish(
+                      color: Color(0xff4f4f4f),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12.sp,
+                      height: 1.25));
+            }),
         actions: [
           Obx(
-            () => GestureDetector(
-              onTap: () {
-                if (authenticationManager.isLogged.value) {
-                  bottomNavController.currentIndex.value = 3;
-                } else {
-                  Get.to(LoginPage());
-                }
-              },
-              child: Padding(
-                padding: EdgeInsets.only(right: 20.w),
-                child: Row(children: [
-                  Icon(
-                    FlutterRemix.account_circle_fill,
-                    color: primaryColor,
-                    size: 20.sp,
+            () => authController.isLoading.value
+                ? CircularProgressIndicator.adaptive(
+                    backgroundColor: secondaryColor,
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      if (authenticationManager.isLogged.value) {
+                        bottomNavController.currentIndex.value = 3;
+                      } else {
+                        Get.to(LoginPage());
+                      }
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 20.w),
+                      child: Row(children: [
+                        Icon(
+                          FlutterRemix.account_circle_fill,
+                          color: primaryColor,
+                          size: 20.sp,
+                        ),
+                        SizedBox(
+                          width: 5.w,
+                        ),
+                        Text(
+                          authenticationManager.isLogged.value
+                              ? authController.user.value!.firstName!
+                              : "Login",
+                          style: GoogleFonts.mulish(
+                              color: textPrimary, fontSize: 16.sp),
+                        ),
+                      ]),
+                    ),
                   ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    authenticationManager.isLogged.value ? "Amrit" : "Login",
-                    style:
-                        GoogleFonts.mulish(color: textPrimary, fontSize: 16.sp),
-                  ),
-                ]),
-              ),
-            ),
           )
         ],
       ),

@@ -43,8 +43,11 @@ class _SplashPageState extends State<SplashPage> {
         Get.offAll(OnBoardingPage());
       });
     } else {
-      Future.delayed(Duration(seconds: 1), () {
-        authenticationManager.checkLoginStatus();
+      Future.delayed(Duration(seconds: 1), () async {
+        final logged = await authenticationManager.checkLoginStatus();
+        if (logged) {
+          authController.getUser();
+        }
         Get.offAll(AppPage());
       });
     }

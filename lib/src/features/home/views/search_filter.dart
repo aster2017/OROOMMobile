@@ -4,8 +4,10 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:orb/src/core/ui/bookingDates.dart';
 import 'package:orb/src/core/ui/textfield.dart';
+import 'package:orb/src/features/home/controller/hotel_controller.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 import 'package:orb/src/features/search/views/search_page.dart';
 
@@ -16,6 +18,8 @@ import '../widgets/flutter_slider.dart';
 
 class SearchFilter extends StatelessWidget {
   final searchController = Get.find<SearchController>();
+  final hotelController = Get.find<HotelController>();
+  TextEditingController searchCtrl = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -49,11 +53,12 @@ class SearchFilter extends StatelessWidget {
                 KTextFormField(
                   label: "Going To",
                   isFilled: true,
-                  keyboardType: TextInputType.none,
+                  keyboardType: TextInputType.text,
                   hint: "Where are you going?",
-                  onTap: () {
-                    showSearch(context: context, delegate: SearchHotel());
-                  },
+                  controller: searchCtrl,
+                  // onTap: () {
+                  //   showSearch(context: context, delegate: SearchHotel());
+                  // },
                   prefix: FlutterRemix.map_pin_2_fill,
                 ),
                 SizedBox(
@@ -159,6 +164,17 @@ class SearchFilter extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
+                        FocusScope.of(context).unfocus();
+                        hotelController.getSearch(
+                          string: searchCtrl.text,
+                          location: "ktm",
+                          minPrice: searchController.roomLowerVal.value,
+                          maxPrice: searchController.roomUpperVal.value,
+                          checkIn: DateFormat("yyyy/MM/dd")
+                              .format(searchController.checkinDate.value),
+                          checkOut: DateFormat("yyyy/MM/dd")
+                              .format(searchController.checkOutDate.value),
+                        );
                         // Get.offAll(SignupPage());
                       },
                       child: Container(

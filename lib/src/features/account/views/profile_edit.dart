@@ -1,12 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/core/ui/textfield.dart';
 
 import '../../../core/constants/colors.dart';
 
-class EditProfile extends StatelessWidget {
+class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
+
+  @override
+  State<EditProfile> createState() => _EditProfileState();
+}
+
+class _EditProfileState extends State<EditProfile> {
+  final AuthController authController = Get.find<AuthController>();
+  final TextEditingController firstname = TextEditingController();
+  final TextEditingController lastname = TextEditingController();
+  final TextEditingController phone = TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    firstname.text = authController.user.value!.firstName ?? "";
+    lastname.text = authController.user.value!.lastName ?? "";
+    phone.text = authController.user.value!.phoneNumber ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +64,7 @@ class EditProfile extends StatelessWidget {
                     KTextFormField(
                       label: "Email",
                       isFilled: true,
+                      enabled: false,
                       hint: "abc@gmail.com",
                     ),
                     KTextFormField(
