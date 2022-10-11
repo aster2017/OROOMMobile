@@ -40,10 +40,9 @@ class AuthController extends GetxController with CacheManager {
       final response = await _apiRepository.obtainToken(
           username: username, password: password);
       if (response != null && response['token'] != null) {
-        _authManager.login(response);
+        await _authManager.login(response);
         userId.value = response['id'];
-        getUser();
-
+        await getUser();
         isLoading.value = false;
         Get.offAll(AppPage());
       } else {
@@ -51,7 +50,6 @@ class AuthController extends GetxController with CacheManager {
         throw "Invalid User Credential";
       }
     } catch (e) {
-      print(e.toString());
       isLoading.value = false;
       Get.showSnackbar(GetSnackBar(
         title: "Error!",
@@ -65,16 +63,14 @@ class AuthController extends GetxController with CacheManager {
     }
   }
 
-  void getUser() async {
+  Future<void> getUser() async {
     try {
-      isLoading.value = true;
       final token = getUserId();
       final res = await _apiRepository.getUser(userId: token!);
-      print(res);
+      print("res $res");
       user.value = UserDetail.fromJson(res!);
-      isLoading.value = false;
     } catch (e) {
-      isLoading.value = false;
+      print(e.toString());
       Get.showSnackbar(GetSnackBar(
         title: "Error!",
         message: e.toString(),
@@ -87,17 +83,58 @@ class AuthController extends GetxController with CacheManager {
     }
   }
 
-  Future<void> registerUser(String username, String password) async {
+  Future<void> sendOtp() async {
+    try {
+      final res = await _apiRepository.sendOtp(email: user.value!.email!);
+    } catch (e) {
+      print(e.toString());
+      Get.showSnackbar(GetSnackBar(
+        title: "Error!",
+        message: e.toString(),
+        duration: Duration(seconds: 2),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        margin: EdgeInsets.all(10),
+        borderRadius: 20,
+      ));
+    }
+  }
+
+  Future<void> verifyOtp(String code) async {
+    try {
+      final res = await _apiRepository.verifyOtp(
+          email: user.value!.email!, token: code);
+    } catch (e) {
+      print(e.toString());
+      Get.showSnackbar(GetSnackBar(
+        title: "Error!",
+        message: e.toString(),
+        duration: Duration(seconds: 2),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        margin: EdgeInsets.all(10),
+        borderRadius: 20,
+      ));
+    }
+  }
+
+  Future<void> registerUser({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String phoneNo,
+  }) async {
     try {
       isLoading.value = true;
       final response = await _apiRepository.registerUser(
-          username: username, password: password);
-      if (response != null) {
-        loginUser(username, password);
-      } else {
-        isLoading.value = false;
-        throw "Invalid User Credential";
-      }
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        phoneNo: phoneNo,
+      );
+      await loginUser(email, password);
     } catch (e) {
       isLoading.value = false;
       Get.showSnackbar(GetSnackBar(

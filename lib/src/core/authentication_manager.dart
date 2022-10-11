@@ -14,7 +14,7 @@ class AuthenticationManager extends GetxController with CacheManager {
     isRegister.value = change;
   }
 
-  void login(Map<String, dynamic> token) async {
+  Future<void> login(Map<String, dynamic> token) async {
     isLogged.value = true;
     await saveToken(token);
   }

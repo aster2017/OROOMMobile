@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Text(
                           authenticationManager.isLogged.value
-                              ? authController.user.value!.firstName!
+                              ? authController.user.value?.firstName ?? ""
                               : "Login",
                           style: GoogleFonts.mulish(
                               color: textPrimary, fontSize: 16.sp),
@@ -190,29 +190,29 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.w600,
                                 height: 1.25),
                           ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              padding: EdgeInsets.only(right: 20.w),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "View All",
-                                    style: GoogleFonts.mulish(
-                                      color: Color(0xff828282),
-                                      fontSize: 14.sp,
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                  Icon(
-                                    FlutterRemix.arrow_right_line,
-                                    color: Color(0xff828282),
-                                    size: 12.w,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
+                          // GestureDetector(
+                          //   onTap: () {},
+                          //   child: Container(
+                          //     padding: EdgeInsets.only(right: 20.w),
+                          //     child: Row(
+                          //       children: [
+                          //         Text(
+                          //           "View All",
+                          //           style: GoogleFonts.mulish(
+                          //             color: Color(0xff828282),
+                          //             fontSize: 14.sp,
+                          //             height: 1.2,
+                          //           ),
+                          //         ),
+                          //         Icon(
+                          //           FlutterRemix.arrow_right_line,
+                          //           color: Color(0xff828282),
+                          //           size: 12.w,
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // )
                         ],
                       ),
                     ],

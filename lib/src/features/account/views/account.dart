@@ -11,6 +11,7 @@ import 'package:orb/src/features/account/views/upcoming_booking.dart';
 import 'package:orb/src/features/account/widgets/logout_sheet.dart';
 import 'package:orb/src/features/account/widgets/profile_menu.dart';
 import 'package:orb/src/features/login/views/login.dart';
+import 'package:orb/src/features/signup/views/otp.dart';
 
 import '../../../core/constants/colors.dart';
 
@@ -81,14 +82,31 @@ class AccountPage extends StatelessWidget {
                               height: 1.25),
                         ),
                         SizedBox(height: 6.h),
-                        Text(
-                          authController.user.value?.email ?? "abc@example.com",
-                          style: GoogleFonts.mulish(
-                              fontSize: 16.sp,
-                              color: Color(0xff4f4f4f),
-                              fontWeight: FontWeight.w400,
-                              height: 1.25),
-                        ),
+                        authController.user.value!.emailConfirmed == true
+                            ? Text(
+                                authController.user.value?.email ??
+                                    "abc@example.com",
+                                style: GoogleFonts.mulish(
+                                    fontSize: 16.sp,
+                                    color: Color(0xff4f4f4f),
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.25),
+                              )
+                            : GestureDetector(
+                                // style: TextButton.styleFrom(
+                                //     padding: EdgeInsets.symmetric(vertical: 0)),
+                                onTap: () {
+                                  Get.to(OtpPage());
+                                },
+                                child: Text(
+                                  "Verify Email",
+                                  style: GoogleFonts.mulish(
+                                      fontSize: 16.sp,
+                                      color: redColor,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.25),
+                                ),
+                              ),
                       ],
                     ),
                   ],

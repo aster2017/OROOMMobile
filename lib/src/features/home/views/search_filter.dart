@@ -6,10 +6,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:orb/src/core/ui/bookingDates.dart';
+import 'package:orb/src/core/ui/ratingDropdown.dart';
 import 'package:orb/src/core/ui/textfield.dart';
 import 'package:orb/src/features/home/controller/hotel_controller.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
-import 'package:orb/src/features/search/views/search_page.dart';
 
 import '../../../core/constants/colors.dart';
 import '../../../core/functions/number_format.dart';
@@ -110,9 +110,9 @@ class SearchFilter extends StatelessWidget {
                   ],
                   tooltip: FlutterSliderTooltip(
                       format: (val) => formatAmount(double.parse(val).toInt())),
-                  max: 100000,
+                  max: 50000,
                   min: 0,
-                  maximumDistance: 100000,
+                  maximumDistance: 50000,
                   rangeSlider: true,
                   trackBar: sliderTrackbar,
                   handlerWidth: 26.w,
@@ -136,12 +136,17 @@ class SearchFilter extends StatelessWidget {
                 SizedBox(
                   height: 12.h,
                 ),
+                RatingPopup(),
+                SizedBox(
+                  height: 24.h,
+                ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
                       onTap: () {
+                        searchController.resetValue();
                         // Get.offAll(LoginPage());
                       },
                       child: Container(

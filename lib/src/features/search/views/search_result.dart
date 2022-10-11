@@ -3,16 +3,19 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:orb/src/features/home/controller/hotel_controller.dart';
 import 'package:orb/src/features/search/views/explore_filter.dart';
 import 'package:orb/src/features/search/widgets/explore_card.dart';
 
 import '../../../core/constants/colors.dart';
+import '../../home/controller/search_controller.dart';
 
 class SearchResultPage extends StatelessWidget {
   SearchResultPage({Key? key}) : super(key: key);
   final hotelController = Get.find<HotelController>();
-
+  final searchController = Get.find<SearchController>();
+  TextEditingController searchCtrl = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,27 +50,73 @@ class SearchResultPage extends StatelessWidget {
                     ],
                     borderRadius: BorderRadius.circular(10.w)),
                 child: Row(
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          FlutterRemix.search_line,
-                          color: primaryColor,
-                          size: 14.w,
-                        ),
-                        SizedBox(
-                          width: 4.w,
-                        ),
-                        Text(
-                          "Find a hotel...",
-                          style: GoogleFonts.mulish(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: primaryColor.withOpacity(.4),
-                              height: 1.25),
-                        ),
-                      ],
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Icon(
+                            FlutterRemix.search_line,
+                            color: primaryColor,
+                            size: 14.w,
+                          ),
+                          SizedBox(
+                            width: 4.w,
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              controller: searchCtrl,
+                              textCapitalization: TextCapitalization.none,
+                              textAlignVertical: TextAlignVertical.center,
+                              style: GoogleFonts.mulish(
+                                  color: textPrimary,
+                                  fontSize: 16.sp,
+                                  height: 1.2),
+                              cursorColor: textPrimary,
+                              decoration: InputDecoration(
+                                counterText: "",
+
+                                border: InputBorder.none,
+                                hintText: "Find a hotel...",
+
+                                hintStyle: GoogleFonts.mulish(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: primaryColor.withOpacity(.4),
+                                    height: 1.25),
+
+                                isDense: true, // Added this
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 20.w, vertical: 14.h),
+                                errorStyle: TextStyle(
+                                  inherit: false,
+                                  height: 0,
+                                  fontSize: 0,
+                                ),
+
+                                enabledBorder: InputBorder.none,
+                              ),
+                              autovalidateMode: AutovalidateMode.disabled,
+                              onFieldSubmitted: (value) {
+                                FocusScope.of(context).unfocus();
+                                hotelController.getSearch(
+                                    string: searchCtrl.text,
+                                    location: "ktm",
+                                    minPrice:
+                                        searchController.roomLowerVal.value,
+                                    maxPrice:
+                                        searchController.roomUpperVal.value,
+                                    checkIn: DateFormat("yyyy/MM/dd").format(
+                                        searchController.checkinDate.value),
+                                    checkOut: DateFormat("yyyy/MM/dd").format(
+                                        searchController.checkOutDate.value),
+                                    isSearched: true);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     IconButton(
                         onPressed: () {
@@ -91,19 +140,21 @@ class SearchResultPage extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
-                  child: ListView.separated(
-                    itemBuilder: ((context, index) => ExploreCard(
-                          hotelSearch: hotelController.search.value[index],
-                        )),
-                    separatorBuilder: ((context, index) => SizedBox(
-                          height: 10.h,
-                        )),
-                    itemCount: hotelController.search.value.length,
-                  )),
+            Obx(
+              () => Expanded(
+                child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+                    child: ListView.separated(
+                      itemBuilder: ((context, index) => ExploreCard(
+                            hotelSearch: hotelController.search.value[index],
+                          )),
+                      separatorBuilder: ((context, index) => SizedBox(
+                            height: 10.h,
+                          )),
+                      itemCount: hotelController.search.value.length,
+                    )),
+              ),
             )
           ]),
         ),

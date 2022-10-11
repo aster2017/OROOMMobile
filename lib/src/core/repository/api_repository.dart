@@ -44,15 +44,60 @@ class ApiRepository {
     }
   }
 
-  Future<Map<String, dynamic>?> registerUser(
-      {required String username, required String password}) async {
+  Future<Map<String, dynamic>?> sendOtp({required String email}) async {
     try {
       final tokenResponse = await DioService()
           .client
-          .post(APIEndpoints.registerUrl, data: {
-        "username": username,
+          .post(APIEndpoints.sendOtp, queryParameters: {"Email": email});
+      return (tokenResponse.data);
+    } on DioError catch (e) {
+      print(e.toString());
+      if (e.response!.statusCode! >= 500) {
+        throw "Internal Server Error!";
+      } else {
+        throw e.response!.statusMessage!;
+      }
+    } catch (e) {
+      print(e.toString());
+      throw "Something went wrong!";
+    }
+  }
+
+  Future<Map<String, dynamic>?> verifyOtp(
+      {required String email, required String token}) async {
+    try {
+      final tokenResponse = await DioService().client.post(
+          APIEndpoints.confirmOtp,
+          queryParameters: {"email": email, "token": token});
+      return (tokenResponse.data);
+    } on DioError catch (e) {
+      print(e.toString());
+      if (e.response!.statusCode! >= 500) {
+        throw "Internal Server Error!";
+      } else {
+        throw e.response!.statusMessage!;
+      }
+    } catch (e) {
+      print(e.toString());
+      throw "Something went wrong!";
+    }
+  }
+
+  Future<Map<String, dynamic>?> registerUser({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String phoneNo,
+  }) async {
+    try {
+      final tokenResponse =
+          await DioService().client.post(APIEndpoints.registerUrl, data: {
+        "email": email,
         "password": password,
-        "user_type": "individual"
+        "firstName": firstName,
+        "lastName": lastName,
+        "phoneNo": phoneNo
       });
 
       if (tokenResponse.statusCode == 200 || tokenResponse.statusCode == 201) {

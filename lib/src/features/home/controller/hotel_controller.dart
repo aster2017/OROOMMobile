@@ -51,7 +51,8 @@ class HotelController extends GetxController {
       required double minPrice,
       required double maxPrice,
       required String checkIn,
-      required String checkOut}) async {
+      required String checkOut,
+      bool isSearched = false}) async {
     try {
       final response = await hotelRepository.getSearchHotel(
         string: string,
@@ -68,7 +69,7 @@ class HotelController extends GetxController {
           search.value.add(element);
         }
         search.refresh();
-        Get.to(SearchResultPage());
+        if (!isSearched) Get.to(SearchResultPage());
       } else {
         throw "Couldn't Fetch Data.";
       }

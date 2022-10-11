@@ -38,12 +38,26 @@ class SignUpForm extends StatelessWidget {
               label: "Full name",
               hint: "Full name",
               prefix: FlutterRemix.user_3_fill,
+              validator: (value) {
+                return value != null || value!.isNotEmpty
+                    ? null
+                    : "Enter valid Name";
+              },
             ),
             KTextFormField(
-                controller: emailCtrl,
-                label: "Email",
-                hint: "Email",
-                prefix: FlutterRemix.mail_fill),
+              controller: emailCtrl,
+              label: "Email",
+              hint: "Email",
+              keyboardType: TextInputType.emailAddress,
+              prefix: FlutterRemix.mail_fill,
+              validator: (value) {
+                return RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(value!)
+                    ? null
+                    : "Enter valid Email";
+              },
+            ),
             Column(
               children: [
                 Container(
@@ -144,6 +158,19 @@ class SignUpForm extends StatelessWidget {
               hint: "Password",
               obscureText: true,
               prefix: FlutterRemix.key_2_line,
+              validator: (value) {
+                RegExp regex = RegExp(
+                    r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[,.*?!@#$&*~_+:;\-/=\"\(\)\{}\[\]<>]).{8,}$');
+                if (value!.isEmpty) {
+                  return 'Please enter password';
+                } else {
+                  if (!regex.hasMatch(value)) {
+                    return "Password length must be 8 characters and at least one uppercase letter, one number and one symbol";
+                  } else {
+                    return null;
+                  }
+                }
+              },
             ),
             KTextFormField(
               controller: confirmPassCtrl,
@@ -152,6 +179,13 @@ class SignUpForm extends StatelessWidget {
               marginBottom: false,
               obscureText: true,
               prefix: FlutterRemix.key_2_line,
+              validator: (value) {
+                if (value == passCtrl.text) {
+                  return null;
+                } else {
+                  return "Password should match.";
+                }
+              },
             )
           ],
         ));

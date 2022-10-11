@@ -7,6 +7,10 @@ class APIEndpoints {
 
   static const String registerUrl = "Authenticate/register";
 
+  static const String sendOtp = "Authenticate/VerifyEmail";
+
+  static const String confirmOtp = "Authenticate/ConfirmEmail";
+
   static const String myProfile = "MyProfile";
 
   static const String booking = "Booking";

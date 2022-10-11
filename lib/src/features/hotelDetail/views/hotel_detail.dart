@@ -276,7 +276,7 @@ class _HotelDetailState extends State<HotelDetail> {
                     description: hotel?.privacy ??
                         '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed venenatis odio arcu. Vestibulum non est, at ultricies nulla lectus nunc, turpis. Pretium nisi etiam pulvinar at fusce pellentesque viverra id. Fermentum ornare id dolor sodales varius etiam sed. ''',
                   ),
-                  ReviewList(),
+                  ReviewList(reviews: hotel?.latestReview ?? []),
                   DisplayCard(
                     title: "Contact Us",
                     description:

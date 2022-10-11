@@ -118,57 +118,58 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         height: 20.h,
                       ),
-                      signInTabs(),
+                      // signInTabs(),
                       SizedBox(
-                        height: 20.h,
+                        height: 40.h,
                       ),
-                      isEmail
-                          ? EmailLogin(
-                              formKey: emailKey,
-                              emailCtrl: emailCtrl,
-                              passCtrl: passCtrl)
-                          : MobileLogin(
-                              formKey: mobileKey,
-                              phoneCtrl: phoneCtrl,
-                              phoneCode: phoneCode,
-                              passCtrl: passCtrl,
-                              onChangedCountry: (val) {
-                                setState(() {
-                                  phoneCode = val!;
-                                });
-                              },
-                            ),
+                      // isEmail
+                      //     ?
+                      EmailLogin(
+                          formKey: emailKey,
+                          emailCtrl: emailCtrl,
+                          passCtrl: passCtrl),
+                      // : MobileLogin(
+                      //     formKey: mobileKey,
+                      //     phoneCtrl: phoneCtrl,
+                      //     phoneCode: phoneCode,
+                      //     passCtrl: passCtrl,
+                      //     onChangedCountry: (val) {
+                      //       setState(() {
+                      //         phoneCode = val!;
+                      //       });
+                      //     },
+                      //   ),
                       SizedBox(
                         height: 8.h,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Row(children: [
-                            SizedBox(
-                              width: 24.sp,
-                              height: 24.sp,
-                              child: Checkbox(
-                                activeColor: primaryColor,
-                                checkColor: whiteColor,
-                                side: BorderSide(color: primaryColor),
-                                value: remember,
-                                onChanged: (value) {
-                                  setState(() {
-                                    remember = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                            SizedBox(
-                              width: 4.w,
-                            ),
-                            Text('Remember Me',
-                                style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: textPrimary,
-                                    fontWeight: FontWeight.normal)),
-                          ]),
+                          // Row(children: [
+                          //   SizedBox(
+                          //     width: 24.sp,
+                          //     height: 24.sp,
+                          //     child: Checkbox(
+                          //       activeColor: primaryColor,
+                          //       checkColor: whiteColor,
+                          //       side: BorderSide(color: primaryColor),
+                          //       value: remember,
+                          //       onChanged: (value) {
+                          //         setState(() {
+                          //           remember = value!;
+                          //         });
+                          //       },
+                          //     ),
+                          //   ),
+                          //   SizedBox(
+                          //     width: 4.w,
+                          //   ),
+                          //   Text('Remember Me',
+                          //       style: TextStyle(
+                          //           fontSize: 14.sp,
+                          //           color: textPrimary,
+                          //           fontWeight: FontWeight.normal)),
+                          // ]),
                           TextButton(
                               onPressed: () {},
                               style: TextButton.styleFrom(
