@@ -32,7 +32,7 @@ class AccountPage extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Obx(() => authenticationManager.isLogged.value
+      body: Obx(() => authenticationManager.isLogged.value == true
           ? loggedInBody()
           : loggedOutBody(context)),
     );

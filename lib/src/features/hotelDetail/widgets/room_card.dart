@@ -3,12 +3,15 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:orb/src/core/authentication_manager.dart';
 import 'package:orb/src/core/constants/colors.dart';
+import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/features/booking/views/booking.dart';
 import 'package:orb/src/features/home/models/hotel_detail.dart';
 import 'package:orb/src/features/hotelDetail/views/hotel_detail.dart';
 import 'package:orb/src/features/hotelDetail/views/room_detail.dart';
 import 'package:orb/src/features/hotelDetail/widgets/swiper.dart';
+import 'package:orb/src/features/login/views/login.dart';
 
 import '../../booking/controller/bookingController.dart';
 
@@ -30,6 +33,8 @@ class RoomCard extends StatefulWidget {
 class _RoomCardState extends State<RoomCard> {
   bool favourite = false;
   final BookingController bookingController = Get.find<BookingController>();
+  final AuthenticationManager authController =
+      Get.find<AuthenticationManager>();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -56,6 +61,12 @@ class _RoomCardState extends State<RoomCard> {
                 child: SizedBox(
                   height: 160.h,
                   child: SwiperWidget(
+                    networkImages: widget.room.roomCategoryImages!.isNotEmpty
+                        ? [
+                            ...widget.room.roomCategoryImages!
+                                .map((e) => e['imageUrl'])
+                          ]
+                        : [],
                     images: const [
                       "assets/images/room1.jpg",
                       "assets/images/room2.jpg",
@@ -198,7 +209,9 @@ class _RoomCardState extends State<RoomCard> {
                       onTap: () {
                         bookingController.selectedRoom.value = widget.room;
                         bookingController.hotel.value = widget.hotelUri;
-                        Get.to(BookPage());
+                        authController.isLogged.value
+                            ? Get.to(BookPage())
+                            : Get.to(LoginPage(isBooking: true));
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 6.w),

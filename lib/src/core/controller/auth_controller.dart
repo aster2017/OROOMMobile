@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orb/src/core/model/user.dart';
 import 'package:orb/src/features/app/views/app.dart';
+import 'package:orb/src/features/booking/views/booking.dart';
 import '../authentication_manager.dart';
 import '../cache_manager.dart';
 import '../repository/api_repository.dart';
@@ -34,7 +35,8 @@ class AuthController extends GetxController with CacheManager {
     _authManager.logOut(delete: true);
   }
 
-  Future<void> loginUser(String username, String password) async {
+  Future<void> loginUser(
+      String username, String password, bool isBooking) async {
     try {
       isLoading.value = true;
       final response = await _apiRepository.obtainToken(
@@ -44,7 +46,7 @@ class AuthController extends GetxController with CacheManager {
         userId.value = response['id'];
         await getUser();
         isLoading.value = false;
-        Get.offAll(AppPage());
+        isBooking ? Get.off(BookPage()) : Get.offAll(AppPage());
       } else {
         isLoading.value = false;
         throw "Invalid User Credential";
@@ -118,13 +120,13 @@ class AuthController extends GetxController with CacheManager {
     }
   }
 
-  Future<void> registerUser({
-    required String email,
-    required String password,
-    required String firstName,
-    required String lastName,
-    required String phoneNo,
-  }) async {
+  Future<void> registerUser(
+      {required String email,
+      required String password,
+      required String firstName,
+      required String lastName,
+      required String phoneNo,
+      bool isBooking = false}) async {
     try {
       isLoading.value = true;
       final response = await _apiRepository.registerUser(
@@ -134,7 +136,41 @@ class AuthController extends GetxController with CacheManager {
         lastName: lastName,
         phoneNo: phoneNo,
       );
-      await loginUser(email, password);
+      await loginUser(email, password, isBooking);
+    } catch (e) {
+      isLoading.value = false;
+      Get.showSnackbar(GetSnackBar(
+        title: "Error!",
+        message: e.toString(),
+        duration: Duration(seconds: 2),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        margin: EdgeInsets.all(10),
+        borderRadius: 20,
+      ));
+    }
+  }
+
+  Future<void> editUser(
+      {required String firstName,
+      required String lastName,
+      required String phoneNo}) async {
+    try {
+      isLoading.value = true;
+      await _apiRepository.editUser(
+          firstName: firstName,
+          lastName: lastName,
+          phoneNo: phoneNo,
+          id: user.value!.id!,
+          userName: user.value!.userName!,
+          email: user.value!.email!,
+          emailConfirmed: user.value!.emailConfirmed!,
+          phoneNumberConfirmed: false,
+          locale: user.value!.locale!,
+          orgId: user.value!.orgId!);
+      await getUser();
+      isLoading.value = false;
+      Get.back();
     } catch (e) {
       isLoading.value = false;
       Get.showSnackbar(GetSnackBar(

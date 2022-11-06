@@ -3,14 +3,19 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:orb/src/features/search/views/explore_filter.dart';
 import 'package:orb/src/features/search/widgets/explore_card.dart';
 
 import '../../../core/constants/colors.dart';
+import '../../home/controller/hotel_controller.dart';
+import '../../home/controller/search_controller.dart';
 
 class ExplorePage extends StatelessWidget {
-  const ExplorePage({Key? key}) : super(key: key);
-
+  ExplorePage({Key? key}) : super(key: key);
+  final hotelController = Get.find<HotelController>();
+  final searchController = Get.find<SearchController>();
+  TextEditingController searchCtrl = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,44 +52,89 @@ class ExplorePage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          FlutterRemix.search_line,
-                          color: primaryColor,
-                          size: 14.w,
-                        ),
-                        SizedBox(
-                          width: 4.w,
-                        ),
-                        Text(
-                          "Find a hotel...",
-                          style: GoogleFonts.mulish(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: primaryColor.withOpacity(.4),
-                              height: 1.25),
-                        ),
-                      ],
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          Get.bottomSheet(
-                            ExploreFilter(),
-                            barrierColor: primaryColor.withOpacity(.1),
-                            isDismissible: false,
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50.w),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Icon(
+                            FlutterRemix.search_line,
+                            color: primaryColor,
+                            size: 14.w,
+                          ),
+                          SizedBox(
+                            width: 4.w,
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              controller: searchCtrl,
+                              textCapitalization: TextCapitalization.none,
+                              textAlignVertical: TextAlignVertical.center,
+                              style: GoogleFonts.mulish(
+                                  color: textPrimary,
+                                  fontSize: 16.sp,
+                                  height: 1.2),
+                              cursorColor: textPrimary,
+                              decoration: InputDecoration(
+                                counterText: "",
+
+                                border: InputBorder.none,
+                                hintText: "Find a hotel...",
+
+                                hintStyle: GoogleFonts.mulish(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: primaryColor.withOpacity(.4),
+                                    height: 1.25),
+
+                                isDense: true, // Added this
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 20.w, vertical: 14.h),
+                                errorStyle: TextStyle(
+                                  inherit: false,
+                                  height: 0,
+                                  fontSize: 0,
+                                ),
+
+                                enabledBorder: InputBorder.none,
+                              ),
+                              autovalidateMode: AutovalidateMode.disabled,
+                              onFieldSubmitted: (value) {
+                                FocusScope.of(context).unfocus();
+                                hotelController.getSearch(
+                                    string: searchCtrl.text,
+                                    location: searchCtrl.text,
+                                    minPrice:
+                                        searchController.roomLowerVal.value,
+                                    maxPrice:
+                                        searchController.roomUpperVal.value,
+                                    checkIn: DateFormat("yyyy/MM/dd").format(
+                                        searchController.checkinDate.value),
+                                    checkOut: DateFormat("yyyy/MM/dd").format(
+                                        searchController.checkOutDate.value),
+                                    isSearched: true);
+                              },
                             ),
-                            enableDrag: true,
-                          );
-                        },
-                        icon: Icon(
-                          FlutterRemix.equalizer_line,
-                          color: primaryColor,
-                          size: 18.sp,
-                        ))
+                          ),
+                        ],
+                      ),
+                    ),
+                    // IconButton(
+                    //     onPressed: () {
+                    //       Get.bottomSheet(
+                    //         ExploreFilter(),
+                    //         barrierColor: primaryColor.withOpacity(.1),
+                    //         isDismissible: false,
+                    //         isScrollControlled: true,
+                    //         shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(50.w),
+                    //         ),
+                    //         enableDrag: true,
+                    //       );
+                    //     },
+                    //     icon: Icon(
+                    //       FlutterRemix.equalizer_line,
+                    //       color: primaryColor,
+                    //       size: 18.sp,
+                    //     ))
                   ],
                 ),
               ),

@@ -115,4 +115,45 @@ class ApiRepository {
       throw "Something went wrong!";
     }
   }
+
+  Future<Map<String, dynamic>?> editUser({
+    required String firstName,
+    required String lastName,
+    required String phoneNo,
+    required String id,
+    required String userName,
+    required String email,
+    required bool emailConfirmed,
+    required bool phoneNumberConfirmed,
+    required String locale,
+    required String orgId,
+  }) async {
+    try {
+      final tokenResponse =
+          await DioService().client.put(APIEndpoints.myProfile, data: {
+        "firstName": firstName,
+        "lastName": lastName,
+        "phoneNumber": phoneNo,
+        "id": id,
+        "userName": userName,
+        "email": email,
+        "emailConfirmed": emailConfirmed,
+        "phoneNumberConfirmed": phoneNumberConfirmed,
+        "locale": locale,
+        "orgId": orgId
+      });
+
+      return (tokenResponse.data);
+    } on DioError catch (e) {
+      print(e.response!.data);
+      if (e.response!.statusCode! >= 500) {
+        throw "Internal Server Error!";
+      } else {
+        throw e.response!.statusMessage!;
+      }
+    } catch (e) {
+      print(e.toString());
+      throw "Something went wrong!";
+    }
+  }
 }

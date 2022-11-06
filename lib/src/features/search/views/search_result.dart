@@ -102,7 +102,7 @@ class SearchResultPage extends StatelessWidget {
                                 FocusScope.of(context).unfocus();
                                 hotelController.getSearch(
                                     string: searchCtrl.text,
-                                    location: "ktm",
+                                    location: searchCtrl.text,
                                     minPrice:
                                         searchController.roomLowerVal.value,
                                     maxPrice:
@@ -118,24 +118,24 @@ class SearchResultPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    IconButton(
-                        onPressed: () {
-                          Get.bottomSheet(
-                            ExploreFilter(),
-                            barrierColor: primaryColor.withOpacity(.1),
-                            isDismissible: false,
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50.w),
-                            ),
-                            enableDrag: true,
-                          );
-                        },
-                        icon: Icon(
-                          FlutterRemix.equalizer_line,
-                          color: primaryColor,
-                          size: 18.sp,
-                        ))
+                    // IconButton(
+                    //     onPressed: () {
+                    //       Get.bottomSheet(
+                    //         ExploreFilter(),
+                    //         barrierColor: primaryColor.withOpacity(.1),
+                    //         isDismissible: false,
+                    //         isScrollControlled: true,
+                    //         shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(50.w),
+                    //         ),
+                    //         enableDrag: true,
+                    //       );
+                    //     },
+                    //     icon: Icon(
+                    //       FlutterRemix.equalizer_line,
+                    //       color: primaryColor,
+                    //       size: 18.sp,
+                    //     ))
                   ],
                 ),
               ),

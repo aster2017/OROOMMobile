@@ -172,7 +172,7 @@ class SearchFilter extends StatelessWidget {
                         FocusScope.of(context).unfocus();
                         hotelController.getSearch(
                           string: searchCtrl.text,
-                          location: "ktm",
+                          location: searchCtrl.text,
                           minPrice: searchController.roomLowerVal.value,
                           maxPrice: searchController.roomUpperVal.value,
                           checkIn: DateFormat("yyyy/MM/dd")

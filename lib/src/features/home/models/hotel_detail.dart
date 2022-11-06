@@ -36,7 +36,7 @@ class HotelDetailModel {
   final double? latitude;
   final String? hotelReview;
   final List<Review>? latestReview;
-  final List<String>? hotelImage;
+  final List<Map<String, dynamic>>? hotelImage;
 
   factory HotelDetailModel.fromJson(Map<String, dynamic> json) =>
       HotelDetailModel(
@@ -55,7 +55,8 @@ class HotelDetailModel {
         hotelReview: json["hotelReview"],
         latestReview: List<Review>.from(
             json["latestReview"].map((x) => Review.fromJson(x))),
-        hotelImage: List<String>.from(json["hotelImage"].map((x) => x)),
+        hotelImage:
+            List<Map<String, dynamic>>.from(json["hotelImage"].map((x) => x)),
       );
 }
 
@@ -84,7 +85,7 @@ class ChooseYourRoom {
   final String? refundableNonRefundable;
   final List<RoomCategoryAmenity>? roomCategoryAmenities;
   final List<Map<String, dynamic>>? roomCategoryFacilities;
-  final List<String>? roomCategoryImages;
+  final List<Map<String, dynamic>>? roomCategoryImages;
 
   factory ChooseYourRoom.fromJson(Map<String, dynamic> json) => ChooseYourRoom(
         roomCategoryId: json["roomCategoryID"],
@@ -100,8 +101,8 @@ class ChooseYourRoom {
                 .map((x) => RoomCategoryAmenity.fromJson(x))),
         roomCategoryFacilities: List<Map<String, dynamic>>.from(
             json["roomCategoryFacilities"].map((x) => x)),
-        roomCategoryImages:
-            List<String>.from(json["roomCategoryImages"].map((x) => x)),
+        roomCategoryImages: List<Map<String, dynamic>>.from(
+            json["roomCategoryImages"].map((x) => x)),
       );
 }
 

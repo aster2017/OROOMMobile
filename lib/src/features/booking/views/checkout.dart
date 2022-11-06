@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:orb/src/features/booking/controller/bookingController.dart';
+import 'package:orb/src/features/booking/views/invoice.dart';
 import 'package:orb/src/features/booking/views/successful.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 
@@ -77,7 +78,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              bookingDetailItem("Email", "abc@gmail.com"),
+                              bookingDetailItem(
+                                  "Email", bookingController.email.value),
                               bookingDetailItem(
                                   "Phone", bookingController.phone.value),
                             ],
@@ -147,7 +149,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       child: Column(
                         children: [
                           detailsRow(
-                              "Heritage Deluxe Room",
+                              "${bookingController.selectedRoom.value!.roomCategory}",
                               "${searchController.rooms.value} Room  x ${bookingController.nights} nights",
                               bookingController.subTotalValue.toString()),
                           // detailsRow("Security Deposit", null, "100.00"),
@@ -210,8 +212,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       child: Center(
                         child: GestureDetector(
-                          onTap: () {
-                            Get.to(SuccessfulPage());
+                          onTap: () async {
+                            await CreatePdf().generateInvoice();
                           },
                           child: Container(
                             width: 170.w,
@@ -224,6 +226,32 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                 "Download Receipt",
                                 style: GoogleFonts.mulish(
                                     color: whiteColor,
+                                    height: 1.4,
+                                    fontSize: 16.sp),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.to(SuccessfulPage());
+                          },
+                          child: Container(
+                            width: 170.w,
+                            height: 44.h,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.w),
+                                border: Border.all(color: primaryColor)),
+                            child: Center(
+                              child: Text(
+                                "Continue",
+                                style: GoogleFonts.mulish(
+                                    color: primaryColor,
                                     height: 1.4,
                                     fontSize: 16.sp),
                               ),

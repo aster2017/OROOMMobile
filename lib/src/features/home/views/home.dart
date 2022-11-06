@@ -9,6 +9,7 @@ import 'package:orb/src/core/constants/colors.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/features/app/controller/bottom_nav.dart';
 import 'package:orb/src/features/booking/controller/bookingController.dart';
+import 'package:orb/src/features/booking/views/invoice.dart';
 import 'package:orb/src/features/home/controller/hotel_controller.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 import 'package:orb/src/features/home/views/search_filter.dart';
@@ -35,22 +36,25 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(
-          width: 25.w,
-          height: 25.w,
-          margin: EdgeInsets.only(left: 20.w),
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    color: Color(0xff00A5F4).withOpacity(.25), blurRadius: 10)
-              ]),
-          child: Center(
-            child: Icon(
-              FlutterRemix.notification_fill,
-              color: primaryColor,
-              size: 16.w,
+        leading: GestureDetector(
+          onTap: () {},
+          child: Container(
+            width: 25.w,
+            height: 25.w,
+            margin: EdgeInsets.only(left: 20.w),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Color(0xff00A5F4).withOpacity(.25), blurRadius: 10)
+                ]),
+            child: Center(
+              child: Icon(
+                FlutterRemix.notification_fill,
+                color: primaryColor,
+                size: 16.w,
+              ),
             ),
           ),
         ),

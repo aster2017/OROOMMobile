@@ -15,7 +15,8 @@ import '../../../core/ui/loading.dart';
 import '../../home/views/home.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({Key? key}) : super(key: key);
+  const SignupPage({Key? key, this.isBooking = false}) : super(key: key);
+  final bool isBooking;
 
   @override
   State<SignupPage> createState() => _SignupPageState();
@@ -144,7 +145,8 @@ class _SignupPageState extends State<SignupPage> {
                                 password: passCtrl.text.trim(),
                                 firstName: fullNameCtrl.text.split(" ").first,
                                 lastName: fullNameCtrl.text.split(" ").last,
-                                phoneNo: phoneCode + phoneCtrl.text);
+                                phoneNo: phoneCode + phoneCtrl.text,
+                                isBooking: widget.isBooking);
                           }
                           // Get.to(OtpPage());
                         },

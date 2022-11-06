@@ -3,6 +3,7 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:orb/src/core/authentication_manager.dart';
 import 'package:orb/src/features/booking/controller/bookingController.dart';
 import 'package:orb/src/features/home/models/hotel_detail.dart';
 
@@ -10,6 +11,7 @@ import '../../../core/constants/colors.dart';
 import '../../booking/views/booking.dart';
 import '../../home/controller/hotel_controller.dart';
 import '../../home/controller/search_controller.dart';
+import '../../login/views/login.dart';
 import '../widgets/display_card.dart';
 import '../widgets/swiper.dart';
 
@@ -24,6 +26,7 @@ class RoomDetail extends StatefulWidget {
 
 final BookingController bookingController = Get.put(BookingController());
 final HotelController hotelController = Get.find<HotelController>();
+final AuthenticationManager authController = Get.find<AuthenticationManager>();
 
 class _RoomDetailState extends State<RoomDetail> {
   DateTime currentDate = DateTime.now();
@@ -54,6 +57,12 @@ class _RoomDetailState extends State<RoomDetail> {
         SizedBox(
           height: 320.h,
           child: SwiperWidget(
+            networkImages: widget.room!.roomCategoryImages!.isNotEmpty
+                ? [
+                    ...widget.room!.roomCategoryImages!
+                        .map((e) => e['imageUrl'])
+                  ]
+                : [],
             images: const [
               "assets/images/room1.jpg",
               "assets/images/room2.jpg",
@@ -150,7 +159,9 @@ class _RoomDetailState extends State<RoomDetail> {
                           bookingController.selectedRoom.value = widget.room;
                           bookingController.hotel.value =
                               widget.hotel.hotelUri!;
-                          Get.to(BookPage());
+                          authController.isLogged.value
+                              ? Get.to(BookPage())
+                              : Get.to(LoginPage(isBooking: true));
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 6.w),

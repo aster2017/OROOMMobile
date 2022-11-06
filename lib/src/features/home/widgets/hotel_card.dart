@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,14 +45,24 @@ class _HotelCardState extends State<HotelCard> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(5.w),
-                    child: Image.asset(
-                      "assets/images/hotel.jpg",
-                      fit: BoxFit.cover,
-                      width: 165.w,
-                      height: 100.h,
-                      color: Colors.black12,
-                      colorBlendMode: BlendMode.darken,
-                    ),
+                    child: widget.hotel.imageUrl == null
+                        ? Image.asset(
+                            "assets/images/hotel.jpg",
+                            fit: BoxFit.cover,
+                            width: 165.w,
+                            height: 100.h,
+                            color: Colors.black12,
+                            colorBlendMode: BlendMode.darken,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl:
+                                "https://astercliqdevstorage.blob.core.windows.net${widget.hotel.imageUrl}",
+                            fit: BoxFit.cover,
+                            width: 165.w,
+                            height: 100.h,
+                            color: Colors.black12,
+                            colorBlendMode: BlendMode.darken,
+                          ),
                   ),
                   Positioned(
                     top: 5.h,

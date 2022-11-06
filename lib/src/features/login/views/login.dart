@@ -15,8 +15,8 @@ import '../../../core/ui/loading.dart';
 import '../../home/views/home.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
-
+  const LoginPage({Key? key, this.isBooking = false}) : super(key: key);
+  final bool isBooking;
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -36,29 +36,31 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: widget.isBooking,
         actions: [
-          GestureDetector(
-            onTap: () {
-              Get.offAll(AppPage());
-            },
-            child: Container(
-              padding: EdgeInsets.only(right: 20.w),
-              child: Row(
-                children: [
-                  Text(
-                    "Proceed without Sing In / Sign Up",
-                    style: GoogleFonts.mulish(color: whiteColor),
+          widget.isBooking
+              ? Container()
+              : GestureDetector(
+                  onTap: () {
+                    Get.offAll(AppPage());
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(right: 20.w),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Proceed without Sing In / Sign Up",
+                          style: GoogleFonts.mulish(color: whiteColor),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: whiteColor,
+                          size: 12.w,
+                        ),
+                      ],
+                    ),
                   ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: whiteColor,
-                    size: 12.w,
-                  ),
-                ],
-              ),
-            ),
-          )
+                )
         ],
       ),
       backgroundColor: primaryColor,
@@ -193,7 +195,9 @@ class _LoginPageState extends State<LoginPage> {
                           if (emailKey.currentState?.validate() ?? false) {
                             FocusScope.of(context).unfocus();
                             await authController.loginUser(
-                                emailCtrl.text.trim(), passCtrl.text.trim());
+                                emailCtrl.text.trim(),
+                                passCtrl.text.trim(),
+                                widget.isBooking);
                           }
                         },
                         child: Container(
@@ -229,7 +233,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.offAll(SignupPage());
+                              Get.offAll(SignupPage(
+                                isBooking: widget.isBooking,
+                              ));
                             },
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.zero,

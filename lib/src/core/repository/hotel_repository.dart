@@ -54,6 +54,7 @@ class HotelRepository {
             "checkIn": checkIn,
             "checkOut": checkOut
           });
+      print(tokenResponse.data);
       return hotelDetailModelFromJson(tokenResponse.data);
     } on DioError catch (e) {
       if (e.response!.statusCode! >= 500) {
@@ -85,6 +86,7 @@ class HotelRepository {
         "checkIn": checkIn,
         "checkOut": checkOut
       });
+
       return responseModelFromJson(tokenResponse.data);
     } on DioError catch (e) {
       print(e.response!.data);

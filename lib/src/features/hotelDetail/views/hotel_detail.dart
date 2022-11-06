@@ -91,6 +91,10 @@ class _HotelDetailState extends State<HotelDetail> {
         SizedBox(
           height: 320.h,
           child: SwiperWidget(
+            // networkImages:[]
+            networkImages: hotel == null || hotel!.hotelImage!.isEmpty
+                ? []
+                : [...hotel!.hotelImage!.map((e) => e['imageUrl'])],
             images: const [
               "assets/images/hotel.jpg",
               "assets/images/hotel1.jpg",
@@ -277,11 +281,11 @@ class _HotelDetailState extends State<HotelDetail> {
                         '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed venenatis odio arcu. Vestibulum non est, at ultricies nulla lectus nunc, turpis. Pretium nisi etiam pulvinar at fusce pellentesque viverra id. Fermentum ornare id dolor sodales varius etiam sed. ''',
                   ),
                   ReviewList(reviews: hotel?.latestReview ?? []),
-                  DisplayCard(
-                    title: "Contact Us",
-                    description:
-                        '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed venenatis odio arcu. Vestibulum non est, at ultricies nulla lectus nunc, turpis. Pretium nisi etiam pulvinar at fusce pellentesque viverra id. Fermentum ornare id dolor sodales varius etiam sed. ''',
-                  ),
+                  // DisplayCard(
+                  //   title: "Contact Us",
+                  //   description:
+                  //       '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed venenatis odio arcu. Vestibulum non est, at ultricies nulla lectus nunc, turpis. Pretium nisi etiam pulvinar at fusce pellentesque viverra id. Fermentum ornare id dolor sodales varius etiam sed. ''',
+                  // ),
                 ],
               ),
             ),
@@ -301,7 +305,7 @@ class _HotelDetailState extends State<HotelDetail> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Text(
-                    "July 31 - August 02",
+                    "${DateFormat.MMMMd().format(searchController.checkinDate.value)} - ${DateFormat.MMMd().format(searchController.checkOutDate.value)}",
                     style: GoogleFonts.mulish(
                         fontSize: 14.sp,
                         color: textPrimary,
