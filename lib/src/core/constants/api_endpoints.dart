@@ -13,6 +13,8 @@ class APIEndpoints {
 
   static const String myProfile = "MyProfile";
 
+  static const String myBooking = "MyBooking";
+
   static const String booking = "Booking";
 
   static const String searchHotel = "SearchHotel";

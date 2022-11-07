@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/authentication_manager.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
+import 'package:orb/src/features/account/controller/myBooking.dart';
 import 'package:orb/src/features/account/views/profile_edit.dart';
 import 'package:orb/src/features/account/views/settings.dart';
 import 'package:orb/src/features/account/views/upcoming_booking.dart';
@@ -20,6 +21,7 @@ class AccountPage extends StatelessWidget {
   AuthenticationManager authenticationManager =
       Get.find<AuthenticationManager>();
   AuthController authController = Get.find<AuthController>();
+  MyBookingController myBookingController = Get.find<MyBookingController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,6 +135,7 @@ class AccountPage extends StatelessWidget {
               ProfileMenu(
                 title: "Upcoming Booking",
                 onTap: () {
+                  myBookingController.getBookings();
                   Get.to(UpcomingBooking());
                 },
                 icon: FlutterRemix.suitcase_line,

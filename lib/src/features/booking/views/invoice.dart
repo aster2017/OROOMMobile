@@ -239,8 +239,8 @@ class CreatePdf {
     final PdfGridRow row = grid.rows.add();
     row.cells[0].value = productId;
     row.cells[1].value = productName;
-    row.cells[2].value = price.toString();
-    row.cells[3].value = quantity.toString();
+    row.cells[2].value = quantity.toString();
+    row.cells[3].value = price.toString();
     row.cells[4].value = total.toString();
   }
 

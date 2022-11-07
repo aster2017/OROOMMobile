@@ -74,7 +74,7 @@ class BookingDatesRow extends StatelessWidget {
             Container(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Check In",
+                "Check Out",
                 style: GoogleFonts.mulish(
                     color: textPrimary,
                     fontWeight: FontWeight.w500,
