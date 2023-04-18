@@ -75,7 +75,7 @@ class _DisplayCardState extends State<DisplayCard> {
                             "p": Style(
                                 color: Colors.black,
                                 fontSize: FontSize(16.sp),
-                                fontFamily: "mukta"),
+                                fontFamily: "mulish"),
                             "img": Style(width: Width(280.w))
                           },
                           //   style: GoogleFonts.mukta(
