@@ -33,13 +33,34 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  google_fonts: ^3.0.1
+  google_fonts: ^4.0.3
   get: ^4.6.5
   url_launcher: ^6.1.5
   flutter_screenutil: ^5.5.3+2
   flutter_remix: ^0.0.3
   intl: ^0.17.0
-  country_code_picker: ^2.0.2
+  country_code_picker: ^3.0.0
+  another_xlider: ^1.1.2
+  custom_pop_up_menu: ^1.2.4
+  dio: ^5.0.3
+  get_storage: ^2.0.3
+  shimmer: ^2.0.0
+  khalti_flutter: ^2.1.0
+  cached_network_image: ^3.2.1
+  syncfusion_flutter_pdf: ^20.3.52
+  open_file: ^3.2.1
+  phone_number: ^1.0.0
+  font_awesome_flutter: ^10.3.0
+  flutter_rating_bar: ^4.0.1
+  esewa_flutter_sdk:
+    path: ./esewa_flutter_sdk
+  flutter_html: ^3.0.0-alpha.1
+
+dependency_overrides:
+  modal_bottom_sheet:
+    git:
+      url: https://github.com/danReynolds/modal_bottom_sheet.git
+      path: modal_bottom_sheet
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +86,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/icons/
+    - assets/gifs/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

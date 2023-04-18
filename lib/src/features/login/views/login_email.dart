@@ -20,6 +20,7 @@ class EmailLogin extends StatelessWidget {
           children: [
             KTextFormField(
               controller: emailCtrl,
+              keyboardType: TextInputType.emailAddress,
               label: "Email",
               hint: "youremailaddress@example.com",
               prefix: FlutterRemix.mail_fill,

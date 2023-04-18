@@ -58,6 +58,7 @@ class MobileLogin extends StatelessWidget {
                             dialogBackgroundColor:
                                 Theme.of(context).scaffoldBackgroundColor,
                             onChanged: (value) {
+                              print(value.flagUri);
                               onChangedCountry.call(value.dialCode);
                             },
                             builder: (countryCode) {
@@ -126,6 +127,7 @@ class MobileLogin extends StatelessWidget {
               label: "Password",
               hint: "Password",
               marginBottom: false,
+              obscureText: true,
               prefix: FlutterRemix.key_2_line,
             )
           ],

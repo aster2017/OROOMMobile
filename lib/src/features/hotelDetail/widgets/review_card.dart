@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,14 +9,13 @@ import '../../../core/constants/colors.dart';
 class ReviewCard extends StatelessWidget {
   const ReviewCard(
       {Key? key,
-      required this.image,
       required this.name,
       required this.rating,
       required this.date,
       required this.description})
       : super(key: key);
-  final String image, name, date, description;
-  final int rating;
+  final String name, date, description;
+  final double rating;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +27,10 @@ class ReviewCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CircleAvatar(
-            radius: 18.w,
-            backgroundImage: AssetImage(image),
+          Icon(
+            FlutterRemix.account_circle_fill,
+            color: primaryColor,
+            size: 36.sp,
           ),
           SizedBox(
             width: 6.w,
@@ -72,14 +73,21 @@ class ReviewCard extends StatelessWidget {
                 SizedBox(
                   height: 6.h,
                 ),
-                Row(
-                  children: [
-                    ...[1, 2, 3, 4, 5].map((e) => Icon(
-                          FlutterRemix.star_fill,
-                          size: 10.w,
-                          color: e == 5 ? Color(0xffbdbdbd) : Color(0xfff2c94c),
-                        ))
-                  ],
+                RatingBar.builder(
+                  ignoreGestures: false,
+                  itemSize: 20.sp,
+                  initialRating: rating,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  unratedColor: Color(0xffbdbdbd),
+                  itemCount: 5,
+                  itemPadding: EdgeInsets.only(right: 1),
+                  itemBuilder: (context, _) => Icon(
+                    FlutterRemix.star_fill,
+                    color: Color(0xfff2c94c),
+                  ),
+                  onRatingUpdate: (val) {},
                 ),
                 SizedBox(
                   height: 8.h,

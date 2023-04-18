@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/ui/footer.dart';
+import 'package:orb/src/core/ui/logo.dart';
+import 'package:orb/src/features/app/views/app.dart';
 import 'package:orb/src/features/login/views/login.dart';
 import 'package:orb/src/features/signup/views/singup_form.dart';
 
@@ -84,15 +86,7 @@ class _OtpPageState extends State<OtpPage> {
           SizedBox(
             height: 10.h,
           ),
-          Center(
-            child: Text(
-              "LOGO HERE",
-              style: GoogleFonts.mulish(
-                  color: whiteColor,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24.sp),
-            ),
-          ),
+          Center(child: LogoWidget()),
           SizedBox(
             height: 80.h,
           ),
@@ -149,7 +143,7 @@ class _OtpPageState extends State<OtpPage> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(HomePage());
+                                  Get.to(AppPage());
                                 },
                                 child: Container(
                                   width: 150.w,

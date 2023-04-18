@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,6 +28,8 @@ class KTextFormField extends StatefulWidget {
   final VoidCallback? onTap;
   final bool showError;
   final bool? autofocus;
+  final bool isFilled;
+  final List<TextInputFormatter>? inputFormatter;
   const KTextFormField(
       {Key? key,
       this.validator,
@@ -49,7 +52,9 @@ class KTextFormField extends StatefulWidget {
       this.onTap,
       this.sufixIcon,
       this.autofocus,
-      this.showError = true})
+      this.inputFormatter,
+      this.showError = true,
+      this.isFilled = false})
       : super(key: key);
 
   @override
@@ -70,7 +75,7 @@ class _KTextFormFieldState extends State<KTextFormField> {
   Widget build(BuildContext context) {
     return Container(
       margin:
-          widget.marginBottom ? EdgeInsets.only(bottom: 16.h) : EdgeInsets.zero,
+          widget.marginBottom ? EdgeInsets.only(bottom: 10.h) : EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         // mainAxisSize: MainAxisSize.,
@@ -138,12 +143,26 @@ class _KTextFormFieldState extends State<KTextFormField> {
             style: GoogleFonts.mulish(
                 color: textPrimary, fontSize: 16.sp, height: 1.2),
             cursorColor: textPrimary,
+            inputFormatters: widget.inputFormatter,
             decoration: InputDecoration(
               counterText: "",
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.h),
-                  borderSide: BorderSide(color: textPrimary)),
+
+              border: widget.isFilled
+                  ? OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: Colors.transparent))
+                  : OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: textPrimary)),
               hintText: widget.hint,
+              focusedBorder: widget.isFilled
+                  ? OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: Colors.transparent))
+                  : OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: textPrimary)),
+
               hintStyle: GoogleFonts.mulish(
                   color: Color(0xff828282), fontSize: 12.sp, height: 1.2),
 
@@ -154,6 +173,9 @@ class _KTextFormFieldState extends State<KTextFormField> {
                       size: 18.w,
                     )
                   : null,
+              filled: widget.isFilled,
+
+              fillColor: Color(0xff0A85B4).withOpacity(.1),
               isDense: true, // Added this
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
@@ -188,9 +210,13 @@ class _KTextFormFieldState extends State<KTextFormField> {
                               : null
                       : null),
 
-              enabledBorder: (interacted && errorText == null)
-                  ? Theme.of(context).inputDecorationTheme.focusedBorder
-                  : null,
+              enabledBorder: widget.isFilled
+                  ? OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: Colors.transparent))
+                  : OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.h),
+                      borderSide: BorderSide(color: textPrimary)),
             ),
             validator: (value) {
               if (widget.validator != null) {
@@ -232,29 +258,33 @@ class _KTextFormFieldState extends State<KTextFormField> {
                   ? Column(
                       children: [
                         SizedBox(
-                          height: 4.h,
+                          height: 2.h,
                         ),
                         Row(
                           children: [
                             Icon(Icons.error_outline_rounded,
-                                size: 14, color: redColor),
+                                size: 12.sp, color: redColor),
                             SizedBox(
                               width: 5,
                             ),
-                            Text(
-                              errorText ?? "",
-                              textAlign: TextAlign.end,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12.0,
-                                  height: 1,
-                                  color: redColor),
+                            Expanded(
+                              child: Text(
+                                errorText ?? "",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    height: 1,
+                                    color: redColor),
+                              ),
                             ),
                           ],
                         ),
                       ],
                     )
-                  : Container()
+                  : SizedBox(
+                      height: 12.sp,
+                    )
               : Container()
         ],
       ),
