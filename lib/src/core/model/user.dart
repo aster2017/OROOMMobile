@@ -7,21 +7,24 @@ import 'dart:convert';
 UserDetail userDetailFromJson(String str) =>
     UserDetail.fromJson(json.decode(str));
 
-String userDetailToJson(UserDetail data) => json.encode(data.toJson());
-
 class UserDetail {
-  UserDetail({
-    this.id,
-    this.userName,
-    this.email,
-    this.emailConfirmed,
-    this.phoneNumber,
-    this.phoneNumberConfirmed,
-    this.firstName,
-    this.lastName,
-    this.locale,
-    this.orgId,
-  });
+  UserDetail(
+      {this.id,
+      this.userName,
+      this.email,
+      this.emailConfirmed,
+      this.phoneNumber,
+      this.phoneNumberConfirmed,
+      this.firstName,
+      this.lastName,
+      this.locale,
+      this.orgId,
+      this.countryID,
+      this.stateID,
+      this.cityID,
+      this.address1,
+      this.loyaltyPoint,
+      this.loyaltyPointAmount});
 
   final String? id;
   final String? userName;
@@ -32,7 +35,13 @@ class UserDetail {
   final String? firstName;
   final String? lastName;
   final String? locale;
+  final String? countryID;
+  final String? stateID;
+  final String? cityID;
+  final String? address1;
   final String? orgId;
+  final double? loyaltyPointAmount;
+  final double? loyaltyPoint;
 
   factory UserDetail.fromJson(Map<String, dynamic> json) => UserDetail(
         id: json["id"],
@@ -45,18 +54,12 @@ class UserDetail {
         lastName: json["lastName"],
         locale: json["locale"],
         orgId: json["orgId"],
+        countryID: json['countryID'],
+        stateID: json['stateID'],
+        cityID: json['cityID'],
+        address1: json['address1'],
+        loyaltyPointAmount:
+            double.tryParse(json["loyaltyPointAmount"]?.toString() ?? "0"),
+        loyaltyPoint: double.tryParse(json["loyaltyPoint"]?.toString() ?? "0"),
       );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "userName": userName,
-        "email": email,
-        "emailConfirmed": emailConfirmed,
-        "phoneNumber": phoneNumber,
-        "phoneNumberConfirmed": phoneNumberConfirmed,
-        "firstName": firstName,
-        "lastName": lastName,
-        "locale": locale,
-        "orgId": orgId,
-      };
 }

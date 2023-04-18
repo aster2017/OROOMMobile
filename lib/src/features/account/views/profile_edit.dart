@@ -20,6 +20,7 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController firstname = TextEditingController();
   final TextEditingController lastname = TextEditingController();
   final TextEditingController phone = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   void initState() {
     // TODO: implement initState
@@ -61,57 +62,77 @@ class _EditProfileState extends State<EditProfile> {
       Expanded(
         child: Padding(
           padding: EdgeInsets.all(20.w),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            KTextFormField(
-              label: "First name",
-              isFilled: true,
-              controller: firstname,
-              hint: "Firstname",
-            ),
-            KTextFormField(
-              label: "Last name",
-              isFilled: true,
-              controller: lastname,
-              hint: "Lastname",
-            ),
-            KTextFormField(
-              label: "Email",
-              isFilled: true,
-              enabled: false,
-              hint: authController.user.value?.email ?? "",
-            ),
-            KTextFormField(
-              label: "Phone number",
-              isFilled: true,
-              controller: phone,
-              hint: "98 **** ****",
-            ),
-            Expanded(child: Container()),
-            GestureDetector(
-              onTap: () async {
-                await authController.editUser(
-                    firstName: firstname.text,
-                    lastName: lastname.text,
-                    phoneNo: phone.text);
-              },
-              child: Container(
-                width: 170.w,
-                height: 44.h,
-                margin: EdgeInsets.only(bottom: 20.h),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.w),
-                    color: primaryColor),
-                child: Center(
-                  child: Text(
-                    "Update",
-                    style: GoogleFonts.mulish(
-                        color: whiteColor, height: 1.4, fontSize: 16.sp),
+          child: Form(
+            key: formKey,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  KTextFormField(
+                    label: "First name",
+                    isFilled: true,
+                    controller: firstname,
+                    hint: "Firstname",
+                    validator: (value) {
+                      RegExp regex = RegExp(r"^[a-zA-Z]{2,}$");
+                      return regex.hasMatch(value!.trim())
+                          ? null
+                          : "Enter valid First Name";
+                    },
                   ),
-                ),
-              ),
-            )
-          ]),
+                  KTextFormField(
+                    label: "Last name",
+                    isFilled: true,
+                    controller: lastname,
+                    hint: "Lastname",
+                    validator: (value) {
+                      RegExp regex = RegExp(r"^[a-zA-Z]{2,}$");
+                      return regex.hasMatch(value!.trim())
+                          ? null
+                          : "Enter valid Last Name";
+                    },
+                  ),
+                  KTextFormField(
+                    label: "Email",
+                    isFilled: true,
+                    enabled: false,
+                    hint: authController.user.value?.email ?? "",
+                  ),
+                  KTextFormField(
+                    label: "Phone number",
+                    isFilled: true,
+                    controller: phone,
+                    hint: "98 **** ****",
+                  ),
+                  Expanded(child: Container()),
+                  GestureDetector(
+                    onTap: () async {
+                      if (!formKey.currentState!.validate()) {
+                        return;
+                      }
+                      FocusScope.of(context).unfocus();
+                      await authController.editUser(
+                          firstName: firstname.text,
+                          lastName: lastname.text,
+                          phoneNo: phone.text);
+                    },
+                    child: Container(
+                      width: 170.w,
+                      height: 44.h,
+                      margin: EdgeInsets.only(bottom: 20.h),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.w),
+                          color: primaryColor),
+                      child: Center(
+                        child: Text(
+                          "Update",
+                          style: GoogleFonts.mulish(
+                              color: whiteColor, height: 1.4, fontSize: 16.sp),
+                        ),
+                      ),
+                    ),
+                  )
+                ]),
+          ),
         ),
       )
     ]);

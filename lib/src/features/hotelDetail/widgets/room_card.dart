@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/authentication_manager.dart';
@@ -49,7 +50,7 @@ class _RoomCardState extends State<RoomCard> {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  color: Color(0xff00A5F4).withOpacity(.25), blurRadius: 10)
+                  color: Color(0xff000000).withOpacity(.15), blurRadius: 10)
             ],
             borderRadius: BorderRadius.circular(10.w),
           ),
@@ -64,7 +65,7 @@ class _RoomCardState extends State<RoomCard> {
                     networkImages: widget.room.roomCategoryImages!.isNotEmpty
                         ? [
                             ...widget.room.roomCategoryImages!
-                                .map((e) => e['imageUrl'])
+                                .map((e) => e.imageUrl!)
                           ]
                         : [],
                     images: const [
@@ -123,32 +124,43 @@ class _RoomCardState extends State<RoomCard> {
                     ),
                     Wrap(
                       children: [
-                        ...widget.room.roomCategoryAmenities!
-                            .map((e) => Container(
-                                  width: 170.w,
-                                  margin: EdgeInsets.symmetric(vertical: 6.h),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        FlutterRemix.hotel_bed_line,
-                                        size: 14.w,
-                                        color: textPrimary,
-                                      ),
-                                      SizedBox(
-                                        width: 4.w,
-                                      ),
-                                      Text(
-                                        e.amenitiesName ?? "",
-                                        style: GoogleFonts.mulish(
-                                            fontSize: 12.sp,
-                                            color: Color(0xff4f4f4f),
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.25),
-                                      )
-                                    ],
-                                  ),
-                                ))
+                        ...widget.room.roomCategoryAmenities!.map((e) =>
+                            widget.room.roomCategoryAmenities!.indexOf(e) > 3
+                                ? Container()
+                                : Container(
+                                    width: 170.w,
+                                    margin: EdgeInsets.symmetric(vertical: 6.h),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        e.amenitiesIcon == null ||
+                                                e.amenitiesIcon!.isEmpty ||
+                                                e.amenitiesIcon! == "string" ||
+                                                e.amenitiesIcon! == "fav-icon"
+                                            ? Icon(
+                                                FlutterRemix.check_line,
+                                                size: 18.w,
+                                              )
+                                            : Icon(
+                                                IconDataSolid(int.parse(
+                                                    '0x${e.amenitiesIcon}')),
+                                                size: 18.w,
+                                              ),
+                                        SizedBox(
+                                          width: 4.w,
+                                        ),
+                                        Text(
+                                          e.amenitiesName ?? "",
+                                          style: GoogleFonts.mulish(
+                                              fontSize: 12.sp,
+                                              color: Color(0xff4f4f4f),
+                                              fontWeight: FontWeight.w400,
+                                              height: 1.25),
+                                        )
+                                      ],
+                                    ),
+                                  ))
                       ],
                     ),
                   ],
@@ -172,7 +184,7 @@ class _RoomCardState extends State<RoomCard> {
                       textAlign: TextAlign.right,
                       text: TextSpan(children: [
                         TextSpan(
-                          text: "NPR ",
+                          text: "RS. ",
                           style: GoogleFonts.mulish(
                               fontSize: 12.sp,
                               color: textPrimary,
@@ -180,13 +192,26 @@ class _RoomCardState extends State<RoomCard> {
                               height: 1.25),
                         ),
                         TextSpan(
-                          text: widget.room.minPrice!.toString(),
+                          text: widget.room.minProductCost!.toString(),
                           style: GoogleFonts.mulish(
                               fontSize: 12.sp,
                               color: redColor,
                               fontWeight: FontWeight.w700,
+                              decoration: widget.room.minPrice! <
+                                      widget.room.minProductCost!
+                                  ? TextDecoration.lineThrough
+                                  : null,
                               height: 1.25),
                         ),
+                        if (widget.room.minPrice! < widget.room.minProductCost!)
+                          TextSpan(
+                            text: widget.room.minPrice!.toString(),
+                            style: GoogleFonts.mulish(
+                                fontSize: 14.sp,
+                                color: secondaryColor,
+                                fontWeight: FontWeight.w700,
+                                height: 1.25),
+                          ),
                         TextSpan(
                           text: " per day\n",
                           style: GoogleFonts.mulish(
@@ -207,11 +232,16 @@ class _RoomCardState extends State<RoomCard> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        bookingController.selectedRoom.value = widget.room;
-                        bookingController.hotel.value = widget.hotelUri;
-                        authController.isLogged.value
-                            ? Get.to(BookPage())
-                            : Get.to(LoginPage(isBooking: true));
+                        if ((widget.room.noOfRooms ?? 0) < 1) {
+                          Get.snackbar("Oops", "No room available now.",
+                              colorText: whiteColor, backgroundColor: redColor);
+                        } else {
+                          bookingController.selectedRoom.value = widget.room;
+                          bookingController.hotel.value = widget.hotelUri;
+                          authController.isLogged.value
+                              ? Get.to(BookPage())
+                              : Get.to(LoginPage(isBooking: true));
+                        }
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 6.w),

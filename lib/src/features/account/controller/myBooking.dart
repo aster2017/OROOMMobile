@@ -11,12 +11,14 @@ class MyBookingController extends GetxController {
   Future<void> getBookings() async {
     try {
       isLoading.value = true;
+      bookings.value.clear();
       final response = await BookingRepository().getMyBookings();
       if (response != null) {
         isLoading.value = false;
         for (var element in response) {
           bookings.value.add(element);
         }
+        bookings.value = [...bookings.value.reversed];
         bookings.refresh();
       } else {
         isLoading.value = false;

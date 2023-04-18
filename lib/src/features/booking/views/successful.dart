@@ -49,7 +49,7 @@ class SuccessfulPage extends StatelessWidget {
                           children: [
                             Image.asset("assets/gifs/success.gif"),
                             Text(
-                              "Successfully Booking!!",
+                              "Successfully Booked!!",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.mulish(
                                   color: textPrimary,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/authentication_manager.dart';
@@ -10,7 +11,6 @@ import 'package:orb/src/features/home/models/hotel_detail.dart';
 import '../../../core/constants/colors.dart';
 import '../../booking/views/booking.dart';
 import '../../home/controller/hotel_controller.dart';
-import '../../home/controller/search_controller.dart';
 import '../../login/views/login.dart';
 import '../widgets/display_card.dart';
 import '../widgets/swiper.dart';
@@ -24,7 +24,7 @@ class RoomDetail extends StatefulWidget {
   State<RoomDetail> createState() => _RoomDetailState();
 }
 
-final BookingController bookingController = Get.put(BookingController());
+final BookingController bookingController = Get.find<BookingController>();
 final HotelController hotelController = Get.find<HotelController>();
 final AuthenticationManager authController = Get.find<AuthenticationManager>();
 
@@ -58,10 +58,7 @@ class _RoomDetailState extends State<RoomDetail> {
           height: 320.h,
           child: SwiperWidget(
             networkImages: widget.room!.roomCategoryImages!.isNotEmpty
-                ? [
-                    ...widget.room!.roomCategoryImages!
-                        .map((e) => e['imageUrl'])
-                  ]
+                ? [...widget.room!.roomCategoryImages!.map((e) => e.imageUrl!)]
                 : [],
             images: const [
               "assets/images/room1.jpg",
@@ -127,7 +124,7 @@ class _RoomDetailState extends State<RoomDetail> {
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: "NPR ",
+                                    text: "RS. ",
                                     style: GoogleFonts.mulish(
                                         fontSize: 12.sp,
                                         color: textPrimary,
@@ -135,13 +132,28 @@ class _RoomDetailState extends State<RoomDetail> {
                                         height: 1.25),
                                   ),
                                   TextSpan(
-                                    text: widget.room!.minPrice!.toString(),
+                                    text:
+                                        widget.room!.minProductCost!.toString(),
                                     style: GoogleFonts.mulish(
                                         fontSize: 12.sp,
                                         color: redColor,
                                         fontWeight: FontWeight.w700,
+                                        decoration: widget.room!.minPrice! <
+                                                widget.room!.minProductCost!
+                                            ? TextDecoration.lineThrough
+                                            : null,
                                         height: 1.25),
                                   ),
+                                  if (widget.room!.minPrice! <
+                                      widget.room!.minProductCost!)
+                                    TextSpan(
+                                      text: widget.room!.minPrice!.toString(),
+                                      style: GoogleFonts.mulish(
+                                          fontSize: 14.sp,
+                                          color: secondaryColor,
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.25),
+                                    ),
                                   TextSpan(
                                     text: " per day",
                                     style: GoogleFonts.mulish(
@@ -156,12 +168,18 @@ class _RoomDetailState extends State<RoomDetail> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          bookingController.selectedRoom.value = widget.room;
-                          bookingController.hotel.value =
-                              widget.hotel.hotelUri!;
-                          authController.isLogged.value
-                              ? Get.to(BookPage())
-                              : Get.to(LoginPage(isBooking: true));
+                          if ((widget.room!.noOfRooms ?? 0) < 1) {
+                            Get.snackbar("Oops", "No room available now.",
+                                colorText: whiteColor,
+                                backgroundColor: redColor);
+                          } else {
+                            bookingController.selectedRoom.value = widget.room;
+                            bookingController.hotel.value =
+                                widget.hotel.hotelUri!;
+                            authController.isLogged.value
+                                ? Get.to(BookPage())
+                                : Get.to(LoginPage(isBooking: true));
+                          }
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 6.w),
@@ -218,32 +236,44 @@ class _RoomDetailState extends State<RoomDetail> {
                       height: 32.h,
                       child: ListView.separated(
                           scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) => Column(
-                                children: [
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                widget.room?.roomCategoryFacilities![index]
+                                                .facilityIcon ==
+                                            null ||
+                                        widget
+                                            .room!
+                                            .roomCategoryFacilities![index]
+                                            .facilityIcon!
+                                            .isEmpty ||
+                                        widget
+                                                .room!
+                                                .roomCategoryFacilities![index]
+                                                .facilityIcon! ==
+                                            "string"
+                                    ? Icon(
+                                        FlutterRemix.check_line,
+                                        size: 18.w,
+                                      )
+                                    : Icon(
+                                        IconDataSolid(int.parse(
+                                            '0x${widget.room?.roomCategoryFacilities![index].facilityIcon}')),
+                                        size: 18.w,
+                                      ),
+                                Text(
                                   widget.room?.roomCategoryFacilities![index]
-                                              ['facilityIcon'] ==
-                                          null
-                                      ? Icon(
-                                          FlutterRemix.restaurant_line,
-                                          size: 18.w,
-                                        )
-                                      : Image.network(
-                                          widget.room?.roomCategoryFacilities![
-                                              index]['facilityIcon'],
-                                          width: 18.w,
-                                        ),
-                                  Text(
-                                    widget.room?.roomCategoryFacilities![index]
-                                            ['facilityName'] ??
-                                        "",
-                                    style: GoogleFonts.mulish(
-                                        fontSize: 10.sp,
-                                        color: Color(0xff4f4f4f),
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.25),
-                                  )
-                                ],
-                              ),
+                                          .facilityName ??
+                                      "",
+                                  style: GoogleFonts.mulish(
+                                      fontSize: 10.sp,
+                                      color: Color(0xff4f4f4f),
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.25),
+                                )
+                              ],
+                            );
+                          },
                           separatorBuilder: (context, index) => SizedBox(
                                 width: 12.w,
                               ),
@@ -254,10 +284,8 @@ class _RoomDetailState extends State<RoomDetail> {
                     height: 14.h,
                   ),
                   DisplayCard(
-                    title: "Description",
-                    description:
-                        '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed venenatis odio arcu. Vestibulum non est, at ultricies nulla lectus nunc, turpis. Pretium nisi etiam pulvinar at fusce pellentesque viverra id. Fermentum ornare id dolor sodales varius etiam sed. ''',
-                  ),
+                      title: "Description",
+                      description: widget.room!.roomCategoryDescription ?? ""),
                   SizedBox(
                     height: 14.h,
                   ),
@@ -280,21 +308,31 @@ class _RoomDetailState extends State<RoomDetail> {
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) => Column(
                                 children: [
-                                  widget.room?.roomCategoryFacilities![index]
-                                              ['facilityIcon'] ==
-                                          null
+                                  widget.room?.roomCategoryAmenities![index]
+                                                  .amenitiesIcon ==
+                                              null ||
+                                          widget
+                                              .room!
+                                              .roomCategoryAmenities![index]
+                                              .amenitiesIcon!
+                                              .isEmpty ||
+                                          widget
+                                                  .room!
+                                                  .roomCategoryAmenities![index]
+                                                  .amenitiesIcon! ==
+                                              "string"
                                       ? Icon(
-                                          FlutterRemix.restaurant_line,
+                                          FlutterRemix.check_line,
                                           size: 18.w,
                                         )
-                                      : Image.network(
-                                          widget.room?.roomCategoryFacilities![
-                                              index]['facilityIcon'],
-                                          width: 18.w,
+                                      : Icon(
+                                          IconDataSolid(int.parse(
+                                              '0x${widget.room?.roomCategoryAmenities![index].amenitiesIcon}')),
+                                          size: 18.w,
                                         ),
                                   Text(
-                                    widget.room?.roomCategoryFacilities![index]
-                                            ['facilityName'] ??
+                                    widget.room?.roomCategoryAmenities![index]
+                                            .amenitiesName ??
                                         "",
                                     style: GoogleFonts.mulish(
                                         fontSize: 10.sp,
@@ -308,8 +346,7 @@ class _RoomDetailState extends State<RoomDetail> {
                                 width: 12.w,
                               ),
                           itemCount:
-                              widget.room?.roomCategoryFacilities?.length ??
-                                  0)),
+                              widget.room?.roomCategoryAmenities?.length ?? 0)),
                 ],
               ),
             ),

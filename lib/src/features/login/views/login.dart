@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/core/ui/footer.dart';
+import 'package:orb/src/core/ui/logo.dart';
 import 'package:orb/src/features/app/views/app.dart';
 import 'package:orb/src/features/login/views/login_email.dart';
 import 'package:orb/src/features/login/views/login_mobile.dart';
@@ -80,15 +81,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(
           height: 10.h,
         ),
-        Center(
-          child: Text(
-            "LOGO HERE",
-            style: GoogleFonts.mulish(
-                color: whiteColor,
-                fontWeight: FontWeight.w700,
-                fontSize: 24.sp),
-          ),
-        ),
+        Center(child: LogoWidget()),
         SizedBox(
           height: 80.h,
         ),
@@ -144,49 +137,49 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         height: 8.h,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          // Row(children: [
-                          //   SizedBox(
-                          //     width: 24.sp,
-                          //     height: 24.sp,
-                          //     child: Checkbox(
-                          //       activeColor: primaryColor,
-                          //       checkColor: whiteColor,
-                          //       side: BorderSide(color: primaryColor),
-                          //       value: remember,
-                          //       onChanged: (value) {
-                          //         setState(() {
-                          //           remember = value!;
-                          //         });
-                          //       },
-                          //     ),
-                          //   ),
-                          //   SizedBox(
-                          //     width: 4.w,
-                          //   ),
-                          //   Text('Remember Me',
-                          //       style: TextStyle(
-                          //           fontSize: 14.sp,
-                          //           color: textPrimary,
-                          //           fontWeight: FontWeight.normal)),
-                          // ]),
-                          TextButton(
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  alignment: Alignment.centerRight),
-                              child: Text(
-                                "Forgot Password ?",
-                                style: GoogleFonts.workSans(
-                                  color: primaryColor,
-                                ),
-                              ))
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.end,
+                      //   children: [
+                      // Row(children: [
+                      //   SizedBox(
+                      //     width: 24.sp,
+                      //     height: 24.sp,
+                      //     child: Checkbox(
+                      //       activeColor: primaryColor,
+                      //       checkColor: whiteColor,
+                      //       side: BorderSide(color: primaryColor),
+                      //       value: remember,
+                      //       onChanged: (value) {
+                      //         setState(() {
+                      //           remember = value!;
+                      //         });
+                      //       },
+                      //     ),
+                      //   ),
+                      //   SizedBox(
+                      //     width: 4.w,
+                      //   ),
+                      //   Text('Remember Me',
+                      //       style: TextStyle(
+                      //           fontSize: 14.sp,
+                      //           color: textPrimary,
+                      //           fontWeight: FontWeight.normal)),
+                      // ]),
+                      // TextButton(
+                      //     onPressed: () {},
+                      //     style: TextButton.styleFrom(
+                      //         padding: EdgeInsets.zero,
+                      //         tapTargetSize:
+                      //             MaterialTapTargetSize.shrinkWrap,
+                      //         alignment: Alignment.centerRight),
+                      //     child: Text(
+                      //       "Forgot Password ?",
+                      //       style: GoogleFonts.workSans(
+                      //         color: primaryColor,
+                      //       ),
+                      //     ))
+                      //   ],
+                      // ),
                       SizedBox(
                         height: 50.h,
                       ),

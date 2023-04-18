@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:orb/src/features/account/data/model/myBooking.dart';
 import 'package:orb/src/features/booking/controller/bookingController.dart';
 import 'package:orb/src/features/booking/views/invoice.dart';
 import 'package:orb/src/features/booking/views/successful.dart';
@@ -11,8 +12,10 @@ import 'package:orb/src/features/home/controller/search_controller.dart';
 import '../../../core/constants/colors.dart';
 
 class CheckOutPage extends StatefulWidget {
-  const CheckOutPage({Key? key}) : super(key: key);
-
+  const CheckOutPage({Key? key, this.paid = false, this.myBookingModel})
+      : super(key: key);
+  final bool paid;
+  final MyBookingModel? myBookingModel;
   @override
   State<CheckOutPage> createState() => _CheckOutPageState();
 }
@@ -20,6 +23,14 @@ class CheckOutPage extends StatefulWidget {
 class _CheckOutPageState extends State<CheckOutPage> {
   final BookingController bookingController = Get.find<BookingController>();
   final SearchController searchController = Get.find<SearchController>();
+  @override
+  void initState() {
+    if (widget.myBookingModel != null) {
+      bookingController.feeOrDiscountBooked(widget.myBookingModel!);
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,9 +78,16 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              bookingDetailItem("Booking ID", "##########"),
                               bookingDetailItem(
-                                  "Name", bookingController.fullName.value),
+                                  "Booking ID",
+                                  widget.myBookingModel != null
+                                      ? widget.myBookingModel!.bookingNumber!
+                                      : bookingController.bookingNumber.value),
+                              bookingDetailItem(
+                                  "Name",
+                                  widget.myBookingModel != null
+                                      ? widget.myBookingModel!.firstname!
+                                      : bookingController.fullName.value),
                             ],
                           ),
                           SizedBox(
@@ -79,9 +97,15 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               bookingDetailItem(
-                                  "Email", bookingController.email.value),
+                                  "Email",
+                                  widget.myBookingModel != null
+                                      ? widget.myBookingModel!.emailId!
+                                      : bookingController.email.value),
                               bookingDetailItem(
-                                  "Phone", bookingController.phone.value),
+                                  "Phone",
+                                  widget.myBookingModel != null
+                                      ? widget.myBookingModel!.mobileNo!
+                                      : bookingController.phone.value),
                             ],
                           ),
                           SizedBox(
@@ -92,12 +116,18 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             children: [
                               bookingDetailItem(
                                   "Check In",
-                                  DateFormat.yMMMd().format(
-                                      searchController.checkinDate.value)),
+                                  DateFormat.yMMMd().format(widget
+                                              .myBookingModel !=
+                                          null
+                                      ? widget.myBookingModel!.bookingDateFrom!
+                                      : searchController.checkinDate.value)),
                               bookingDetailItem(
                                   "Check Out",
-                                  DateFormat.yMMMd().format(
-                                      searchController.checkOutDate.value)),
+                                  DateFormat.yMMMd().format(widget
+                                              .myBookingModel !=
+                                          null
+                                      ? widget.myBookingModel!.bookingDateTo!
+                                      : searchController.checkOutDate.value)),
                             ],
                           ),
                           SizedBox(
@@ -107,9 +137,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               bookingDetailItem("Nights",
-                                  "${bookingController.nights} Nights"),
+                                  "${widget.myBookingModel != null ? bookingController.nights : bookingController.night.value} Nights"),
                               bookingDetailItem("Room",
-                                  "${searchController.rooms.value} Rooms"),
+                                  "${widget.myBookingModel != null ? widget.myBookingModel!.noOfRooms! : searchController.rooms.value} Rooms"),
                             ],
                           ),
                           SizedBox(
@@ -119,7 +149,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               bookingDetailItem("Guest",
-                                  "${searchController.adults.value} Adults ${searchController.childrens.value} Children"),
+                                  "${widget.myBookingModel != null ? widget.myBookingModel!.noOfAdults : searchController.adults.value} Adults ${widget.myBookingModel != null ? widget.myBookingModel!.childAges!.split(",").length : searchController.childrens.value} Children"),
                             ],
                           ),
                         ],
@@ -149,61 +179,83 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       child: Column(
                         children: [
                           detailsRow(
-                              "${bookingController.selectedRoom.value!.roomCategory}",
-                              "${searchController.rooms.value} Room  x ${bookingController.nights} nights",
-                              bookingController.subTotalValue.toString()),
-                          // detailsRow("Security Deposit", null, "100.00"),
-                          detailsRow("10% Service Charge", null,
-                              "${bookingController.extraChrg}"),
-                          detailsRow("13% VAT", null,
-                              "${bookingController.orderTaxValue}"),
-                          detailsRow("Grand Total", null,
-                              "${bookingController.orderTaxValue + bookingController.extraChrg + bookingController.subTotalValue}"),
-                          detailsRow("Amount Paid", null,
-                              "${bookingController.orderTaxValue + bookingController.extraChrg + bookingController.subTotalValue}"),
+                              "${widget.myBookingModel == null ? bookingController.selectedRoom.value!.roomCategory : widget.myBookingModel!.categoryName!}",
+                              "${widget.myBookingModel == null ? searchController.rooms.value : widget.myBookingModel!.noOfRooms} Room  x ${widget.myBookingModel == null ? bookingController.nights : bookingController.night.value} nights",
+                              double.parse((widget.myBookingModel == null
+                                          ? bookingController.subTotalValue
+                                          : widget.myBookingModel!.subTotal)
+                                      .toString())
+                                  .toStringAsFixed(2)),
+                          if (widget.myBookingModel == null)
+                            ...bookingController.feeDiscount.map(
+                              (e) => detailsRow(
+                                  e['title'],
+                                  e['isPercentage']
+                                      ? "${e['percentOrAmount']} %"
+                                      : null,
+                                  "${e['value']}"),
+                            )
+                          else
+                            ...bookingController.feeDiscountBooked.map(
+                              (e) => detailsRow(
+                                  e['title'],
+                                  e['isPercentage']
+                                      ? "${e['percentOrAmount']} %"
+                                      : null,
+                                  "${e['value']}"),
+                            ),
+                          detailsRow(
+                              "Grand Total",
+                              null,
+                              double.parse((widget.myBookingModel == null
+                                          ? bookingController.tempSubTotal.value
+                                          : bookingController
+                                              .tempSubTotalBooked.value)
+                                      .toString())
+                                  .toStringAsFixed(2)),
                           Divider(
                             height: 2,
                             color: Color(0xff4f4f4f),
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.h),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Total Payable Amount",
-                                  style: GoogleFonts.mulish(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 18.sp,
-                                      height: 1.3,
-                                      color: textPrimary),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "NPR ",
-                                      style: GoogleFonts.mulish(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14.sp,
-                                          height: 1.3,
-                                          color: textPrimary),
-                                    ),
-                                    Text(
-                                      "0",
-                                      style: GoogleFonts.mulish(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16.sp,
-                                          height: 1.3,
-                                          color: primaryColor),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: EdgeInsets.symmetric(vertical: 8.h),
+                          //   child: Row(
+                          //     mainAxisSize: MainAxisSize.max,
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     crossAxisAlignment: CrossAxisAlignment.start,
+                          //     children: [
+                          //       Text(
+                          //         "Total Payable Amount",
+                          //         style: GoogleFonts.mulish(
+                          //             fontWeight: FontWeight.w400,
+                          //             fontSize: 18.sp,
+                          //             height: 1.3,
+                          //             color: textPrimary),
+                          //       ),
+                          //       Row(
+                          //         crossAxisAlignment: CrossAxisAlignment.end,
+                          //         children: [
+                          //           Text(
+                          //             "RS. ",
+                          //             style: GoogleFonts.mulish(
+                          //                 fontWeight: FontWeight.w500,
+                          //                 fontSize: 14.sp,
+                          //                 height: 1.3,
+                          //                 color: textPrimary),
+                          //           ),
+                          //           Text(
+                          //             "0.00",
+                          //             style: GoogleFonts.mulish(
+                          //                 fontWeight: FontWeight.w700,
+                          //                 fontSize: 16.sp,
+                          //                 height: 1.3,
+                          //                 color: primaryColor),
+                          //           ),
+                          //         ],
+                          //       )
+                          //     ],
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -213,7 +265,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       child: Center(
                         child: GestureDetector(
                           onTap: () async {
-                            await CreatePdf().generateInvoice();
+                            await CreatePdf(
+                                    myBookingModel: widget.myBookingModel)
+                                .generateInvoice();
                           },
                           child: Container(
                             width: 170.w,
@@ -329,7 +383,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "NPR ",
+                "RS. ",
                 style: GoogleFonts.mulish(
                     fontWeight: FontWeight.w500,
                     fontSize: 14.sp,

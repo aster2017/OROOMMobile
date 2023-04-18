@@ -37,8 +37,8 @@ class HotelSearch {
   final String? roomCategoryDescription;
   final String? roomCategoryImageUrl;
   final String? roomCategoryHeaderImage;
-  final int? minPrice;
-  final int? minProductCost;
+  final double? minPrice;
+  final double? minProductCost;
   final int? noOfRooms;
   final String? hotelReview;
   final String? refundableNonRefundable;
@@ -53,8 +53,9 @@ class HotelSearch {
         roomCategoryDescription: json["roomCategoryDescription"],
         roomCategoryImageUrl: json["roomCategoryImageUrl"],
         roomCategoryHeaderImage: json["roomCategoryHeaderImage"],
-        minPrice: json["minPrice"],
-        minProductCost: json["minProductCost"],
+        minPrice: double.tryParse(json["minPrice"]?.toString() ?? "0"),
+        minProductCost:
+            double.tryParse(json["minProductCost"]?.toString() ?? "0"),
         noOfRooms: json["noOfRooms"],
         hotelReview: json["hotelReview"],
         refundableNonRefundable: json["refundableNonRefundable"],

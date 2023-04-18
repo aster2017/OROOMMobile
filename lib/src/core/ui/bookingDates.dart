@@ -19,10 +19,17 @@ class BookingDatesRow extends StatelessWidget {
         context: context,
         initialDate: (isFrom
             ? searchController.checkinDate.value
-            : searchController.checkOutDate.value),
+            : searchController.checkOutDate.value
+                        .difference(searchController.checkinDate.value)
+                        .inDays <
+                    1
+                ? searchController.checkinDate.value.add(Duration(days: 1))
+                : searchController.checkOutDate.value),
         fieldHintText: isFrom ? "Check In Date" : "Check Out Date",
         initialDatePickerMode: DatePickerMode.day,
-        firstDate: isFrom ? currentDate : searchController.checkinDate.value,
+        firstDate: isFrom
+            ? currentDate
+            : searchController.checkinDate.value.add(Duration(days: 1)),
         lastDate: currentDate.add(Duration(days: 365)));
 
     if (picked != null &&
@@ -31,6 +38,9 @@ class BookingDatesRow extends StatelessWidget {
                 ? searchController.checkinDate.value
                 : searchController.checkOutDate.value)) {
       if (isFrom) {
+        if (searchController.checkOutDate.value.difference(picked).inDays < 1) {
+          searchController.checkOutDate.value = picked.add(Duration(days: 1));
+        }
         searchController.checkinDate.value = picked;
       } else {
         searchController.checkOutDate.value = picked;

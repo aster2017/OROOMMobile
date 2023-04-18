@@ -16,7 +16,7 @@ class ApiRepository {
       }
     } on DioError catch (e) {
       if (e.response!.statusCode! >= 500) {
-        throw "Internal Server Error!";
+        throw "Invalid User Credentials";
       } else {
         throw e.response!.statusMessage!;
       }
@@ -30,9 +30,10 @@ class ApiRepository {
     try {
       final tokenResponse =
           await DioService().client.post("${APIEndpoints.myProfile}/$userId");
+
       return (tokenResponse.data);
     } on DioError catch (e) {
-      print(e.toString());
+      print(e.response!);
       if (e.response!.statusCode! >= 500) {
         throw "Internal Server Error!";
       } else {
@@ -127,6 +128,10 @@ class ApiRepository {
     required bool phoneNumberConfirmed,
     required String locale,
     required String orgId,
+    required String countryID,
+    required String stateID,
+    required String cityID,
+    required String address1,
   }) async {
     try {
       final tokenResponse =
@@ -140,6 +145,10 @@ class ApiRepository {
         "emailConfirmed": emailConfirmed,
         "phoneNumberConfirmed": phoneNumberConfirmed,
         "locale": locale,
+        "countryID": countryID,
+        "stateID": stateID,
+        "cityID": cityID,
+        "address1": address1,
         "orgId": orgId
       });
 

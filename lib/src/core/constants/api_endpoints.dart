@@ -1,7 +1,8 @@
 class APIEndpoints {
-  static const String host = 'https://asterapiorb.azurewebsites.net';
+  static const String host = 'https://bookandflytoursapi.azurewebsites.net';
 
-  static const String baseUrl = 'https://asterapiorb.azurewebsites.net/api/';
+  static const String baseUrl =
+      'https://bookandflytoursapi.azurewebsites.net/api/';
 
   static const String loginUrl = "Authenticate/login";
 
@@ -13,9 +14,11 @@ class APIEndpoints {
 
   static const String myProfile = "MyProfile";
 
-  static const String myBooking = "MyBooking";
+  static const String myBooking = "MyBooking/loyalty";
 
   static const String booking = "Booking";
+  
+  static const String bookingPayment = "Booking/BookingPayment";
 
   static const String searchHotel = "SearchHotel";
 

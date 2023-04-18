@@ -41,9 +41,11 @@ class AuthController extends GetxController with CacheManager {
       isLoading.value = true;
       final response = await _apiRepository.obtainToken(
           username: username, password: password);
+      print(response);
       if (response != null && response['token'] != null) {
         await _authManager.login(response);
-        userId.value = response['id'];
+        userId.value = response['subjectId'];
+
         await getUser();
         isLoading.value = false;
         isBooking ? Get.off(BookPage()) : Get.offAll(AppPage());
@@ -69,7 +71,7 @@ class AuthController extends GetxController with CacheManager {
     try {
       final token = getUserId();
       final res = await _apiRepository.getUser(userId: token!);
-      print("res $res");
+
       user.value = UserDetail.fromJson(res!);
     } catch (e) {
       print(e.toString());
@@ -165,6 +167,10 @@ class AuthController extends GetxController with CacheManager {
           userName: user.value!.userName!,
           email: user.value!.email!,
           emailConfirmed: user.value!.emailConfirmed!,
+          countryID: user.value!.countryID ?? "",
+          stateID: user.value!.stateID ?? "",
+          cityID: user.value!.cityID ?? "",
+          address1: user.value!.address1 ?? "",
           phoneNumberConfirmed: false,
           locale: user.value!.locale!,
           orgId: user.value!.orgId!);

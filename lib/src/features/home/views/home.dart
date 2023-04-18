@@ -7,12 +7,11 @@ import 'package:intl/intl.dart';
 import 'package:orb/src/core/authentication_manager.dart';
 import 'package:orb/src/core/constants/colors.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
-import 'package:orb/src/features/account/controller/myBooking.dart';
 import 'package:orb/src/features/app/controller/bottom_nav.dart';
 import 'package:orb/src/features/booking/controller/bookingController.dart';
-import 'package:orb/src/features/booking/views/invoice.dart';
 import 'package:orb/src/features/home/controller/hotel_controller.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
+import 'package:orb/src/features/home/views/popular_section.dart';
 import 'package:orb/src/features/home/views/search_filter.dart';
 import 'package:orb/src/features/home/widgets/hotel_card.dart';
 import 'package:orb/src/features/login/views/login.dart';
@@ -25,53 +24,68 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final SearchController searchController = Get.put(SearchController());
-  final MyBookingController myBookingController =
-      Get.put(MyBookingController());
-  final AuthController authController = Get.put(AuthController());
-  final BookingController bookingController = Get.put(BookingController());
+  final SearchController searchController = Get.find<SearchController>();
+
+  final AuthController authController = Get.find<AuthController>();
+  final BookingController bookingController = Get.find<BookingController>();
   final BottomNavController bottomNavController =
       Get.find<BottomNavController>();
   final AuthenticationManager authenticationManager =
       Get.find<AuthenticationManager>();
   final HotelController hotelController = Get.find<HotelController>();
   @override
+  void initState() {
+    super.initState();
+    hotelController.getSearch(
+        string: "",
+        location: "",
+        minPrice: searchController.roomLowerVal.value,
+        maxPrice: searchController.roomUpperVal.value,
+        checkIn:
+            DateFormat("yyyy/MM/dd").format(searchController.checkinDate.value),
+        checkOut: DateFormat("yyyy/MM/dd")
+            .format(searchController.checkOutDate.value),
+        isSearched: true);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: 25.w,
-            height: 25.w,
-            margin: EdgeInsets.only(left: 20.w),
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      color: Color(0xff00A5F4).withOpacity(.25), blurRadius: 10)
-                ]),
-            child: Center(
-              child: Icon(
-                FlutterRemix.notification_fill,
-                color: primaryColor,
-                size: 16.w,
-              ),
-            ),
-          ),
-        ),
+        // leading: GestureDetector(
+        //   onTap: () {},
+        //   child: Container(
+        //     width: 25.w,
+        //     height: 25.w,
+        //     margin: EdgeInsets.only(left: 20.w),
+        //     decoration: BoxDecoration(
+        //         shape: BoxShape.circle,
+        //         color: Colors.white,
+        //         boxShadow: [
+        //           BoxShadow(
+        //               color: Color(0xff000000).withOpacity(.15), blurRadius: 10)
+        //         ]),
+        //     child: Center(
+        //       child: Icon(
+        //         FlutterRemix.notification_fill,
+        //         color: primaryColor,
+        //         size: 16.w,
+        //       ),
+        //     ),
+        //   ),
+        // ),
         title: StreamBuilder(
             stream: Stream.periodic(const Duration(seconds: 1)),
             builder: (context, snapshot) {
               return Text(
-                  "${DateFormat.yMMMMd().format(DateTime.now())} | ${DateFormat.jm().format(DateTime.now())} | Kathmandu",
+                  "${DateFormat.yMMMMd().format(DateTime.now())} | ${DateFormat.jm().format(DateTime.now())}",
                   style: GoogleFonts.mulish(
                       color: Color(0xff4f4f4f),
                       fontWeight: FontWeight.w500,
                       fontSize: 12.sp,
                       height: 1.25));
             }),
+
         actions: [
           Obx(
             () => authController.isLoading.value
@@ -81,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                 : GestureDetector(
                     onTap: () {
                       if (authenticationManager.isLogged.value) {
-                        bottomNavController.currentIndex.value = 3;
+                        bottomNavController.currentIndex.value = 2;
                       } else {
                         Get.to(LoginPage());
                       }
@@ -97,12 +111,16 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                           width: 5.w,
                         ),
-                        Text(
-                          authenticationManager.isLogged.value
-                              ? authController.user.value?.firstName ?? ""
-                              : "Login",
-                          style: GoogleFonts.mulish(
-                              color: textPrimary, fontSize: 16.sp),
+                        SizedBox(
+                          width: 50,
+                          child: Text(
+                            authenticationManager.isLogged.value
+                                ? authController.user.value?.firstName ?? ""
+                                : "Login",
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.mulish(
+                                color: textPrimary, fontSize: 16.sp),
+                          ),
                         ),
                       ]),
                     ),
@@ -117,11 +135,36 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.symmetric(
               horizontal: 20.w,
             ),
-            margin: EdgeInsets.only(top: 20.h),
-            child: Text(
-              "Going To",
-              style: GoogleFonts.mulish(
-                  fontSize: 16.sp, fontWeight: FontWeight.w600, height: 1.25),
+            margin: EdgeInsets.only(top: 12.h),
+            child: Center(
+              child: RichText(
+                  textAlign: TextAlign.right,
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: "Find Your",
+                      style: GoogleFonts.gabriela(
+                          fontSize: 16.sp,
+                          color: textPrimary,
+                          fontWeight: FontWeight.w600,
+                          height: 1.25),
+                    ),
+                    TextSpan(
+                      text: " Happiness ",
+                      style: GoogleFonts.gabriela(
+                          fontSize: 16.sp,
+                          color: primaryColor,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25),
+                    ),
+                    TextSpan(
+                      text: "With Us!",
+                      style: GoogleFonts.gabriela(
+                          fontSize: 16.sp,
+                          color: textPrimary,
+                          fontWeight: FontWeight.w600,
+                          height: 1),
+                    )
+                  ])),
             ),
           ),
           GestureDetector(
@@ -146,26 +189,26 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                          color: Color(0xff00A5F4).withOpacity(.25),
+                          color: Color(0xff000000).withOpacity(.15),
                           blurRadius: 10)
                     ],
-                    borderRadius: BorderRadius.circular(10.w)),
+                    borderRadius: BorderRadius.circular(25.w)),
                 child: Row(
                   children: [
                     Icon(
                       FlutterRemix.search_line,
-                      color: primaryColor,
+                      color: greyColor,
                       size: 14.w,
                     ),
                     SizedBox(
                       width: 4.w,
                     ),
                     Text(
-                      "Where you going ?",
+                      "Search a hotel...",
                       style: GoogleFonts.mulish(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: primaryColor.withOpacity(.4),
+                          color: greyColor,
                           height: 1.25),
                     ),
                   ],
@@ -191,10 +234,10 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(
                             "Featured Hotels",
-                            style: GoogleFonts.mulish(
+                            style: GoogleFonts.gabriela(
                                 fontSize: 16.sp,
                                 color: textPrimary,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
                                 height: 1.25),
                           ),
                           // GestureDetector(
@@ -227,16 +270,13 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                     height: 230.h,
-                    margin: EdgeInsets.only(top: 10.h),
+                    margin: EdgeInsets.only(top: 5.h),
                     padding: EdgeInsets.only(left: 10.w),
                     child: Obx(
-                      () => ListView.separated(
+                      () => ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) => HotelCard(
                               hotel: hotelController.featured.value[index]),
-                          separatorBuilder: (context, index) => SizedBox(
-                                width: 14.w,
-                              ),
                           itemCount: hotelController.featured.value.length),
                     )),
                 Container(
@@ -247,14 +287,14 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Text(
                         "Special Offers",
-                        style: GoogleFonts.mulish(
+                        style: GoogleFonts.gabriela(
                             fontSize: 16.sp,
                             color: textPrimary,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                             height: 1.25),
                       ),
                       SizedBox(
-                        height: 16.h,
+                        height: 12.h,
                       ),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10.w),
@@ -278,10 +318,10 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(
                             "Most Popular",
-                            style: GoogleFonts.mulish(
+                            style: GoogleFonts.gabriela(
                                 fontSize: 16.sp,
                                 color: textPrimary,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
                                 height: 1.25),
                           ),
                           // GestureDetector(
@@ -313,21 +353,22 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Container(
-                  height: 230.h,
-                  margin: EdgeInsets.only(top: 10.h),
-                  padding: EdgeInsets.only(left: 10.w),
-                  child: Obx(
-                    () => ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => HotelCard(
-                              hotel: hotelController.popular.value[index],
-                            ),
-                        separatorBuilder: (context, index) => SizedBox(
-                              width: 14.w,
-                            ),
-                        itemCount: hotelController.popular.value.length),
-                  ),
-                ),
+                    height: 290.h,
+                    margin: EdgeInsets.only(top: 5.h),
+                    // padding: EdgeInsets.only(left: 10.w),
+                    child: PopularSection()
+                    // Obx(
+                    //   () => ListView.separated(
+                    //       scrollDirection: Axis.horizontal,
+                    //       itemBuilder: (context, index) => HotelCard(
+                    //             hotel: hotelController.popular.value[index],
+                    //           ),
+                    //       separatorBuilder: (context, index) => SizedBox(
+                    //             width: 14.w,
+                    //           ),
+                    //       itemCount: hotelController.popular.value.length),
+                    // ),
+                    ),
               ],
             ),
           ))

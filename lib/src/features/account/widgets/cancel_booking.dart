@@ -14,7 +14,7 @@ class CancelBookingSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Color(0xff00A5F4).withOpacity(.25), blurRadius: 10)
+          BoxShadow(color: Color(0xff000000).withOpacity(.15), blurRadius: 10)
         ],
         borderRadius: BorderRadius.vertical(top: Radius.circular(50.w)),
       ),

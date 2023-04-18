@@ -4,15 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/ui/footer.dart';
+import 'package:orb/src/core/ui/logo.dart';
 import 'package:orb/src/features/app/views/app.dart';
 import 'package:orb/src/features/login/views/login.dart';
-import 'package:orb/src/features/signup/views/otp.dart';
 import 'package:orb/src/features/signup/views/singup_form.dart';
 
 import '../../../core/constants/colors.dart';
 import '../../../core/controller/auth_controller.dart';
 import '../../../core/ui/loading.dart';
-import '../../home/views/home.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key, this.isBooking = false}) : super(key: key);
@@ -37,29 +36,31 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: widget.isBooking,
         actions: [
-          GestureDetector(
-            onTap: () {
-              Get.offAll(AppPage());
-            },
-            child: Container(
-              padding: EdgeInsets.only(right: 20.w),
-              child: Row(
-                children: [
-                  Text(
-                    "Proceed without Sing In / Sign Up",
-                    style: GoogleFonts.mulish(color: whiteColor),
+          widget.isBooking
+              ? Container()
+              : GestureDetector(
+                  onTap: () {
+                    Get.offAll(AppPage());
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(right: 20.w),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Proceed without Sing In / Sign Up",
+                          style: GoogleFonts.mulish(color: whiteColor),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: whiteColor,
+                          size: 12.w,
+                        ),
+                      ],
+                    ),
                   ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: whiteColor,
-                    size: 12.w,
-                  ),
-                ],
-              ),
-            ),
-          )
+                )
         ],
       ),
       backgroundColor: primaryColor,
@@ -79,15 +80,7 @@ class _SignupPageState extends State<SignupPage> {
         SizedBox(
           height: 10.h,
         ),
-        Center(
-          child: Text(
-            "LOGO HERE",
-            style: GoogleFonts.mulish(
-                color: whiteColor,
-                fontWeight: FontWeight.w700,
-                fontSize: 24.sp),
-          ),
-        ),
+        Center(child: LogoWidget()),
         SizedBox(
           height: 80.h,
         ),
@@ -168,7 +161,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       SizedBox(
-                        height: 40.h,
+                        height: 10.h,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -183,7 +176,9 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.offAll(LoginPage());
+                              Get.offAll(LoginPage(
+                                isBooking: widget.isBooking,
+                              ));
                             },
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.zero,

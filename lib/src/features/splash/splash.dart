@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/authentication_manager.dart';
 import 'package:orb/src/core/constants/colors.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
+import 'package:orb/src/core/ui/logo.dart';
 import 'package:orb/src/features/app/controller/bottom_nav.dart';
 import 'package:orb/src/features/app/views/app.dart';
 import 'package:orb/src/features/home/controller/hotel_controller.dart';
@@ -45,6 +46,7 @@ class _SplashPageState extends State<SplashPage> {
     } else {
       Future.delayed(Duration(seconds: 1), () async {
         final logged = await authenticationManager.checkLoginStatus();
+        print(logged);
         if (logged) {
           authController.getUser();
         }
@@ -58,12 +60,7 @@ class _SplashPageState extends State<SplashPage> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(color: primaryColor),
-        child: Center(
-          child: Text(
-            "LOGO HERE",
-            style: GoogleFonts.mulish(color: whiteColor),
-          ),
-        ),
+        child: Center(child: LogoWidget()),
       ),
     );
   }

@@ -20,6 +20,7 @@ class DioService with CacheManager {
       ..interceptors.add(
         don.InterceptorsWrapper(
           onRequest: (requestOptions, requestInterceptorHandler) {
+            print(requestOptions.uri);
             final _token = getToken();
             if (_token == null || _token.isEmpty) {
               requestOptions.headers.addAll(

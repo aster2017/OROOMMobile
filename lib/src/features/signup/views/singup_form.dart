@@ -1,13 +1,15 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/ui/textfield.dart';
+import 'package:phone_number/phone_number.dart';
 
 import '../../../core/constants/colors.dart';
 
-class SignUpForm extends StatelessWidget {
+class SignUpForm extends StatefulWidget {
   const SignUpForm(
       {Key? key,
       required this.formKey,
@@ -27,25 +29,39 @@ class SignUpForm extends StatelessWidget {
   final TextEditingController nameCtrl;
   final String phoneCode;
   final void Function(String?) onChangedCountry;
+
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+  bool errorPhone = true;
+  Future<bool> validatePhone(String val) async {
+    bool isValid = await PhoneNumberUtil().validate(val);
+
+    return isValid;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
-        key: formKey,
+        key: widget.formKey,
         child: Column(
           children: [
             KTextFormField(
-              controller: nameCtrl,
+              controller: widget.nameCtrl,
               label: "Full name",
               hint: "Full name",
               prefix: FlutterRemix.user_3_fill,
               validator: (value) {
-                return value != null || value!.isNotEmpty
+                RegExp regex = RegExp(r"^[a-zA-Z]{2,}(?: [a-zA-Z]+){0,2}$");
+                return regex.hasMatch(value!.trim())
                     ? null
                     : "Enter valid Name";
               },
             ),
             KTextFormField(
-              controller: emailCtrl,
+              controller: widget.emailCtrl,
               label: "Email",
               hint: "Email",
               keyboardType: TextInputType.emailAddress,
@@ -84,17 +100,17 @@ class SignUpForm extends StatelessWidget {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5.h),
                               border: Border.all(color: textPrimary)),
-                          margin: EdgeInsets.only(bottom: 16.h),
+                          margin: EdgeInsets.only(bottom: 10.h + 12.sp),
                           child: CountryCodePicker(
                             dialogBackgroundColor:
                                 Theme.of(context).scaffoldBackgroundColor,
                             onChanged: (value) {
-                              onChangedCountry.call(value.dialCode);
+                              widget.onChangedCountry.call(value.dialCode);
                             },
                             builder: (countryCode) {
                               return Padding(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 20.w, vertical: 14.h),
+                                    horizontal: 20.w, vertical: 16.h),
                                 child: Row(
                                   children: [
                                     Image.asset(
@@ -130,7 +146,7 @@ class SignUpForm extends StatelessWidget {
                             showFlagMain: true,
                             showFlag: true,
                             hideSearch: false,
-                            initialSelection: phoneCode,
+                            initialSelection: widget.phoneCode,
                             showOnlyCountryWhenClosed: false,
                             alignLeft: true,
                           ),
@@ -142,10 +158,30 @@ class SignUpForm extends StatelessWidget {
                     ),
                     Expanded(
                       child: KTextFormField(
-                        controller: phoneCtrl,
+                        controller: widget.phoneCtrl,
+                        keyboardType: TextInputType.phone,
                         label: "",
                         hint: "Mobile Number",
+                        inputFormatter: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         prefix: FlutterRemix.phone_line,
+                        onChanged: (p0) {
+                          validatePhone(widget.phoneCode + p0!).then((value) {
+                            setState(() {
+                              errorPhone = !value;
+                            });
+                          });
+                        },
+                        validator: (val) {
+                          // if (val == null || val.isEmpty) {
+                          //   return "Enter a Phone Number";
+                          // } else {
+
+                          // }
+
+                          return errorPhone ? "Enter valid Phone number" : null;
+                        },
                       ),
                     ),
                   ],
@@ -153,7 +189,7 @@ class SignUpForm extends StatelessWidget {
               ],
             ),
             KTextFormField(
-              controller: passCtrl,
+              controller: widget.passCtrl,
               label: "Password",
               hint: "Password",
               obscureText: true,
@@ -173,14 +209,14 @@ class SignUpForm extends StatelessWidget {
               },
             ),
             KTextFormField(
-              controller: confirmPassCtrl,
+              controller: widget.confirmPassCtrl,
               label: "Confirm Password",
               hint: "Confirm Password",
               marginBottom: false,
               obscureText: true,
               prefix: FlutterRemix.key_2_line,
               validator: (value) {
-                if (value == passCtrl.text) {
+                if (value == widget.passCtrl.text) {
                   return null;
                 } else {
                   return "Password should match.";

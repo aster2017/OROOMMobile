@@ -28,7 +28,7 @@ class SearchFilter extends StatelessWidget {
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
           boxShadow: [
-            BoxShadow(color: Color(0xff00A5F4).withOpacity(.25), blurRadius: 10)
+            BoxShadow(color: Color(0xff000000).withOpacity(.15), blurRadius: 10)
           ],
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(50.w)),

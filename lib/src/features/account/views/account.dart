@@ -84,7 +84,7 @@ class AccountPage extends StatelessWidget {
                               height: 1.25),
                         ),
                         SizedBox(height: 6.h),
-                        authController.user.value!.emailConfirmed == true
+                        authController.user.value?.emailConfirmed == true
                             ? Text(
                                 authController.user.value?.email ??
                                     "abc@example.com",
@@ -121,19 +121,19 @@ class AccountPage extends StatelessWidget {
                 },
                 icon: FlutterRemix.user_3_line,
               ),
+              // SizedBox(
+              //   height: 6.h,
+              // ),
+              // ProfileMenu(
+              //   title: "Notification",
+              //   onTap: () {},
+              //   icon: FlutterRemix.notification_3_line,
+              // ),
               SizedBox(
                 height: 6.h,
               ),
               ProfileMenu(
-                title: "Notification",
-                onTap: () {},
-                icon: FlutterRemix.notification_3_line,
-              ),
-              SizedBox(
-                height: 6.h,
-              ),
-              ProfileMenu(
-                title: "Upcoming Booking",
+                title: "My Bookings",
                 onTap: () {
                   myBookingController.getBookings();
                   Get.to(UpcomingBooking());

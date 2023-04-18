@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -28,7 +29,7 @@ final HotelController hotelController = Get.find<HotelController>();
 
 class _HotelDetailState extends State<HotelDetail> {
   DateTime currentDate = DateTime.now();
-  late HotelDetailModel? hotel;
+  HotelDetailModel? hotel;
   @override
   void initState() {
     super.initState();
@@ -44,10 +45,13 @@ class _HotelDetailState extends State<HotelDetail> {
             checkOut: DateFormat("yyyy-MM-dd")
                 .format(searchController.checkOutDate.value),
             loading: loading)
-        .then((value) => setState(() {
-              print(value);
-              hotel = value;
-            }));
+        .then((value) {
+      if (mounted) {
+        setState(() {
+          hotel = value;
+        });
+      }
+    });
   }
 
   @override
@@ -62,11 +66,11 @@ class _HotelDetailState extends State<HotelDetail> {
               FlutterRemix.arrow_left_line,
             )),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                FlutterRemix.heart_line,
-              )),
+          // IconButton(
+          //     onPressed: () {},
+          //     icon: Icon(
+          //       FlutterRemix.heart_line,
+          //     )),
           IconButton(
               onPressed: () {},
               icon: Icon(
@@ -94,7 +98,7 @@ class _HotelDetailState extends State<HotelDetail> {
             // networkImages:[]
             networkImages: hotel == null || hotel!.hotelImage!.isEmpty
                 ? []
-                : [...hotel!.hotelImage!.map((e) => e['imageUrl'])],
+                : [...hotel!.hotelImage!.map((e) => e.imageUrl!)],
             images: const [
               "assets/images/hotel.jpg",
               "assets/images/hotel1.jpg",
@@ -187,15 +191,23 @@ class _HotelDetailState extends State<HotelDetail> {
                           itemBuilder: (context, index) => Column(
                                 children: [
                                   hotel?.hotelFacilities![index].facilityIcon ==
-                                          null
+                                              null ||
+                                          hotel?.hotelFacilities![index]
+                                              .facilityIcon ||
+                                          hotel?.hotelFacilities![index]
+                                                  .facilityIcon ==
+                                              "string" ||
+                                          hotel?.hotelFacilities![index]
+                                                  .facilityIcon ==
+                                              "fav-icon"
                                       ? Icon(
-                                          FlutterRemix.restaurant_line,
+                                          FlutterRemix.check_line,
                                           size: 18.w,
                                         )
-                                      : Image.network(
-                                          hotel!.hotelFacilities![index]
-                                              .facilityIcon!,
-                                          width: 18.w,
+                                      : Icon(
+                                          IconDataSolid(int.parse(
+                                              '0x${hotel?.hotelFacilities![index].facilityIcon}')),
+                                          size: 18.w,
                                         ),
                                   Text(
                                     hotel!.hotelFacilities![index]
@@ -271,16 +283,21 @@ class _HotelDetailState extends State<HotelDetail> {
                     height: 6.h,
                   ),
                   DisplayCard(
-                    title: "Description",
-                    description: hotel?.description ??
-                        '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed venenatis odio arcu. Vestibulum non est, at ultricies nulla lectus nunc, turpis. Pretium nisi etiam pulvinar at fusce pellentesque viverra id. Fermentum ornare id dolor sodales varius etiam sed. ''',
-                  ),
+                      title: "Description",
+                      description: hotel?.description ?? "-"),
                   DisplayCard(
-                    title: "Policy",
-                    description: hotel?.privacy ??
-                        '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sagittis sed venenatis odio arcu. Vestibulum non est, at ultricies nulla lectus nunc, turpis. Pretium nisi etiam pulvinar at fusce pellentesque viverra id. Fermentum ornare id dolor sodales varius etiam sed. ''',
+                      title: "Policy",
+                      description: hotel?.privacy ?? "-",
+                      isHtml: true),
+                  ReviewList(
+                    reviews: hotel?.latestReview == null
+                        ? []
+                        : List.from(hotel!.latestReview!.reversed),
+                    hotelUri: hotel?.hotelUri! ?? "",
+                    reviewAdd: () {
+                      fetchHotelData(loading: false);
+                    },
                   ),
-                  ReviewList(reviews: hotel?.latestReview ?? []),
                   // DisplayCard(
                   //   title: "Contact Us",
                   //   description:
@@ -323,7 +340,7 @@ class _HotelDetailState extends State<HotelDetail> {
                       width: 150.w,
                       height: 44.h,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.w),
+                          borderRadius: BorderRadius.circular(22.h),
                           color: primaryColor),
                       child: Center(
                         child: Text(
@@ -380,11 +397,18 @@ class _HotelDetailState extends State<HotelDetail> {
         context: context,
         initialDate: (isFrom
             ? searchController.checkinDate.value
-            : searchController.checkOutDate.value),
+            : searchController.checkOutDate.value
+                        .difference(searchController.checkinDate.value)
+                        .inDays <
+                    1
+                ? searchController.checkinDate.value.add(Duration(days: 1))
+                : searchController.checkOutDate.value),
         fieldHintText: isFrom ? "Check In Date" : "Check Out Date",
         initialDatePickerMode: DatePickerMode.day,
-        firstDate: isFrom ? currentDate : searchController.checkinDate.value,
-        lastDate: currentDate.add(Duration(days: 365)));
+        firstDate: isFrom
+            ? currentDate
+            : searchController.checkinDate.value.add(Duration(days: 1)),
+        lastDate: currentDate.add(Duration(days: 30)));
 
     if (picked != null &&
         picked !=
@@ -392,6 +416,9 @@ class _HotelDetailState extends State<HotelDetail> {
                 ? searchController.checkinDate.value
                 : searchController.checkOutDate.value)) {
       if (isFrom) {
+        if (searchController.checkOutDate.value.difference(picked).inDays < 1) {
+          searchController.checkOutDate.value = picked.add(Duration(days: 1));
+        }
         searchController.checkinDate.value = picked;
       } else {
         searchController.checkOutDate.value = picked;

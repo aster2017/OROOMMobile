@@ -4,19 +4,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/ui/ageDropdown.dart';
+import 'package:orb/src/features/booking/controller/bookingController.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 
 import '../constants/colors.dart';
 
 class BookingDetailsRow extends StatefulWidget {
-  BookingDetailsRow({Key? key}) : super(key: key);
-
+  BookingDetailsRow({Key? key, this.isBookPage = false}) : super(key: key);
+  final bool isBookPage;
   @override
   State<BookingDetailsRow> createState() => _BookingDetailsRowState();
 }
 
 class _BookingDetailsRowState extends State<BookingDetailsRow> {
   final SearchController searchController = Get.find<SearchController>();
+  final BookingController bookingController = Get.find<BookingController>();
   bool showGuests = false;
   @override
   Widget build(BuildContext context) {
@@ -73,15 +75,39 @@ class _BookingDetailsRowState extends State<BookingDetailsRow> {
                     borderRadius: BorderRadius.circular(5.h)),
                 child: counterWidget(
                     increament: () {
-                      searchController.rooms.value++;
+                      if (((searchController.rooms.value <
+                              bookingController
+                                  .selectedRoom.value!.noOfRooms!) &&
+                          (searchController.rooms.value <
+                              searchController.adults.value))) {
+                        searchController.rooms.value++;
+                        if (widget.isBookPage) {
+                          bookingController.feeOrDiscount();
+                        }
+                      }
                     },
                     decreament: () {
                       if (searchController.rooms.value > 1) {
                         searchController.rooms.value--;
+                        if (widget.isBookPage) {
+                          bookingController.feeOrDiscount();
+                        }
                         if (searchController.adults.value >
-                            searchController.rooms.value * 3) {
+                            searchController.rooms.value *
+                                ((bookingController
+                                            .selectedRoom.value!.maxAdults ??
+                                        1) +
+                                    (bookingController.selectedRoom.value!
+                                            .noOfExtraBeds ??
+                                        0))) {
                           searchController.adults.value =
-                              searchController.rooms.value * 3;
+                              searchController.rooms.value *
+                                  ((bookingController
+                                              .selectedRoom.value!.maxAdults ??
+                                          1) +
+                                      (bookingController.selectedRoom.value!
+                                              .noOfExtraBeds ??
+                                          0));
                         }
                       }
                     },
@@ -147,18 +173,29 @@ class _BookingDetailsRowState extends State<BookingDetailsRow> {
                             child: counterWidget(
                                 increament: () {
                                   if (searchController.adults.value >=
-                                      searchController.rooms.value * 3) {
+                                      searchController.rooms.value *
+                                          ((bookingController.selectedRoom
+                                                      .value!.maxAdults ??
+                                                  1) +
+                                              (bookingController.selectedRoom
+                                                      .value!.noOfExtraBeds ??
+                                                  0))) {
+                                    Get.closeAllSnackbars();
                                     Get.snackbar("Oops",
                                         "No of adults exceeded. Please increase your rooms.",
                                         colorText: whiteColor,
                                         backgroundColor: redColor);
                                   } else {
                                     searchController.adults.value++;
+                                    bookingController.feeOrDiscount();
                                   }
                                 },
                                 decreament: () {
-                                  if (searchController.adults.value > 1) {
+                                  if ((searchController.adults.value > 1) &&
+                                      (searchController.adults.value >
+                                          searchController.rooms.value)) {
                                     searchController.adults.value--;
+                                    bookingController.feeOrDiscount();
                                   }
                                 },
                                 value: "Adults")),

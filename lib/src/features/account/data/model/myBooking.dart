@@ -2,7 +2,6 @@
 //
 //     final myBookingModel = myBookingModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 List<MyBookingModel> myBookingModelFromJson(List<dynamic> str) =>
@@ -13,20 +12,27 @@ String myBookingModelToJson(List<MyBookingModel> data) =>
 
 class MyBookingModel {
   MyBookingModel({
+    this.roomBookingFeeOrDiscountDto,
     this.roomBookingId,
     this.roomBookingGuid,
+    this.bookingNumber,
     this.customerGuid,
     this.hotelName,
+    this.categoryIcon,
+    this.categoryName,
     this.bookingDateFrom,
     this.bookingDateTo,
     this.noOfRooms,
     this.noOfAdults,
     this.childAges,
     this.bookingStatusId,
+    this.bookingStatus,
+    this.paymentStatusCodeId,
+    this.paymentStatus,
     this.price,
     this.subTotal,
-    this.orderTax,
-    this.serviceCharge,
+    this.totalCharge,
+    this.totalDiscount,
     this.grandTotal,
     this.firstname,
     this.lastname,
@@ -36,20 +42,27 @@ class MyBookingModel {
     this.comments,
   });
 
+  final List<RoomBookingFeeOrDiscountDto>? roomBookingFeeOrDiscountDto;
   final int? roomBookingId;
   final String? roomBookingGuid;
+  final String? bookingNumber;
   final String? customerGuid;
   final String? hotelName;
+  final dynamic categoryIcon;
+  final String? categoryName;
   final DateTime? bookingDateFrom;
   final DateTime? bookingDateTo;
   final int? noOfRooms;
   final int? noOfAdults;
   final String? childAges;
   final int? bookingStatusId;
+  final String? bookingStatus;
+  final int? paymentStatusCodeId;
+  final String? paymentStatus;
   final double? price;
   final double? subTotal;
-  final double? orderTax;
-  final double? serviceCharge;
+  final double? totalCharge;
+  final double? totalDiscount;
   final double? grandTotal;
   final String? firstname;
   final String? lastname;
@@ -59,21 +72,36 @@ class MyBookingModel {
   final dynamic comments;
 
   factory MyBookingModel.fromJson(Map<String, dynamic> json) => MyBookingModel(
+        roomBookingFeeOrDiscountDto: json["roomBookingFeeOrDiscountDto"] == null
+            ? []
+            : List<RoomBookingFeeOrDiscountDto>.from(
+                json["roomBookingFeeOrDiscountDto"]!
+                    .map((x) => RoomBookingFeeOrDiscountDto.fromJson(x))),
         roomBookingId: json["roomBookingId"],
         roomBookingGuid: json["roomBookingGuid"],
+        bookingNumber: json["bookingNumber"],
         customerGuid: json["customerGuid"],
         hotelName: json["hotelName"],
-        bookingDateFrom: DateTime.parse(json["bookingDateFrom"]),
-        bookingDateTo: DateTime.parse(json["bookingDateTo"]),
+        categoryIcon: json["categoryIcon"],
+        categoryName: json["categoryName"],
+        bookingDateFrom: json["bookingDateFrom"] == null
+            ? null
+            : DateTime.parse(json["bookingDateFrom"]),
+        bookingDateTo: json["bookingDateTo"] == null
+            ? null
+            : DateTime.parse(json["bookingDateTo"]),
         noOfRooms: json["noOfRooms"],
         noOfAdults: json["noOfAdults"],
         childAges: json["childAges"],
         bookingStatusId: json["bookingStatusId"],
-        price: double.parse(json["price"]?.toString() ?? "0"),
-        subTotal: double.parse(json["subTotal"]?.toString() ?? "0"),
-        orderTax: double.parse(json["orderTax"]?.toString() ?? "0"),
-        serviceCharge: double.parse(json["serviceCharge"]?.toString() ?? "0"),
-        grandTotal: double.parse(json["grandTotal"]?.toString() ?? "0"),
+        bookingStatus: json["bookingStatus"],
+        paymentStatusCodeId: json["paymentStatusCodeId"],
+        paymentStatus: json["paymentStatus"],
+        price: json["price"]?.toDouble(),
+        subTotal: json["subTotal"]?.toDouble(),
+        totalCharge: json["totalCharge"]?.toDouble(),
+        totalDiscount: json["totalDiscount"]?.toDouble(),
+        grandTotal: json["grandTotal"]?.toDouble(),
         firstname: json["firstname"],
         lastname: json["lastname"],
         emailId: json["emailId"],
@@ -83,20 +111,30 @@ class MyBookingModel {
       );
 
   Map<String, dynamic> toJson() => {
+        "roomBookingFeeOrDiscountDto": roomBookingFeeOrDiscountDto == null
+            ? []
+            : List<dynamic>.from(
+                roomBookingFeeOrDiscountDto!.map((x) => x.toJson())),
         "roomBookingId": roomBookingId,
         "roomBookingGuid": roomBookingGuid,
+        "bookingNumber": bookingNumber,
         "customerGuid": customerGuid,
         "hotelName": hotelName,
-        "bookingDateFrom": bookingDateFrom!.toIso8601String(),
-        "bookingDateTo": bookingDateTo!.toIso8601String(),
+        "categoryIcon": categoryIcon,
+        "categoryName": categoryName,
+        "bookingDateFrom": bookingDateFrom?.toIso8601String(),
+        "bookingDateTo": bookingDateTo?.toIso8601String(),
         "noOfRooms": noOfRooms,
         "noOfAdults": noOfAdults,
         "childAges": childAges,
         "bookingStatusId": bookingStatusId,
+        "bookingStatus": bookingStatus,
+        "paymentStatusCodeId": paymentStatusCodeId,
+        "paymentStatus": paymentStatus,
         "price": price,
         "subTotal": subTotal,
-        "orderTax": orderTax,
-        "serviceCharge": serviceCharge,
+        "totalCharge": totalCharge,
+        "totalDiscount": totalDiscount,
         "grandTotal": grandTotal,
         "firstname": firstname,
         "lastname": lastname,
@@ -104,5 +142,58 @@ class MyBookingModel {
         "mobileNo": mobileNo,
         "mobileCode": mobileCode,
         "comments": comments,
+      };
+}
+
+class RoomBookingFeeOrDiscountDto {
+  RoomBookingFeeOrDiscountDto({
+    this.bookingFeeOrDiscountId,
+    this.roomBookingId,
+    this.feeOrDiscountId,
+    this.feeOrDiscountName,
+    this.percentageOrAmount,
+    this.isPercentage,
+    this.formula,
+    this.displayOrder,
+    this.direction,
+    this.branchId,
+  });
+
+  final int? bookingFeeOrDiscountId;
+  final int? roomBookingId;
+  final int? feeOrDiscountId;
+  final String? feeOrDiscountName;
+  final double? percentageOrAmount;
+  final bool? isPercentage;
+  final dynamic formula;
+  final int? displayOrder;
+  final int? direction;
+  final int? branchId;
+
+  factory RoomBookingFeeOrDiscountDto.fromJson(Map<String, dynamic> json) =>
+      RoomBookingFeeOrDiscountDto(
+        bookingFeeOrDiscountId: json["bookingFeeOrDiscountID"],
+        roomBookingId: json["roomBookingID"],
+        feeOrDiscountId: json["feeOrDiscountId"],
+        feeOrDiscountName: json["feeOrDiscountName"],
+        percentageOrAmount: json["percentageOrAmount"]?.toDouble(),
+        isPercentage: json["isPercentage"],
+        formula: json["formula"],
+        displayOrder: json["displayOrder"],
+        direction: json["direction"],
+        branchId: json["branchID"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "bookingFeeOrDiscountID": bookingFeeOrDiscountId,
+        "roomBookingID": roomBookingId,
+        "feeOrDiscountId": feeOrDiscountId,
+        "feeOrDiscountName": feeOrDiscountName,
+        "percentageOrAmount": percentageOrAmount,
+        "isPercentage": isPercentage,
+        "formula": formula,
+        "displayOrder": displayOrder,
+        "direction": direction,
+        "branchID": branchId,
       };
 }

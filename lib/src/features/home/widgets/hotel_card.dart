@@ -30,26 +30,26 @@ class _HotelCardState extends State<HotelCard> {
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
-            BoxShadow(color: Color(0xff00A5F4).withOpacity(.25), blurRadius: 10)
+            BoxShadow(color: Color(0xff000000).withOpacity(.15), blurRadius: 10)
           ],
           borderRadius: BorderRadius.circular(10.w),
         ),
-        padding: EdgeInsets.all(5.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: 100.h,
-              width: 165.w,
+              width: 175.w,
               child: Stack(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(5.w),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(10.w)),
                     child: widget.hotel.imageUrl == null
                         ? Image.asset(
                             "assets/images/hotel.jpg",
                             fit: BoxFit.cover,
-                            width: 165.w,
+                            width: 175.w,
                             height: 100.h,
                             color: Colors.black12,
                             colorBlendMode: BlendMode.darken,
@@ -58,178 +58,176 @@ class _HotelCardState extends State<HotelCard> {
                             imageUrl:
                                 "https://astercliqdevstorage.blob.core.windows.net${widget.hotel.imageUrl}",
                             fit: BoxFit.cover,
-                            width: 165.w,
+                            width: 175.w,
                             height: 100.h,
                             color: Colors.black12,
                             colorBlendMode: BlendMode.darken,
                           ),
                   ),
-                  Positioned(
-                    top: 5.h,
-                    right: 5.h,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          favourite = !favourite;
-                        });
-                      },
-                      child: Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xffF7F8FA).withOpacity(.5),
-                            borderRadius: BorderRadius.circular(4.w),
-                          ),
-                          padding: EdgeInsets.all(4.w),
-                          child: Icon(
-                            FlutterRemix.heart_fill,
-                            size: 18.sp,
-                            color: favourite ? redColor : Colors.white,
-                          )),
-                    ),
-                  ),
+                  // Positioned(
+                  //   top: 5.h,
+                  //   right: 5.h,
+                  //   child: GestureDetector(
+                  //     onTap: () {
+                  //       setState(() {
+                  //         favourite = !favourite;
+                  //       });
+                  //     },
+                  //     child: Container(
+                  //         decoration: BoxDecoration(
+                  //           color: Color(0xffF7F8FA).withOpacity(.5),
+                  //           borderRadius: BorderRadius.circular(4.w),
+                  //         ),
+                  //         padding: EdgeInsets.all(4.w),
+                  //         child: Icon(
+                  //           FlutterRemix.heart_fill,
+                  //           size: 18.sp,
+                  //           color: favourite ? redColor : Colors.white,
+                  //         )),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
             SizedBox(
               height: 4.h,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      FlutterRemix.map_pin_2_fill,
-                      color: secondaryColor,
-                      size: 12.w,
-                    ),
-                    SizedBox(
-                      width: 6.w,
-                    ),
-                    Text(
-                      "${widget.hotel.location}",
-                      style: GoogleFonts.mulish(
-                        color: Color(0xff828282),
-                        fontSize: 12.sp,
-                        height: 1.2,
+            Container(
+              padding: EdgeInsets.all(5.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Icon(
+                              FlutterRemix.map_pin_2_fill,
+                              color: secondaryColor,
+                              size: 12.w,
+                            ),
+                            SizedBox(
+                              width: 6.w,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "${widget.hotel.location}",
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.mulish(
+                                  color: Color(0xff828282),
+                                  fontSize: 12.sp,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: secondaryColor,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color(0xff000000).withOpacity(.05),
-                          blurRadius: 4,
-                          offset: Offset(4, 4))
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            FlutterRemix.star_fill,
+                            size: 12.sp,
+                            color: Color(0xfff2c94c),
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            "4.5",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.mulish(
+                              fontSize: 12.sp,
+                              color: textPrimary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
-                    borderRadius: BorderRadius.circular(4.w),
                   ),
-                  padding: EdgeInsets.all(4.w),
-                  child: Text(
-                    "7.5",
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Text(
+                    widget.hotel.hotelName ?? "",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.mulish(
-                      fontSize: 12.sp,
-                      color: whiteColor,
-                      fontWeight: FontWeight.w600,
-                    ),
+                        fontSize: 16.sp,
+                        color: textPrimary,
+                        fontWeight: FontWeight.w700,
+                        height: 1.25),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 2.h,
-            ),
-            Text(
-              widget.hotel.hotelName ?? "",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.mulish(
-                  fontSize: 14.sp,
-                  color: textPrimary,
-                  fontWeight: FontWeight.w600,
-                  height: 1.25),
-            ),
-            SizedBox(
-              height: 6.h,
-            ),
-            Row(
-              children: [
-                ...[1, 2, 3, 4, 5].map((e) => Icon(
-                      FlutterRemix.star_fill,
-                      size: 14.w,
-                      color: e == 5 ? Color(0xffbdbdbd) : Color(0xfff2c94c),
-                    ))
-              ],
-            ),
-            SizedBox(
-              height: 6.h,
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                RichText(
-                    textAlign: TextAlign.right,
-                    text: TextSpan(children: [
-                      TextSpan(
-                        text: "NPR ",
-                        style: GoogleFonts.mulish(
-                            fontSize: 12.sp,
-                            color: textPrimary,
-                            fontWeight: FontWeight.w600,
-                            height: 1.25),
-                      ),
-                      TextSpan(
-                        text: "${widget.hotel.startPrice}",
-                        style: GoogleFonts.mulish(
-                            fontSize: 12.sp,
-                            color: redColor,
-                            fontWeight: FontWeight.w700,
-                            height: 1.25),
-                      ),
-                      TextSpan(
-                        text: "\n per day",
-                        style: GoogleFonts.mulish(
-                            fontSize: 10.sp,
-                            color: Color(0xffBDBDBD),
-                            fontWeight: FontWeight.w400,
-                            height: 1),
-                      )
-                    ])),
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 4.w),
-                    height: 20.h,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.w),
-                        color: primaryColor),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Book now",
-                          textAlign: TextAlign.center,
+                  SizedBox(
+                    height: 6.h,
+                  ),
+                  RichText(
+                      textAlign: TextAlign.right,
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text: "RS. ",
                           style: GoogleFonts.mulish(
-                              color: whiteColor,
-                              height: 1,
                               fontSize: 12.sp,
-                              fontWeight: FontWeight.w500),
+                              color: textPrimary,
+                              fontWeight: FontWeight.w600,
+                              height: 1.25),
                         ),
-                        Icon(
-                          FlutterRemix.arrow_drop_right_line,
-                          size: 12.w,
-                          color: whiteColor,
+                        TextSpan(
+                          text: "${widget.hotel.startPrice}",
+                          style: GoogleFonts.mulish(
+                              fontSize: 12.sp,
+                              color: redColor,
+                              fontWeight: FontWeight.w700,
+                              height: 1.25),
+                        ),
+                        TextSpan(
+                          text: "/ per day",
+                          style: GoogleFonts.mulish(
+                              fontSize: 10.sp,
+                              color: Color(0xffBDBDBD),
+                              fontWeight: FontWeight.w400,
+                              height: 1),
                         )
-                      ],
-                    ),
+                      ])),
+                  SizedBox(
+                    height: 6.h,
                   ),
-                )
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        height: 24.h,
+                        constraints: BoxConstraints(maxWidth: 80.sp),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.w),
+                            color: primaryColor),
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "Book now",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.mulish(
+                                  color: whiteColor,
+                                  height: 1,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),

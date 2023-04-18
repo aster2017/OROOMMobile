@@ -4,7 +4,7 @@ mixin CacheManager {
   Future<bool> saveToken(Map<String, dynamic>? token) async {
     final box = GetStorage();
     await box.write(CacheManagerKey.TOKEN.toString(), token!['token']);
-    await box.write(CacheManagerKey.USER.toString(), token['id']);
+    await box.write(CacheManagerKey.USER.toString(), token['subjectId']);
     return true;
   }
 

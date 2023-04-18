@@ -1,11 +1,11 @@
 // To parse this JSON data, do
 //
-//     final HotelDetailModel = HotelDetailModelFromJson(jsonString);
+//     final hotelDetailModel = hotelDetailModelFromJson(jsonString);
 
 import 'dart:convert';
 
 HotelDetailModel hotelDetailModelFromJson(Map<String, dynamic> str) =>
-    HotelDetailModel.fromJson((str));
+    HotelDetailModel.fromJson(str);
 
 class HotelDetailModel {
   HotelDetailModel({
@@ -35,8 +35,8 @@ class HotelDetailModel {
   final double? longitude;
   final double? latitude;
   final String? hotelReview;
-  final List<Review>? latestReview;
-  final List<Map<String, dynamic>>? hotelImage;
+  final List<LatestReview>? latestReview;
+  final List<HotelImage>? hotelImage;
 
   factory HotelDetailModel.fromJson(Map<String, dynamic> json) =>
       HotelDetailModel(
@@ -44,19 +44,27 @@ class HotelDetailModel {
         hotelUri: json["hotelUri"],
         location: json["location"],
         description: json["description"],
-        hotelFacilities: List<HotelFacility>.from(
-            json["hotelFacilities"].map((x) => HotelFacility.fromJson(x))),
-        chooseYourRoom: List<ChooseYourRoom>.from(
-            json["chooseYourRoom"].map((x) => ChooseYourRoom.fromJson(x))),
+        hotelFacilities: json["hotelFacilities"] == null
+            ? []
+            : List<HotelFacility>.from(
+                json["hotelFacilities"]!.map((x) => HotelFacility.fromJson(x))),
+        chooseYourRoom: json["chooseYourRoom"] == null
+            ? []
+            : List<ChooseYourRoom>.from(
+                json["chooseYourRoom"]!.map((x) => ChooseYourRoom.fromJson(x))),
         privacy: json["privacy"],
         checkInCheckOut: json["checkInCheckOut"],
-        longitude: json["longitude"],
-        latitude: json["latitude"],
+        longitude: double.tryParse(json["longitude"]?.toString() ?? "0"),
+        latitude: double.tryParse(json["latitude"]?.toString() ?? "0"),
         hotelReview: json["hotelReview"],
-        latestReview: List<Review>.from(
-            json["latestReview"].map((x) => Review.fromJson(x))),
-        hotelImage:
-            List<Map<String, dynamic>>.from(json["hotelImage"].map((x) => x)),
+        latestReview: json["latestReview"] == null
+            ? []
+            : List<LatestReview>.from(
+                json["latestReview"]!.map((x) => LatestReview.fromJson(x))),
+        hotelImage: json["hotelImage"] == null
+            ? []
+            : List<HotelImage>.from(
+                json["hotelImage"]!.map((x) => HotelImage.fromJson(x))),
       );
 }
 
@@ -70,40 +78,125 @@ class ChooseYourRoom {
     this.minProductCost,
     this.noOfRooms,
     this.refundableNonRefundable,
+    this.availableRoomGuids,
+    this.categoryFeeOrDiscount,
     this.roomCategoryAmenities,
     this.roomCategoryFacilities,
     this.roomCategoryImages,
+    this.itemPricePer,
+    this.noOfExtraBeds,
+    this.maxAdults,
+    this.maxChild,
   });
 
   final int? roomCategoryId;
   final String? roomCategory;
   final String? roomCategoryUri;
   final String? roomCategoryDescription;
-  final int? minPrice;
-  final int? minProductCost;
+  final double? minPrice;
+  final double? minProductCost;
   final int? noOfRooms;
+  final double? itemPricePer;
+  final int? noOfExtraBeds;
+  final int? maxAdults;
+  final int? maxChild;
   final String? refundableNonRefundable;
+  final String? availableRoomGuids;
+  final List<CategoryFeeOrDiscount>? categoryFeeOrDiscount;
   final List<RoomCategoryAmenity>? roomCategoryAmenities;
-  final List<Map<String, dynamic>>? roomCategoryFacilities;
-  final List<Map<String, dynamic>>? roomCategoryImages;
+  final List<RoomCategoryFacility>? roomCategoryFacilities;
+  final List<RoomCategoryImage>? roomCategoryImages;
 
   factory ChooseYourRoom.fromJson(Map<String, dynamic> json) => ChooseYourRoom(
         roomCategoryId: json["roomCategoryID"],
         roomCategory: json["roomCategory"],
         roomCategoryUri: json["roomCategoryUri"],
         roomCategoryDescription: json["roomCategoryDescription"],
-        minPrice: json["minPrice"],
-        minProductCost: json["minProductCost"],
+        minPrice: double.tryParse(json["minPrice"]?.toString() ?? "0"),
+        minProductCost:
+            double.tryParse(json["minProductCost"]?.toString() ?? "0"),
         noOfRooms: json["noOfRooms"],
+        itemPricePer: double.tryParse(json['itemPricePer']?.toString() ?? "0"),
+        noOfExtraBeds: json['noOfExtraBeds'],
+        maxAdults: json['maxAdults'],
+        maxChild: json['maxChild'],
         refundableNonRefundable: json["refundableNonRefundable"],
-        roomCategoryAmenities: List<RoomCategoryAmenity>.from(
-            json["roomCategoryAmenities"]
+        availableRoomGuids: json["availableRoomGuids"],
+        categoryFeeOrDiscount: json["categoryFeeOrDiscount"] == null
+            ? []
+            : List<CategoryFeeOrDiscount>.from(json["categoryFeeOrDiscount"]!
+                .map((x) => CategoryFeeOrDiscount.fromJson(x))),
+        roomCategoryAmenities: json["roomCategoryAmenities"] == null
+            ? []
+            : List<RoomCategoryAmenity>.from(json["roomCategoryAmenities"]!
                 .map((x) => RoomCategoryAmenity.fromJson(x))),
-        roomCategoryFacilities: List<Map<String, dynamic>>.from(
-            json["roomCategoryFacilities"].map((x) => x)),
-        roomCategoryImages: List<Map<String, dynamic>>.from(
-            json["roomCategoryImages"].map((x) => x)),
+        roomCategoryFacilities: json["roomCategoryFacilities"] == null
+            ? []
+            : List<RoomCategoryFacility>.from(json["roomCategoryFacilities"]!
+                .map((x) => RoomCategoryFacility.fromJson(x))),
+        roomCategoryImages: json["roomCategoryImages"] == null
+            ? []
+            : List<RoomCategoryImage>.from(json["roomCategoryImages"]!
+                .map((x) => RoomCategoryImage.fromJson(x))),
       );
+}
+
+class CategoryFeeOrDiscount {
+  CategoryFeeOrDiscount({
+    this.categoryFeeOrDiscountId,
+    this.feeOrDiscountName,
+    this.feeOrDiscountId,
+    this.percentageOrAmount,
+    this.isPercentage,
+    this.formula,
+    this.displayOrder,
+    this.companyId,
+    this.branchId,
+    this.catgoryId,
+    this.direction,
+  });
+
+  final int? categoryFeeOrDiscountId;
+  final String? feeOrDiscountName;
+  final int? feeOrDiscountId;
+  final double? percentageOrAmount;
+  final bool? isPercentage;
+  final String? formula;
+  final int? displayOrder;
+  final int? companyId;
+  final int? branchId;
+  final int? catgoryId;
+  final int? direction;
+
+  factory CategoryFeeOrDiscount.fromJson(Map<String, dynamic> json) =>
+      CategoryFeeOrDiscount(
+        categoryFeeOrDiscountId: json["categoryFeeOrDiscountId"],
+        feeOrDiscountName: json["feeOrDiscountName"],
+        feeOrDiscountId: json["feeOrDiscountId"],
+        percentageOrAmount:
+            double.tryParse(json["percentageOrAmount"]?.toString() ?? "0"),
+        isPercentage: json["isPercentage"],
+        formula: json["formula"],
+        displayOrder: json["displayOrder"],
+        companyId: json["companyId"],
+        branchId: json["branchId"],
+        catgoryId: json["catgoryId"],
+        direction: json["direction"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "categoryFeeOrDiscountId": categoryFeeOrDiscountId,
+        "feeOrDiscountName": feeOrDiscountName,
+        "feeOrDiscountId": feeOrDiscountId,
+        "percentageOrAmount": percentageOrAmount,
+        "isPercentage": isPercentage,
+        "formula": formula,
+        "displayOrder": displayOrder,
+        "companyId": companyId,
+        "branchId": branchId,
+        "catgoryId": catgoryId,
+        "direction": direction,
+      };
 }
 
 class RoomCategoryAmenity {
@@ -131,6 +224,56 @@ class RoomCategoryAmenity {
       };
 }
 
+class RoomCategoryFacility {
+  RoomCategoryFacility({
+    this.roomCategoryId,
+    this.facilityName,
+    this.facilityIcon,
+  });
+
+  final int? roomCategoryId;
+  final String? facilityName;
+  final String? facilityIcon;
+
+  factory RoomCategoryFacility.fromJson(Map<String, dynamic> json) =>
+      RoomCategoryFacility(
+        roomCategoryId: json["roomCategoryID"],
+        facilityName: json["facilityName"],
+        facilityIcon: json["facilityIcon"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "roomCategoryID": roomCategoryId,
+        "facilityName": facilityName,
+        "facilityIcon": facilityIcon,
+      };
+}
+
+class RoomCategoryImage {
+  RoomCategoryImage({
+    this.roomCategoryId,
+    this.id,
+    this.imageUrl,
+  });
+
+  final int? roomCategoryId;
+  final int? id;
+  final String? imageUrl;
+
+  factory RoomCategoryImage.fromJson(Map<String, dynamic> json) =>
+      RoomCategoryImage(
+        roomCategoryId: json["roomCategoryID"],
+        id: json["id"],
+        imageUrl: json["imageUrl"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "roomCategoryID": roomCategoryId,
+        "id": id,
+        "imageUrl": imageUrl,
+      };
+}
+
 class HotelFacility {
   HotelFacility({
     this.facilityName,
@@ -138,7 +281,7 @@ class HotelFacility {
   });
 
   final String? facilityName;
-  final String? facilityIcon;
+  final dynamic facilityIcon;
 
   factory HotelFacility.fromJson(Map<String, dynamic> json) => HotelFacility(
         facilityName: json["facilityName"],
@@ -151,8 +294,28 @@ class HotelFacility {
       };
 }
 
-class Review {
-  Review({
+class HotelImage {
+  HotelImage({
+    this.id,
+    this.imageUrl,
+  });
+
+  final int? id;
+  final String? imageUrl;
+
+  factory HotelImage.fromJson(Map<String, dynamic> json) => HotelImage(
+        id: json["id"],
+        imageUrl: json["imageUrl"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "imageUrl": imageUrl,
+      };
+}
+
+class LatestReview {
+  LatestReview({
     this.firstName,
     this.lastName,
     this.hotelUri,
@@ -165,30 +328,20 @@ class Review {
   final String? firstName;
   final String? lastName;
   final String? hotelUri;
-  final int? rating;
+  final double? rating;
   final DateTime? createdDate;
   final String? review;
   final String? email;
 
-  factory Review.fromJson(Map<String, dynamic> json) => Review(
+  factory LatestReview.fromJson(Map<String, dynamic> json) => LatestReview(
         firstName: json["firstName"],
         lastName: json["lastName"],
         hotelUri: json["hotelUri"],
-        rating: json["rating"],
+        rating: double.tryParse(json["rating"]?.toString() ?? ""),
         createdDate: json["createdDate"] == null
             ? null
             : DateTime.parse(json["createdDate"]),
         review: json["review"],
         email: json["email"],
       );
-
-  Map<String, dynamic> toJson() => {
-        "firstName": firstName,
-        "lastName": lastName,
-        "hotelUri": hotelUri,
-        "rating": rating,
-        "createdDate": createdDate!.toIso8601String(),
-        "review": review,
-        "email": email,
-      };
 }

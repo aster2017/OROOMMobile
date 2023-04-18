@@ -7,18 +7,28 @@ import 'package:intl/intl.dart';
 import 'package:orb/src/features/hotelDetail/views/review_all.dart';
 import 'package:orb/src/features/hotelDetail/widgets/review_card.dart';
 
+import '../../../core/authentication_manager.dart';
 import '../../../core/constants/colors.dart';
 import '../../home/models/hotel_detail.dart';
 
 class ReviewList extends StatefulWidget {
-  const ReviewList({Key? key, this.reviews = const []}) : super(key: key);
-  final List<Review> reviews;
+  const ReviewList(
+      {Key? key,
+      this.reviews = const [],
+      required this.reviewAdd,
+      required this.hotelUri})
+      : super(key: key);
+  final List<LatestReview> reviews;
+  final String hotelUri;
+  final void Function() reviewAdd;
   @override
   State<ReviewList> createState() => _ReviewListState();
 }
 
 class _ReviewListState extends State<ReviewList> {
   bool showAll = false;
+  final AuthenticationManager authenticationManager =
+      Get.find<AuthenticationManager>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,9 +51,9 @@ class _ReviewListState extends State<ReviewList> {
                 Text(
                   "Latest Review",
                   style: GoogleFonts.mulish(
-                      fontSize: 14.sp,
+                      fontSize: 16.sp,
                       color: textPrimary,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       height: 1.25),
                 ),
                 Icon(showAll
@@ -55,6 +65,45 @@ class _ReviewListState extends State<ReviewList> {
           showAll
               ? Column(
                   children: [
+                    SizedBox(
+                      height: 6.h,
+                    ),
+                    authenticationManager.isLogged.value
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Get.to(ReviewAllPage(
+                                    reviews: widget.reviews,
+                                    listAllPage: true,
+                                    addReview: true,
+                                    reviewAdd: () {
+                                      widget.reviewAdd.call();
+                                    },
+                                    hotelUri: widget.hotelUri,
+                                  ));
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(FlutterRemix.chat_new_fill),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Add Your Review",
+                                      style: GoogleFonts.mulish(
+                                          fontSize: 14.sp,
+                                          color: textPrimary,
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.25),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
                     MediaQuery.removePadding(
                         context: context,
                         removeTop: true,
@@ -63,14 +112,13 @@ class _ReviewListState extends State<ReviewList> {
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) => ReviewCard(
-                                image: "assets/images/user.png",
                                 name:
                                     "${widget.reviews[index].firstName ?? ""} ${widget.reviews[index].lastName ?? ""}",
                                 rating: widget.reviews[index].rating ?? 0,
                                 date: DateFormat.yMMMd()
                                     .format(widget.reviews[index].createdDate!),
-                                description: widget.reviews[index].review ??
-                                    '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Velit facilisis venenatis amet potenti sed fringilla. Urna mauris vitae, tristique pulvinar convallis arcu et tincidunt. Cursus et id nulla non tellus, id augue. Laoreet bibendum rhoncus mi cras eu sit. Sapien.'''),
+                                description:
+                                    widget.reviews[index].review ?? '''-'''),
                             separatorBuilder: (context, index) => SizedBox(
                                   height: 15.h,
                                 ),
@@ -80,7 +128,14 @@ class _ReviewListState extends State<ReviewList> {
                     widget.reviews.length > 4
                         ? GestureDetector(
                             onTap: () {
-                              Get.to(ReviewAllPage(reviews: widget.reviews));
+                              Get.to(ReviewAllPage(
+                                reviews: widget.reviews,
+                                listAllPage: true,
+                                reviewAdd: () {
+                                  widget.reviewAdd.call();
+                                },
+                                hotelUri: widget.hotelUri,
+                              ));
                             },
                             child: Container(
                               width: 110.w,

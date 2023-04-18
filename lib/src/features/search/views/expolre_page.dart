@@ -45,7 +45,7 @@ class ExplorePage extends StatelessWidget {
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                          color: Color(0xff00A5F4).withOpacity(.25),
+                          color: Color(0xff000000).withOpacity(.15),
                           blurRadius: 10)
                     ],
                     borderRadius: BorderRadius.circular(10.w)),
@@ -139,17 +139,26 @@ class ExplorePage extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
-                  child: ListView.separated(
-                    itemBuilder: ((context, index) => ExploreCard()),
-                    separatorBuilder: ((context, index) => SizedBox(
-                          height: 10.h,
-                        )),
-                    itemCount: 8,
-                  )),
+            Obx(
+              () => Expanded(
+                child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+                    child: hotelController.search.value.isEmpty
+                        ? Center(
+                            child: Text("No Result found."),
+                          )
+                        : ListView.separated(
+                            itemBuilder: ((context, index) => ExploreCard(
+                                  hotelSearch:
+                                      hotelController.search.value[index],
+                                )),
+                            separatorBuilder: ((context, index) => SizedBox(
+                                  height: 10.h,
+                                )),
+                            itemCount: hotelController.search.value.length,
+                          )),
+              ),
             )
           ]),
         ),
