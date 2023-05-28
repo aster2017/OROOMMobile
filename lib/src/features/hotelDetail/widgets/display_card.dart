@@ -11,10 +11,11 @@ class DisplayCard extends StatefulWidget {
       {Key? key,
       required this.title,
       required this.description,
+      this.isShow = false,
       this.isHtml = false})
       : super(key: key);
   final String title, description;
-  final bool isHtml;
+  final bool isHtml, isShow;
 
   @override
   State<DisplayCard> createState() => _DisplayCardState();
@@ -22,6 +23,13 @@ class DisplayCard extends StatefulWidget {
 
 class _DisplayCardState extends State<DisplayCard> {
   bool showAll = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    showAll = widget.isShow;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

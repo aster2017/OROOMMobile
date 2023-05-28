@@ -79,45 +79,44 @@ class UpcomingCard extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (bookingModel.paymentStatusCodeId == 303)
-                GestureDetector(
-                  onTap: () {
-                    pay.call();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w),
-                    height: 22.h,
-                    width: 65.w,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.w),
-                        color: secondaryColor),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Pay",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.mulish(
-                              color: whiteColor,
-                              height: 1,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Icon(
-                          FlutterRemix.arrow_right_s_line,
-                          size: 12.w,
-                          color: whiteColor,
-                        )
-                      ],
-                    ),
+              GestureDetector(
+                onTap: () {
+                  cancel.call();
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  height: 22.h,
+                  width: 65.w,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.w),
+                      color: redColor),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Cancel",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.mulish(
+                            color: whiteColor,
+                            height: 1,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Icon(
+                        FlutterRemix.arrow_right_s_line,
+                        size: 12.w,
+                        color: whiteColor,
+                      )
+                    ],
                   ),
                 ),
+              ),
               SizedBox(
                 height: 6.w,
               ),
               GestureDetector(
                 onTap: () {
-                  cancel.call();
+                  pay.call();
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w),

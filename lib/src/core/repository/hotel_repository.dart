@@ -111,6 +111,7 @@ class HotelRepository {
     required String hotelUri,
     required String childsAge,
     required String itemGuIds,
+    required String roomBookingGuid,
     required List<int> itemFeeOrDiscountIds,
     required double usedLoyaltyPointAmount,
     required ChooseYourRoom room,
@@ -148,7 +149,7 @@ class HotelRepository {
         "childAges": "0",
         "orderTax": orderTax,
         "extraCharge": extraCharg.toString(),
-        "orderTotal": orderTotal.toStringAsFixed(2),
+        "orderTotal": subTotal.toStringAsFixed(2),
         "checkInDate": checkIn,
         "checkOutDate": checkOut,
         "paymentTypeID": 1,
@@ -156,16 +157,16 @@ class HotelRepository {
         "customerID": 0,
         "itemFeeOrDiscountIds": itemFeeOrDiscountIds,
         "usedLoyaltyPointAmount": usedLoyaltyPointAmount.toString(),
-        "userId": customerGuid
+        "userId": customerGuid,
+        "roomBookingGuid": roomBookingGuid
         // "paymentProvider": paymentProvider
       };
-      print(jsonEncode(data));
       final response =
           await DioService().client.post(APIEndpoints.booking, data: data);
 
       return response.data!['data'];
     } on DioError catch (e) {
-      print(e.toString());
+      print(e.response!.data);
       if (e.response!.statusCode! >= 500) {
         throw "Internal Server Error!";
       } else {
@@ -177,22 +178,27 @@ class HotelRepository {
     }
   }
 
-  Future<String?> bookHotelPayment({
+  Future<Map<String, dynamic>?> bookHotelPayment({
     required Map<String, dynamic> paymentProvider,
   }) async {
     try {
-      ;
+      print(jsonEncode(paymentProvider));
       final response = await DioService()
           .client
           .post(APIEndpoints.bookingPayment, data: paymentProvider);
 
       return response.data!;
     } on DioError catch (e) {
-      print(e.toString());
+      print(e.response!.data);
       if (e.response!.statusCode! >= 500) {
         throw "Internal Server Error!";
       } else {
-        throw e.response!.statusMessage!;
+        throw e.response!.data!
+            .toString()
+            .replaceAll('{', '')
+            .replaceAll('}', '')
+            .replaceAll('[', '')
+            .replaceAll(']', '');
       }
     } catch (e) {
       print(e.toString());

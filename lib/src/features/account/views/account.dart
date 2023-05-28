@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:orb/src/core/authentication_manager.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/features/account/controller/myBooking.dart';
+import 'package:orb/src/features/account/views/loyalty_earnings.dart';
+import 'package:orb/src/features/account/views/loyalty_used.dart';
 import 'package:orb/src/features/account/views/profile_edit.dart';
 import 'package:orb/src/features/account/views/settings.dart';
 import 'package:orb/src/features/account/views/upcoming_booking.dart';
@@ -139,6 +141,28 @@ class AccountPage extends StatelessWidget {
                   Get.to(UpcomingBooking());
                 },
                 icon: FlutterRemix.suitcase_line,
+              ),
+              SizedBox(
+                height: 6.h,
+              ),
+              ProfileMenu(
+                title: "Loyalty Earnings",
+                onTap: () {
+                  myBookingController.getBookings();
+                  Get.to(LoyaltyEarningsView());
+                },
+                icon: FlutterRemix.money_cny_circle_line,
+              ),
+              SizedBox(
+                height: 6.h,
+              ),
+              ProfileMenu(
+                title: "Loyalty Point Usage",
+                onTap: () {
+                  myBookingController.getBookings();
+                  Get.to(LoyaltyUsedView());
+                },
+                icon: FlutterRemix.money_cny_circle_line,
               ),
               SizedBox(
                 height: 6.h,

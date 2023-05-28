@@ -1,21 +1,16 @@
-import 'package:esewa_flutter_sdk/esewa_config.dart';
-import 'package:esewa_flutter_sdk/esewa_flutter_sdk.dart';
-import 'package:esewa_flutter_sdk/esewa_payment.dart';
-import 'package:esewa_flutter_sdk/esewa_payment_success_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:orb/src/core/ui/loading.dart';
 import 'package:orb/src/features/account/data/model/myBooking.dart';
 import 'package:orb/src/features/booking/controller/bookingController.dart';
 import 'package:orb/src/features/booking/views/checkout.dart';
-
-import 'package:khalti_flutter/khalti_flutter.dart';
-import 'package:orb/src/features/hotelDetail/views/room_detail.dart';
+import 'package:orb/src/features/booking/views/e_sewa_pay.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/constants/colors.dart';
-import '../../app/views/app.dart';
 
 String CLIENT_ID = "JB0BBQ4aD0UqIThFJwAKBgAXEUkEGQUBBAwdOgABHD4DChwUAB0R";
 String SECRET_KEY = "BhwIWQQADhIYSxILExMcAgFXFhcOBwAKBgAXEQ==";
@@ -61,33 +56,23 @@ class _PaymentMethodsState extends State<PaymentMethods> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        if (widget.myBookingModel != null) {
-          Get.back();
-        } else {
-          Get.offAll(AppPage());
-        }
-        return Future.value(true);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: textPrimary),
-          title: Text(
-            "Payment Method",
-            style: GoogleFonts.mulish(
-                color: textPrimary, fontWeight: FontWeight.w600),
-          ),
-          centerTitle: true,
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: textPrimary),
+        title: Text(
+          "Payment Method",
+          style: GoogleFonts.mulish(
+              color: textPrimary, fontWeight: FontWeight.w600),
         ),
-        body: Stack(
-          children: [
-            bodyWidget(context),
-            Obx(() => bookingController.isLoading.value
-                ? LoadingOverlay()
-                : Container())
-          ],
-        ),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: [
+          bodyWidget(context),
+          Obx(() => bookingController.isLoading.value
+              ? LoadingOverlay()
+              : Container())
+        ],
       ),
     );
   }
@@ -290,68 +275,11 @@ class _PaymentMethodsState extends State<PaymentMethods> {
 
   void esewaPayment() async {
     try {
-      EsewaPayment? config;
-      if (widget.myBookingModel == null) {
-        config = EsewaPayment(
-          productId: bookingController.selectedRoom.value!.roomCategoryUri!,
-          productName:
-              'Room Booking ${bookingController.selectedRoom.value!.roomCategory!}',
-          productPrice: "${bookingController.tempSubTotal}",
-        );
-      } else {
-        config = EsewaPayment(
-          productId: bookingController.selectedRoom.value!.roomCategoryUri!,
-          productName:
-              'Room Booking ${bookingController.selectedRoom.value!.roomCategory!}',
-          productPrice: "${bookingController.tempSubTotal}",
-        );
-      }
-
-      EsewaFlutterSdk.initPayment(
-        esewaConfig: EsewaConfig(
-          environment: Environment.test,
-          clientId: CLIENT_ID,
-          secretId: SECRET_KEY,
-        ),
-        esewaPayment: config,
-        onPaymentSuccess: (EsewaPaymentSuccessResult data) {
-          debugPrint(":::SUCCESS::: => $data");
-          if (widget.myBookingModel != null) {
-            bookingController.bookRoomPostPayment(
-                provider: "esewa",
-                amount: double.tryParse(data.totalAmount),
-                amountInPaisa: double.parse(data.totalAmount) * 100,
-                mobile: "",
-                idx: data.code,
-                productIdentity: data.productId,
-                productName: data.productName,
-                productUrl: "",
-                token: data.refId,
-                transactionGuId: widget.myBookingModel!.roomBookingGuid,
-                transactionId: widget.myBookingModel!.roomBookingId!.toString(),
-                myBookingModel: widget.myBookingModel);
-          } else {
-            bookingController.bookRoomPostPayment(
-              provider: "esewa",
-              amount: double.tryParse(data.totalAmount),
-              amountInPaisa: double.parse(data.totalAmount) * 100,
-              mobile: "",
-              idx: data.code,
-              productIdentity: data.productId,
-              productName: data.productName,
-              productUrl: "",
-              token: data.refId,
-            );
-          }
-          // verifyTransactionStatus(data);
-        },
-        onPaymentFailure: (data) {
-          debugPrint(":::FAILURE::: => $data");
-        },
-        onPaymentCancellation: (data) {
-          debugPrint(":::CANCELLATION::: => $data");
-        },
-      );
+      final uuid = Uuid().v4();
+      Get.to(EsewaEpay(
+          price: bookingController.tempSubTotal.value.toString(),
+          id: uuid,
+          pid: Uuid().v4()));
     } on Exception catch (e) {
       debugPrint("EXCEPTION : ${e.toString()}");
     }
@@ -382,33 +310,21 @@ class _PaymentMethodsState extends State<PaymentMethods> {
       config: config,
       preferences: [PaymentPreference.khalti],
       onSuccess: (value) {
-        if (widget.myBookingModel != null) {
-          bookingController.bookRoomPostPayment(
-              provider: "Khalti",
-              amount: value.amount / 100,
-              amountInPaisa: value.amount.toDouble(),
-              mobile: value.mobile,
-              idx: value.idx,
-              productIdentity: value.productIdentity,
-              productName: value.productName,
-              productUrl: value.productUrl,
-              token: value.token,
-              transactionGuId: widget.myBookingModel!.roomBookingGuid,
-              transactionId: widget.myBookingModel!.roomBookingId!.toString(),
-              myBookingModel: widget.myBookingModel);
-        } else {
-          bookingController.bookRoomPostPayment(
-            provider: "Khalti",
-            amount: value.amount / 100,
-            amountInPaisa: value.amount.toDouble(),
-            mobile: value.mobile,
-            idx: value.idx,
-            productIdentity: value.productIdentity,
-            productName: value.productName,
-            productUrl: value.productUrl,
-            token: value.token,
-          );
-        }
+        final uuid = Uuid().v4();
+        bookingController.bookingGuID.value = uuid;
+        bookingController.bookRoomPayment(
+          provider: "KHALTI",
+          amount: (value.amount / 100).toString(),
+          amountInPaisa: value.amount.toString(),
+          mobile: value.mobile,
+          idx: value.idx,
+          productIdentity: value.productIdentity,
+          productName: value.productName,
+          productUrl: value.productUrl,
+          token: value.token,
+          currency: 'NPR',
+        );
+        bookingController.bookRoomPost();
       },
       onFailure: (value) {
         print(value.data);

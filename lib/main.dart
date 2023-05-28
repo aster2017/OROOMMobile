@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) => KhaltiScope(
         publicKey: "test_public_key_546973b730cf43cf9f12946359b6b5fa",
+        // publicKey: "live_public_key_81abc1b1e093445294618a7b66ed7b2e",
         navigatorKey: navigatorKey,
         builder: (context, navigator) {
           return mainBody(navigator);

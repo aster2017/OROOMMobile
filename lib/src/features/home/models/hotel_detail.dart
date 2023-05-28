@@ -2,8 +2,6 @@
 //
 //     final hotelDetailModel = hotelDetailModelFromJson(jsonString);
 
-import 'dart:convert';
-
 HotelDetailModel hotelDetailModelFromJson(Map<String, dynamic> str) =>
     HotelDetailModel.fromJson(str);
 
@@ -281,7 +279,7 @@ class HotelFacility {
   });
 
   final String? facilityName;
-  final dynamic facilityIcon;
+  final String? facilityIcon;
 
   factory HotelFacility.fromJson(Map<String, dynamic> json) => HotelFacility(
         facilityName: json["facilityName"],

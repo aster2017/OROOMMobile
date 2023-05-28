@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:orb/src/features/account/controller/myBooking.dart';
+import 'package:orb/src/features/account/widgets/cancel_booking.dart';
 import 'package:orb/src/features/account/widgets/upcoming_card.dart';
 
 import '../../../core/constants/colors.dart';
 import '../../booking/controller/bookingController.dart';
 import '../../booking/views/invoice.dart';
-import '../../booking/views/payment_methods.dart';
 
 class UpcomingBooking extends StatelessWidget {
   UpcomingBooking({Key? key}) : super(key: key);
@@ -49,28 +49,25 @@ class UpcomingBooking extends StatelessWidget {
                                           .format(e.bookingDateFrom!),
                                       title: e.hotelName!,
                                       type: "${e.noOfRooms} Room",
-                                      pay: () {
-                                        Get.to(PaymentMethods(
-                                          myBookingModel: e,
-                                        ));
+                                      cancel: () {
+                                        Get.bottomSheet(
+                                          CancelBookingSheet(),
+                                          barrierColor:
+                                              primaryColor.withOpacity(.1),
+                                          isDismissible: false,
+                                          isScrollControlled: false,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50.w),
+                                          ),
+                                          enableDrag: true,
+                                        );
                                       },
-                                      cancel: () async {
+                                      pay: () async {
                                         await bookingController
                                             .feeOrDiscountBooked(e);
                                         await CreatePdf(myBookingModel: e)
                                             .generateInvoice();
-                                        // Get.bottomSheet(
-                                        //   CancelBookingSheet(),
-                                        //   barrierColor:
-                                        //       primaryColor.withOpacity(.1),
-                                        //   isDismissible: false,
-                                        //   isScrollControlled: false,
-                                        //   shape: RoundedRectangleBorder(
-                                        //     borderRadius:
-                                        //         BorderRadius.circular(50.w),
-                                        //   ),
-                                        //   enableDrag: true,
-                                        // );
                                       })),
                               // EmailList(),
                             ]),

@@ -147,27 +147,36 @@ class _HotelDetailState extends State<HotelDetail> {
                   ),
                   Text(
                     hotel?.hotelName ?? "",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.visible,
                     style: GoogleFonts.mulish(
                         fontSize: 16.sp,
                         color: textPrimary,
                         fontWeight: FontWeight.w600,
                         height: 1.25),
                   ),
-                  SizedBox(
-                    height: 6.h,
-                  ),
-                  Row(
-                    children: [
-                      ...[1, 2, 3, 4, 5].map((e) => Icon(
-                            FlutterRemix.star_fill,
-                            size: 14.w,
-                            color:
-                                e == 5 ? Color(0xffbdbdbd) : Color(0xfff2c94c),
-                          ))
-                    ],
-                  ),
+                  // SizedBox(
+                  //   height: 6.h,
+                  // ),
+                  // RatingBar.builder(
+                  //                     ignoreGestures: false,
+                  //                     itemSize: 20.sp,
+                  //                     initialRating: hotel?.,
+                  //                     minRating: 1,
+                  //                     direction: Axis.horizontal,
+                  //                     allowHalfRating: true,
+                  //                     unratedColor: greyColor,
+                  //                     itemCount: 5,
+                  //                     itemPadding: EdgeInsets.only(right: 1),
+                  //                     itemBuilder: (context, _) => Icon(
+                  //                       Icons.star,
+                  //                       color: Colors.amber,
+                  //                     ),
+                  //                     onRatingUpdate: (val) {
+                  //                       setState(() {
+                  //                         rating = val;
+                  //                       });
+                  //                     },
+                  //                   )
                   SizedBox(
                     height: 8.h,
                   ),
@@ -185,41 +194,52 @@ class _HotelDetailState extends State<HotelDetail> {
                     height: 18.h,
                   ),
                   SizedBox(
-                      height: 32.h,
+                      height: 45.h,
                       child: ListView.separated(
                           scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) => Column(
-                                children: [
-                                  hotel?.hotelFacilities![index].facilityIcon ==
-                                              null ||
-                                          hotel?.hotelFacilities![index]
-                                              .facilityIcon ||
-                                          hotel?.hotelFacilities![index]
-                                                  .facilityIcon ==
-                                              "string" ||
-                                          hotel?.hotelFacilities![index]
-                                                  .facilityIcon ==
-                                              "fav-icon"
-                                      ? Icon(
-                                          FlutterRemix.check_line,
-                                          size: 18.w,
-                                        )
-                                      : Icon(
-                                          IconDataSolid(int.parse(
-                                              '0x${hotel?.hotelFacilities![index].facilityIcon}')),
-                                          size: 18.w,
-                                        ),
-                                  Text(
-                                    hotel!.hotelFacilities![index]
-                                            .facilityName ??
-                                        "",
-                                    style: GoogleFonts.mulish(
-                                        fontSize: 10.sp,
-                                        color: Color(0xff4f4f4f),
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.25),
-                                  )
-                                ],
+                          itemBuilder: (context, index) => Container(
+                                width: 45.w,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    hotel?.hotelFacilities![index]
+                                                    .facilityIcon ==
+                                                null ||
+                                            hotel!.hotelFacilities![index]
+                                                .facilityIcon!.isEmpty ||
+                                            hotel?.hotelFacilities![index]
+                                                    .facilityIcon ==
+                                                "string" ||
+                                            hotel?.hotelFacilities![index]
+                                                    .facilityIcon ==
+                                                "fav-icon"
+                                        ? Icon(
+                                            FlutterRemix.check_line,
+                                            size: 18.w,
+                                          )
+                                        : Icon(
+                                            IconDataSolid(int.parse(
+                                                '0x${hotel?.hotelFacilities![index].facilityIcon}')),
+                                            size: 18.w,
+                                          ),
+                                    SizedBox(
+                                      height: 4.h,
+                                    ),
+                                    Text(
+                                      hotel!.hotelFacilities![index]
+                                              .facilityName ??
+                                          "",
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      softWrap: true,
+                                      style: GoogleFonts.mulish(
+                                          fontSize: 10.sp,
+                                          color: Color(0xff4f4f4f),
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.25),
+                                    )
+                                  ],
+                                ),
                               ),
                           separatorBuilder: (context, index) => SizedBox(
                                 width: 12.w,
@@ -283,8 +303,10 @@ class _HotelDetailState extends State<HotelDetail> {
                     height: 6.h,
                   ),
                   DisplayCard(
-                      title: "Description",
-                      description: hotel?.description ?? "-"),
+                    title: "Description",
+                    description: hotel?.description ?? "-",
+                    isHtml: true,
+                  ),
                   DisplayCard(
                       title: "Policy",
                       description: hotel?.privacy ?? "-",

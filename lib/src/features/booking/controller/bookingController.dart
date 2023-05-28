@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:orb/src/core/controller/auth_controller.dart';
 import 'package:orb/src/core/repository/hotel_repository.dart';
 import 'package:orb/src/features/account/data/model/myBooking.dart';
-import 'package:orb/src/features/booking/views/payment_methods.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 import 'package:orb/src/features/home/models/hotel_detail.dart';
+
 import '../views/checkout.dart';
 
 class BookingController extends GetxController {
@@ -31,9 +30,10 @@ class BookingController extends GetxController {
   final feeDiscount = [].obs;
   final feeDiscountBooked = [].obs;
   final onLoyalty = false.obs;
+  final usedLoyalty = (0.0).obs;
   final SearchController searchController = Get.find<SearchController>();
   final AuthController authController = Get.find<AuthController>();
-
+  final bookingPaymentDetailsData = {}.obs;
   int get extraAdultsVal =>
       searchController.adults.value -
       int.parse((selectedRoom.value!.maxAdults! * searchController.rooms.value)
@@ -75,8 +75,18 @@ class BookingController extends GetxController {
       tempSubTotal.value = tempSubTotal.value + val;
     }
     if (onLoyalty.value) {
-      tempSubTotal.value = tempSubTotal.value -
-          (authController.user.value!.loyaltyPointAmount ?? 0);
+      if (tempSubTotal.value <
+          (authController.user.value!.loyaltyPointAmount ?? 0)) {
+        usedLoyalty.value = tempSubTotal.value;
+      } else {
+        usedLoyalty.value =
+            (authController.user.value!.loyaltyPointAmount ?? 0);
+      }
+      tempSubTotal.value = tempSubTotal.value <
+              (authController.user.value!.loyaltyPointAmount ?? 0)
+          ? 0
+          : tempSubTotal.value -
+              (authController.user.value!.loyaltyPointAmount ?? 0);
     }
   }
 
@@ -86,27 +96,27 @@ class BookingController extends GetxController {
         .difference(myBookingModel.bookingDateFrom!)
         .inDays;
     tempSubTotalBooked.value = myBookingModel.subTotal!.toDouble();
-    List<RoomBookingFeeOrDiscountDto> tempCat =
-        List.from(myBookingModel.roomBookingFeeOrDiscountDto ?? []);
-    tempCat.sort((a, b) => a.displayOrder!.compareTo(b.displayOrder!));
+    // List<RoomBookingFeeOrDiscountDto> tempCat =
+    //     List.from(myBookingModel.roomBookingFeeOrDiscountDto ?? []);
+    // tempCat.sort((a, b) => a.displayOrder!.compareTo(b.displayOrder!));
 
-    for (var e in tempCat) {
-      double val = 0;
-      if (e.isPercentage == true) {
-        val = ((tempSubTotalBooked.value * (e.percentageOrAmount! / 100)) *
-            (e.direction!));
-      } else {
-        val =
-            (tempSubTotalBooked.value + (e.percentageOrAmount! * e.direction!));
-      }
-      feeDiscountBooked.add({
-        "title": e.feeOrDiscountName,
-        "percentOrAmount": e.percentageOrAmount,
-        "isPercentage": e.isPercentage ?? true,
-        "value": val
-      });
-      tempSubTotalBooked.value = tempSubTotalBooked.value + val;
-    }
+    // for (var e in tempCat) {
+    //   double val = 0;
+    //   if (e.isPercentage == true) {
+    //     val = ((tempSubTotalBooked.value * (e.percentageOrAmount! / 100)) *
+    //         (e.direction!));
+    //   } else {
+    //     val =
+    //         (tempSubTotalBooked.value + (e.percentageOrAmount! * e.direction!));
+    //   }
+    //   feeDiscountBooked.add({
+    //     "title": e.feeOrDiscountName,
+    //     "percentOrAmount": e.percentageOrAmount,
+    //     "isPercentage": e.isPercentage ?? true,
+    //     "value": val
+    //   });
+    //   tempSubTotalBooked.value = tempSubTotalBooked.value + val;
+    // }
   }
 
   double get extraChrg => double.parse((subTotalValue * .1).toStringAsFixed(2));
@@ -132,6 +142,33 @@ class BookingController extends GetxController {
     orderTotal.value = orderTotalVal;
     price.value = priceVal;
     orderTax.value = orderTaxVal;
+  }
+
+  bookRoomPayment({
+    required String? provider,
+    required String? currency,
+    required String? amount,
+    required String? amountInPaisa,
+    required String? mobile,
+    required String? idx,
+    required String? productIdentity,
+    required String? productName,
+    required String? productUrl,
+    required String? token,
+  }) async {
+    bookingPaymentDetailsData.value = {
+      "paymentProviderCode": provider,
+      "currencyCode": "NPR",
+      "amount": double.parse(amount.toString().replaceAll('.', '.')),
+      "amountInPaisa": int.parse(amountInPaisa!) * 100,
+      "providerTransactionId": idx,
+      "mobile": mobile,
+      "productIdentity": productIdentity,
+      "productName": productName,
+      "prouctUrl": productUrl,
+      "token": token,
+      "widgetId": "string",
+    };
   }
 
   bookRoomPost() async {
@@ -165,30 +202,16 @@ class BookingController extends GetxController {
               .split(',')
               .sublist(0, searchController.rooms.value)
               .join(','),
-          usedLoyaltyPointAmount: onLoyalty.value
-              ? authController.user.value!.loyaltyPointAmount!
-              : 0
-          // paymentProvider: {
-          //   "paymentProviderCode": "KHALTI",
-          //   "currencyCode": "NPR",
-          //   "amount": payment.amount / 100,
-          //   "amountInPaisa": payment.amount,
-          //   "providerTransactionId": payment.idx,
-          //   "mobile": payment.mobile,
-          //   "productIdentity": payment.productIdentity,
-          //   "productName": payment.productName,
-          //   "prouctUrl": payment.productUrl,
-          //   "token": payment.token,
-          //   "widgetId": "string"
-          // }
-          );
+          usedLoyaltyPointAmount: onLoyalty.value ? usedLoyalty.value : 0,
+          roomBookingGuid: bookingGuID.value);
       if (res != null) {
         isLoading.value = false;
         bookingId.value = res['bookingID'].toString();
         bookingNumber.value = res['bookingNumber'].toString();
         bookingGuID.value = res['bookingGuID'];
-        Get.off(PaymentMethods());
+        // Get.off(PaymentMethods());
         // Get.to(CheckOutPage());
+        bookRoomPostPayment();
       }
     } catch (e) {
       isLoading.value = false;
@@ -205,32 +228,13 @@ class BookingController extends GetxController {
   }
 
   bookRoomPostPayment(
-      {required String? provider,
-      required double? amount,
-      required double? amountInPaisa,
-      required String? mobile,
-      required String? idx,
-      required String? productIdentity,
-      required String? productName,
-      required String? productUrl,
-      required String? token,
-      String? transactionId,
+      {String? transactionId,
       String? transactionGuId,
       MyBookingModel? myBookingModel}) async {
     try {
       isLoading.value = true;
       final res = await HotelRepository().bookHotelPayment(paymentProvider: {
-        "paymentProviderCode": "KHALTI",
-        "currencyCode": "NPR",
-        "amount": amount,
-        "amountInPaisa": amountInPaisa,
-        "providerTransactionId": idx,
-        "mobile": mobile,
-        "productIdentity": productIdentity,
-        "productName": productName,
-        "prouctUrl": productUrl,
-        "token": token,
-        "widgetId": "string",
+        ...bookingPaymentDetailsData,
         "paymentForTransactionId": transactionId ?? bookingId.value,
         "paymentForTransactionGuId": transactionGuId ?? bookingGuID.value
       });

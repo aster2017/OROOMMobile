@@ -56,6 +56,7 @@ class SearchFilter extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   hint: "Where are you going?",
                   controller: searchCtrl,
+                  autofocus: true,
                   // onTap: () {
                   //   showSearch(context: context, delegate: SearchHotel());
                   // },

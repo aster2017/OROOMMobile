@@ -1,15 +1,11 @@
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:orb/src/features/account/data/model/myBooking.dart';
 import 'package:orb/src/features/booking/controller/bookingController.dart';
+import 'package:orb/src/features/booking/services/invoice_service.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-
-import '../services/invoice_service.dart';
 
 class CreatePdf {
   CreatePdf({this.myBookingModel});
@@ -41,6 +37,7 @@ class CreatePdf {
     //Dispose the document.
     document.dispose();
     //Save and launch the file.
+
     await saveAndLaunchFile(bytes, 'Invoice.pdf');
   }
 

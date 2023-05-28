@@ -10,7 +10,6 @@ import 'package:orb/src/core/ui/bookingDetails.dart';
 import 'package:orb/src/core/ui/textfield.dart';
 import 'package:orb/src/features/booking/views/payment_methods.dart';
 import 'package:orb/src/features/home/controller/search_controller.dart';
-import 'package:orb/src/features/login/views/login.dart';
 
 import '../../../core/ui/loading.dart';
 import '../controller/bookingController.dart';
@@ -178,10 +177,20 @@ class _BookPageState extends State<BookPage> {
                                     color: textPrimary),
                               ),
                               Text(
-                                double.tryParse(authController
-                                        .user.value!.loyaltyPointAmount
-                                        .toString())!
-                                    .toStringAsFixed(2),
+                                bookingController.onLoyalty.value
+                                    ? bookingController.usedLoyalty.value
+                                        .toStringAsFixed(2)
+                                    : bookingController.tempSubTotal <
+                                            (double.tryParse(authController.user
+                                                    .value!.loyaltyPointAmount
+                                                    .toString()) ??
+                                                0)
+                                        ? bookingController.tempSubTotal
+                                            .toStringAsFixed(2)
+                                        : double.tryParse(authController
+                                                .user.value!.loyaltyPointAmount
+                                                .toString())!
+                                            .toStringAsFixed(2),
                                 // "26.00",
                                 style: GoogleFonts.mulish(
                                     fontWeight: FontWeight.w700,
@@ -338,8 +347,8 @@ class _BookPageState extends State<BookPage> {
             emailVal: emailCtrl.text,
             name: fullNameCtrl.text,
             phoneVal: phoneCtrl.text);
-        bookingController.bookRoomPost();
-        // Get.to(PaymentMethods());
+        // bookingController.bookRoomPost();
+        Get.to(PaymentMethods());
       },
       child: Container(
         width: 170.w,

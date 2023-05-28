@@ -45,16 +45,19 @@ dependencies:
   dio: ^5.0.3
   get_storage: ^2.0.3
   shimmer: ^2.0.0
-  khalti_flutter: ^2.1.0
+  khalti_flutter: ^2.2.1
   cached_network_image: ^3.2.1
   syncfusion_flutter_pdf: ^20.3.52
-  open_file: ^3.2.1
+  # open_file: ^3.2.1
   phone_number: ^1.0.0
   font_awesome_flutter: ^10.3.0
   flutter_rating_bar: ^4.0.1
-  esewa_flutter_sdk:
-    path: ./esewa_flutter_sdk
+  # esewa_flutter_sdk:
+  #   path: ./esewa_flutter_sdk
   flutter_html: ^3.0.0-alpha.1
+  webview_flutter: ^2.8.0
+  uuid: ^3.0.7
+  open_file_plus: ^3.4.0
 
 dependency_overrides:
   modal_bottom_sheet:

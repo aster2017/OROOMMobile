@@ -90,7 +90,7 @@ class _RoomDetailState extends State<RoomDetail> {
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.mulish(
-                          fontSize: 14.sp,
+                          fontSize: 16.sp,
                           color: primaryColor,
                           fontWeight: FontWeight.w600,
                           height: 1.25),
@@ -211,81 +211,13 @@ class _RoomDetailState extends State<RoomDetail> {
                     ],
                   ),
                   SizedBox(
-                    height: 8.h,
-                  ),
-                  Divider(
-                    height: 1,
-                  ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  Text(
-                    "Hotel Facilities",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.mulish(
-                        fontSize: 14.sp,
-                        color: textPrimary,
-                        fontWeight: FontWeight.w500,
-                        height: 1.25),
-                  ),
-                  SizedBox(
                     height: 18.h,
                   ),
-                  SizedBox(
-                      height: 32.h,
-                      child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                widget.room?.roomCategoryFacilities![index]
-                                                .facilityIcon ==
-                                            null ||
-                                        widget
-                                            .room!
-                                            .roomCategoryFacilities![index]
-                                            .facilityIcon!
-                                            .isEmpty ||
-                                        widget
-                                                .room!
-                                                .roomCategoryFacilities![index]
-                                                .facilityIcon! ==
-                                            "string"
-                                    ? Icon(
-                                        FlutterRemix.check_line,
-                                        size: 18.w,
-                                      )
-                                    : Icon(
-                                        IconDataSolid(int.parse(
-                                            '0x${widget.room?.roomCategoryFacilities![index].facilityIcon}')),
-                                        size: 18.w,
-                                      ),
-                                Text(
-                                  widget.room?.roomCategoryFacilities![index]
-                                          .facilityName ??
-                                      "",
-                                  style: GoogleFonts.mulish(
-                                      fontSize: 10.sp,
-                                      color: Color(0xff4f4f4f),
-                                      fontWeight: FontWeight.w500,
-                                      height: 1.25),
-                                )
-                              ],
-                            );
-                          },
-                          separatorBuilder: (context, index) => SizedBox(
-                                width: 12.w,
-                              ),
-                          itemCount:
-                              widget.room?.roomCategoryFacilities?.length ??
-                                  0)),
-                  SizedBox(
-                    height: 14.h,
-                  ),
                   DisplayCard(
-                      title: "Description",
-                      description: widget.room!.roomCategoryDescription ?? ""),
+                    title: "Description",
+                    description: widget.room!.roomCategoryDescription ?? "",
+                    isShow: true,
+                  ),
                   SizedBox(
                     height: 14.h,
                   ),
@@ -303,50 +235,48 @@ class _RoomDetailState extends State<RoomDetail> {
                     height: 18.h,
                   ),
                   SizedBox(
-                      height: 32.h,
-                      child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) => Column(
-                                children: [
-                                  widget.room?.roomCategoryAmenities![index]
-                                                  .amenitiesIcon ==
-                                              null ||
-                                          widget
-                                              .room!
-                                              .roomCategoryAmenities![index]
-                                              .amenitiesIcon!
-                                              .isEmpty ||
-                                          widget
-                                                  .room!
-                                                  .roomCategoryAmenities![index]
-                                                  .amenitiesIcon! ==
-                                              "string"
-                                      ? Icon(
-                                          FlutterRemix.check_line,
-                                          size: 18.w,
-                                        )
-                                      : Icon(
-                                          IconDataSolid(int.parse(
-                                              '0x${widget.room?.roomCategoryAmenities![index].amenitiesIcon}')),
-                                          size: 18.w,
-                                        ),
-                                  Text(
-                                    widget.room?.roomCategoryAmenities![index]
-                                            .amenitiesName ??
-                                        "",
-                                    style: GoogleFonts.mulish(
-                                        fontSize: 10.sp,
-                                        color: Color(0xff4f4f4f),
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.25),
-                                  )
-                                ],
-                              ),
-                          separatorBuilder: (context, index) => SizedBox(
-                                width: 12.w,
-                              ),
-                          itemCount:
-                              widget.room?.roomCategoryAmenities?.length ?? 0)),
+                      height: 45.h,
+                      child: Wrap(children: [
+                        ...widget.room!.roomCategoryAmenities!.map(
+                          (e) => Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 4.w, vertical: 4.h),
+                            width: 45.w,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                e.amenitiesIcon == null ||
+                                        e.amenitiesIcon!.isEmpty ||
+                                        e.amenitiesIcon == "string" ||
+                                        e.amenitiesIcon == "fav-icon"
+                                    ? Icon(
+                                        FlutterRemix.check_line,
+                                        size: 18.w,
+                                      )
+                                    : Icon(
+                                        IconDataSolid(
+                                            int.parse('0x${e.amenitiesIcon}')),
+                                        size: 18.w,
+                                      ),
+                                SizedBox(
+                                  height: 4.h,
+                                ),
+                                Text(
+                                  e.amenitiesName ?? "",
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  style: GoogleFonts.mulish(
+                                      fontSize: 10.sp,
+                                      color: Color(0xff4f4f4f),
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.25),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ])),
                 ],
               ),
             ),
